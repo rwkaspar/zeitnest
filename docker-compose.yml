@@ -61,6 +61,14 @@ services:
       - certbot-webroot:/var/www/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: zeitnest-cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARED_TOKEN}
+    depends_on:
+      - zeitnest
+
 volumes:
   pgdata:
   certbot-webroot:

@@ -6,6 +6,7 @@ function LandingPage() {
     <div>
       <section className="hero">
         <div className="container">
+          <img src="/logo.png" alt="Zeitnest Logo" className="hero-logo" />
           <h1>
             Zeit schenken. <span className="highlight">Zeit gewinnen.</span>
           </h1>

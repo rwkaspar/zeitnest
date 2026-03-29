@@ -9,7 +9,8 @@ function Navbar() {
     <nav className="navbar">
       <div className="container">
         <Link to={user ? '/dashboard' : '/'} className="navbar-brand">
-          <span>&#x1F333;</span> Zeitnest
+          <img src="/logo.png" alt="Zeitnest Logo" className="navbar-logo" />
+          Zeitnest
         </Link>
         <div className="navbar-links">
           <Link to="/leitfaden">Leitfaden</Link>
