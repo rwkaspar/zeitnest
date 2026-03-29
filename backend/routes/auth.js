@@ -7,7 +7,7 @@ const { JWT_SECRET, authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
-router.post('/register', (req, res) => {
+router.post('/register', async (req, res) => {
   try {
     const { email, password, role, first_name, last_name, city, postal_code } = req.body;
     if (!email || !password || !role || !first_name || !last_name) {
@@ -16,18 +16,18 @@ router.post('/register', (req, res) => {
     if (!['parent', 'grandparent'].includes(role)) {
       return res.status(400).json({ error: 'Ungültige Rolle.' });
     }
-    const existing = queryOne('SELECT id FROM users WHERE email = ?', [email]);
+    const existing = await queryOne('SELECT id FROM users WHERE email = $1', [email]);
     if (existing) {
       return res.status(409).json({ error: 'Diese E-Mail-Adresse ist bereits registriert.' });
     }
     const hashedPassword = bcrypt.hashSync(password, 10);
     const id = uuidv4();
-    runSql(`INSERT INTO users (id, email, password, role, first_name, last_name, city, postal_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [id, email, hashedPassword, role, first_name, last_name, city || null, postal_code || null]);
+    await runSql(`INSERT INTO users (id, email, password, role, first_name, last_name, city, postal_code) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`, [id, email, hashedPassword, role, first_name, last_name, city || null, postal_code || null]);
 
     if (role === 'parent') {
-      runSql(`INSERT INTO parent_profiles (user_id) VALUES (?)`, [id]);
+      await runSql(`INSERT INTO parent_profiles (user_id) VALUES ($1)`, [id]);
     } else {
-      runSql(`INSERT INTO grandparent_profiles (user_id) VALUES (?)`, [id]);
+      await runSql(`INSERT INTO grandparent_profiles (user_id) VALUES ($1)`, [id]);
     }
 
     const token = jwt.sign({ id, email, role }, JWT_SECRET, { expiresIn: '7d' });
@@ -38,13 +38,13 @@ router.post('/register', (req, res) => {
   }
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
       return res.status(400).json({ error: 'Bitte E-Mail und Passwort eingeben.' });
     }
-    const user = queryOne('SELECT * FROM users WHERE email = ?', [email]);
+    const user = await queryOne('SELECT * FROM users WHERE email = $1', [email]);
     if (!user || !bcrypt.compareSync(password, user.password)) {
       return res.status(401).json({ error: 'E-Mail oder Passwort falsch.' });
     }
@@ -59,16 +59,16 @@ router.post('/login', (req, res) => {
   }
 });
 
-router.get('/me', authenticateToken, (req, res) => {
+router.get('/me', authenticateToken, async (req, res) => {
   try {
-    const user = queryOne('SELECT id, email, role, first_name, last_name, city, postal_code, phone, bio, avatar_url, created_at FROM users WHERE id = ?', [req.user.id]);
+    const user = await queryOne('SELECT id, email, role, first_name, last_name, city, postal_code, phone, bio, avatar_url, created_at FROM users WHERE id = $1', [req.user.id]);
     if (!user) return res.status(404).json({ error: 'Benutzer nicht gefunden.' });
 
     let profile = null;
     if (user.role === 'parent') {
-      profile = queryOne('SELECT * FROM parent_profiles WHERE user_id = ?', [user.id]);
+      profile = await queryOne('SELECT * FROM parent_profiles WHERE user_id = $1', [user.id]);
     } else {
-      profile = queryOne('SELECT * FROM grandparent_profiles WHERE user_id = ?', [user.id]);
+      profile = await queryOne('SELECT * FROM grandparent_profiles WHERE user_id = $1', [user.id]);
     }
     res.json({ ...user, profile });
   } catch (err) {
