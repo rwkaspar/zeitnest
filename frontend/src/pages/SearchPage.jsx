@@ -63,7 +63,7 @@ function SearchPage() {
                   {person.first_name[0]}{person.last_name[0]}
                 </div>
                 <div className="user-info">
-                  <h3>{person.first_name} {person.last_name}</h3>
+                  <h3>{person.first_name} {person.last_name} {person.is_demo && <span className="demo-badge">Beispielprofil</span>}</h3>
                   <p className="location">&#x1F4CD; {person.city || 'Keine Angabe'} {person.postal_code && `(${person.postal_code})`}</p>
                   {person.bio && <p className="bio">{person.bio}</p>}
                   <div className="tags">

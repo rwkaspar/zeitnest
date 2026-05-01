@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../utils/api';
 
+const DAYS = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+
 function ProfilePage() {
   const { id } = useParams();
   const { user } = useAuth();
@@ -47,6 +49,7 @@ function ProfilePage() {
           <div className="profile-header">
             <div className="profile-avatar">{profile.first_name[0]}{profile.last_name[0]}</div>
             <h1>{profile.first_name} {profile.last_name}</h1>
+            {profile.is_demo && <span className="demo-badge">Beispielprofil</span>}
             <p style={{ color: '#6b7c93' }}>&#x1F4CD; {profile.city || 'Keine Angabe'}</p>
             <span className={`role-badge ${profile.role}`}>{roleLabel}</span>
           </div>
@@ -96,6 +99,10 @@ function ProfilePage() {
             </div>
           )}
 
+          {!isOwn && profile.role === 'grandparent' && user?.role === 'parent' && (
+            <BookingSection grandparentId={profile.id} grandparentName={`${profile.first_name} ${profile.last_name}`} />
+          )}
+
           {message && <div className={message.includes('erfolgreich') ? 'success-message' : 'error-message'}>{message}</div>}
 
           {!isOwn && user?.role !== profile.role && (
@@ -122,6 +129,98 @@ function ProfilePage() {
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function BookingSection({ grandparentId, grandparentName }) {
+  const [slots, setSlots] = useState([]);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [bookingDate, setBookingDate] = useState('');
+  const [note, setNote] = useState('');
+  const [bookMsg, setBookMsg] = useState('');
+  const [bookErr, setBookErr] = useState('');
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    fetch(`/api/calendar/slots/${grandparentId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(r => r.json())
+      .then(setSlots)
+      .catch(() => {});
+  }, [grandparentId]);
+
+  if (slots.length === 0) return null;
+
+  function getNextDateForDay(dayOfWeek) {
+    const today = new Date();
+    const diff = (dayOfWeek - today.getDay() + 7) % 7 || 7;
+    const next = new Date(today);
+    next.setDate(today.getDate() + diff);
+    return next.toISOString().split('T')[0];
+  }
+
+  async function handleBook(e) {
+    e.preventDefault();
+    setBookMsg(''); setBookErr('');
+    const token = localStorage.getItem('token');
+    const res = await fetch('/api/calendar/bookings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ slot_id: selectedSlot.id, booking_date: bookingDate, note })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      setBookMsg(`Termin am ${new Date(bookingDate).toLocaleDateString('de-DE')} gebucht!`);
+      setSelectedSlot(null);
+      setBookingDate('');
+      setNote('');
+    } else {
+      setBookErr(data.error);
+    }
+  }
+
+  return (
+    <div className="profile-section">
+      <h3>Verf&uuml;gbare Zeitfenster</h3>
+      {bookMsg && <div className="success-message">{bookMsg}</div>}
+      {bookErr && <div className="error-message">{bookErr}</div>}
+
+      <div className="slots-list">
+        {slots.map(slot => (
+          <div key={slot.id} className={`slot-item ${selectedSlot?.id === slot.id ? 'slot-selected' : ''}`}>
+            <div className="slot-info" onClick={() => {
+              setSelectedSlot(slot);
+              setBookingDate(getNextDateForDay(slot.day_of_week));
+              setBookErr('');
+            }} style={{ cursor: 'pointer' }}>
+              <strong>{DAYS[slot.day_of_week]}</strong>
+              <span>{slot.start_time.substring(0, 5)} &ndash; {slot.end_time.substring(0, 5)} Uhr</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {selectedSlot && (
+        <form onSubmit={handleBook} className="booking-form">
+          <p className="calendar-hint">
+            Termin buchen: <strong>{DAYS[selectedSlot.day_of_week]}, {selectedSlot.start_time.substring(0, 5)}&ndash;{selectedSlot.end_time.substring(0, 5)} Uhr</strong>
+          </p>
+          <div className="form-group">
+            <label>Datum</label>
+            <input type="date" value={bookingDate} onChange={e => setBookingDate(e.target.value)} required />
+          </div>
+          <div className="form-group">
+            <label>Nachricht (optional)</label>
+            <input type="text" value={note} onChange={e => setNote(e.target.value)} placeholder="z.B. Bitte Sonnencreme einpacken..." />
+          </div>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button type="submit" className="btn btn-primary">Termin buchen</button>
+            <button type="button" className="btn btn-outline" onClick={() => setSelectedSlot(null)}>Abbrechen</button>
+          </div>
+        </form>
+      )}
     </div>
   );
 }

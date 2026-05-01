@@ -46,11 +46,11 @@ function LoginPage() {
           </button>
         </form>
 
-        <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '0.9rem', color: '#6b7c93' }}>
-          Noch kein Konto? <Link to="/register">Jetzt registrieren</Link>
+        <p style={{ textAlign: 'center', marginTop: '16px', fontSize: '0.9rem' }}>
+          <Link to="/passwort-vergessen">Passwort vergessen?</Link>
         </p>
-        <p style={{ textAlign: 'center', marginTop: '12px', fontSize: '0.8rem', color: '#999' }}>
-          Demo-Login: maria.schmidt@example.de / demo1234
+        <p style={{ textAlign: 'center', marginTop: '12px', fontSize: '0.9rem', color: '#6b7c93' }}>
+          Noch kein Konto? <Link to="/register">Jetzt registrieren</Link>
         </p>
       </div>
     </div>

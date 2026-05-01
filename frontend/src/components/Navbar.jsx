@@ -18,7 +18,9 @@ function Navbar() {
             <>
               <Link to="/suche">Suche</Link>
               <Link to="/anfragen">Anfragen</Link>
+              <Link to="/kalender">Kalender</Link>
               <Link to="/profil/bearbeiten">Profil</Link>
+              <Link to="/konto">Konto</Link>
               <button onClick={logout}>Abmelden</button>
             </>
           ) : (

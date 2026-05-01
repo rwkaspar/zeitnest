@@ -14,9 +14,9 @@ router.get('/', authenticateToken, async (req, res) => {
     let paramIdx = 1;
 
     if (searchRole === 'grandparent') {
-      query = `SELECT u.id, u.first_name, u.last_name, u.city, u.postal_code, u.bio, u.avatar_url, u.created_at, gp.experience, gp.availability, gp.preferred_age_range, gp.offered_activities, gp.has_fuehrungszeugnis, gp.mobility FROM users u LEFT JOIN grandparent_profiles gp ON u.id = gp.user_id WHERE u.role = $1 AND u.id != $2`;
+      query = `SELECT u.id, u.first_name, u.last_name, u.city, u.postal_code, u.bio, u.avatar_url, u.is_demo, u.created_at, gp.experience, gp.availability, gp.preferred_age_range, gp.offered_activities, gp.has_fuehrungszeugnis, gp.mobility FROM users u LEFT JOIN grandparent_profiles gp ON u.id = gp.user_id WHERE u.role = $1 AND u.id != $2`;
     } else {
-      query = `SELECT u.id, u.first_name, u.last_name, u.city, u.postal_code, u.bio, u.avatar_url, u.created_at, pp.number_of_children, pp.children_ages, pp.needs_description, pp.availability, pp.preferred_activities FROM users u LEFT JOIN parent_profiles pp ON u.id = pp.user_id WHERE u.role = $1 AND u.id != $2`;
+      query = `SELECT u.id, u.first_name, u.last_name, u.city, u.postal_code, u.bio, u.avatar_url, u.is_demo, u.created_at, pp.number_of_children, pp.children_ages, pp.needs_description, pp.availability, pp.preferred_activities FROM users u LEFT JOIN parent_profiles pp ON u.id = pp.user_id WHERE u.role = $1 AND u.id != $2`;
     }
 
     params = [searchRole, req.user.id];

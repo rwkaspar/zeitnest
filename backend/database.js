@@ -25,6 +25,7 @@ async function initDatabase() {
         phone TEXT,
         bio TEXT,
         avatar_url TEXT,
+        is_demo BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMPTZ DEFAULT NOW(),
         updated_at TIMESTAMPTZ DEFAULT NOW()
       )
@@ -88,6 +89,45 @@ async function initDatabase() {
       )
     `);
 
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS availability_slots (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        day_of_week INTEGER NOT NULL CHECK(day_of_week >= 0 AND day_of_week <= 6),
+        start_time TIME NOT NULL,
+        end_time TIME NOT NULL,
+        recurring BOOLEAN DEFAULT TRUE,
+        specific_date DATE,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      )
+    `);
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS bookings (
+        id TEXT PRIMARY KEY,
+        slot_id TEXT NOT NULL REFERENCES availability_slots(id) ON DELETE CASCADE,
+        grandparent_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        parent_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        booking_date DATE NOT NULL,
+        start_time TIME NOT NULL,
+        end_time TIME NOT NULL,
+        status TEXT DEFAULT 'confirmed' CHECK(status IN ('confirmed', 'cancelled')),
+        note TEXT,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      )
+    `);
+
+    // Migrations
+    await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS is_demo BOOLEAN DEFAULT FALSE`);
+    await client.query(`UPDATE users SET is_demo = TRUE WHERE email LIKE '%@example.de'`);
+    await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS email_verified BOOLEAN DEFAULT FALSE`);
+    await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS verification_token TEXT`);
+    await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS verification_token_expires TIMESTAMPTZ`);
+    await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token TEXT`);
+    await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token_expires TIMESTAMPTZ`);
+    // Mark existing/demo users as verified
+    await client.query(`UPDATE users SET email_verified = TRUE WHERE email_verified IS NULL OR email LIKE '%@example.de'`);
+
     // Create indexes
     await client.query(`CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)`);
     await client.query(`CREATE INDEX IF NOT EXISTS idx_users_role_city ON users(role, city)`);
@@ -95,6 +135,10 @@ async function initDatabase() {
     await client.query(`CREATE INDEX IF NOT EXISTS idx_matches_grandparent ON matches(grandparent_id)`);
     await client.query(`CREATE INDEX IF NOT EXISTS idx_messages_match ON messages(match_id)`);
     await client.query(`CREATE INDEX IF NOT EXISTS idx_reviews_reviewed ON reviews(reviewed_id)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_slots_user ON availability_slots(user_id)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_bookings_grandparent ON bookings(grandparent_id)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_bookings_parent ON bookings(parent_id)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_bookings_date ON bookings(booking_date)`);
 
     // Seed demo data if empty
     const { rows } = await client.query('SELECT COUNT(*) as count FROM users');
@@ -122,7 +166,7 @@ async function seedDemoData(client) {
 
   for (const u of demoUsers) {
     await client.query(
-      `INSERT INTO users (id, email, password, role, first_name, last_name, city, postal_code, phone, bio) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+      `INSERT INTO users (id, email, password, role, first_name, last_name, city, postal_code, phone, bio, is_demo) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, TRUE)`,
       [u.id, u.email, hashedPassword, u.role, u.first_name, u.last_name, u.city, u.postal_code, u.phone, u.bio]
     );
 

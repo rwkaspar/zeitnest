@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/:id', authenticateToken, async (req, res) => {
   try {
-    const user = await queryOne('SELECT id, email, role, first_name, last_name, city, postal_code, bio, avatar_url, created_at FROM users WHERE id = $1', [req.params.id]);
+    const user = await queryOne('SELECT id, email, role, first_name, last_name, city, postal_code, bio, avatar_url, is_demo, created_at FROM users WHERE id = $1', [req.params.id]);
     if (!user) return res.status(404).json({ error: 'Profil nicht gefunden.' });
 
     let profile = null;

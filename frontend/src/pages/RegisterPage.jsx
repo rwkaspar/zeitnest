@@ -6,6 +6,7 @@ function RegisterPage() {
   const [formData, setFormData] = useState({
     email: '', password: '', role: '', first_name: '', last_name: '', city: '', postal_code: ''
   });
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
@@ -19,6 +20,10 @@ function RegisterPage() {
     e.preventDefault();
     if (!formData.role) {
       setError('Bitte w\u00e4hlen Sie Ihre Rolle aus.');
+      return;
+    }
+    if (!privacyAccepted) {
+      setError('Bitte stimmen Sie der Datenschutzerkl\u00e4rung zu.');
       return;
     }
     setError('');
@@ -70,18 +75,25 @@ function RegisterPage() {
           </div>
           <div className="form-group">
             <label>Passwort *</label>
-            <input name="password" type="password" value={formData.password} onChange={handleChange} required minLength={6} placeholder="Mindestens 6 Zeichen" />
+            <input name="password" type="password" value={formData.password} onChange={handleChange} required minLength={8} placeholder="Min. 8 Zeichen, Groß-/Kleinbuchstaben, Zahl" />
           </div>
 
           <div className="form-row">
             <div className="form-group">
               <label>Stadt</label>
-              <input name="city" value={formData.city} onChange={handleChange} placeholder="z.B. M\u00fcnchen" />
+              <input name="city" value={formData.city} onChange={handleChange} placeholder="z.B. Berlin" />
             </div>
             <div className="form-group">
               <label>Postleitzahl</label>
-              <input name="postal_code" value={formData.postal_code} onChange={handleChange} placeholder="z.B. 80331" />
+              <input name="postal_code" value={formData.postal_code} onChange={handleChange} placeholder="z.B. 10115" />
             </div>
+          </div>
+
+          <div className="form-group" style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+            <input type="checkbox" id="privacy" checked={privacyAccepted} onChange={(e) => setPrivacyAccepted(e.target.checked)} style={{ marginTop: '4px' }} />
+            <label htmlFor="privacy" style={{ fontSize: '0.85rem', color: '#6b7c93', fontWeight: 'normal' }}>
+              Ich habe die <a href="/datenschutz" target="_blank">Datenschutzerkl&auml;rung</a> gelesen und stimme der Verarbeitung meiner Daten zu.
+            </label>
           </div>
 
           <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
