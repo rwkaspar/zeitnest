@@ -5,9 +5,10 @@ import { useAuth } from '../context/AuthContext';
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [totp, setTotp] = useState('');
+  const [needTotp, setNeedTotp] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -15,10 +16,23 @@ function LoginPage() {
     setError('');
     setLoading(true);
     try {
-      await login(email, password);
-      navigate('/dashboard');
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, ...(needTotp ? { totp } : {}) }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        localStorage.setItem('token', data.token);
+        window.location.href = '/dashboard';
+      } else if (data.totp_required) {
+        setNeedTotp(true);
+        setError(needTotp ? data.error : '');
+      } else {
+        setError(data.error);
+      }
     } catch (err) {
-      setError(err.message);
+      setError('Anmeldung fehlgeschlagen.');
     } finally {
       setLoading(false);
     }
@@ -41,6 +55,12 @@ function LoginPage() {
             <label htmlFor="password">Passwort</label>
             <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Ihr Passwort" required />
           </div>
+          {needTotp && (
+            <div className="form-group">
+              <label htmlFor="totp">2FA-Code aus Ihrer Authenticator-App</label>
+              <input id="totp" type="text" inputMode="numeric" pattern="[0-9]{6}" maxLength={6} value={totp} onChange={(e) => setTotp(e.target.value)} placeholder="123456" required autoFocus />
+            </div>
+          )}
           <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
             {loading ? 'Anmelden...' : 'Anmelden'}
           </button>

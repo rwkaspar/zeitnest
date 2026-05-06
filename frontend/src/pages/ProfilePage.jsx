@@ -47,7 +47,12 @@ function ProfilePage() {
       <div className="container">
         <div className="card">
           <div className="profile-header">
-            <div className="profile-avatar">{profile.first_name[0]}{profile.last_name[0]}</div>
+            <div
+              className="profile-avatar"
+              style={profile.avatar_url ? { backgroundImage: `url(${profile.avatar_url})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
+            >
+              {!profile.avatar_url && `${profile.first_name[0]}${profile.last_name[0]}`}
+            </div>
             <h1>{profile.first_name} {profile.last_name}</h1>
             {profile.is_demo && <span className="demo-badge">Beispielprofil</span>}
             <p style={{ color: '#6b7c93' }}>&#x1F4CD; {profile.city || 'Keine Angabe'}</p>
@@ -105,6 +110,10 @@ function ProfilePage() {
 
           {message && <div className={message.includes('erfolgreich') ? 'success-message' : 'error-message'}>{message}</div>}
 
+          {!isOwn && (
+            <ReportSection targetId={profile.id} />
+          )}
+
           {!isOwn && user?.role !== profile.role && (
             <div style={{ marginTop: '24px' }}>
               {!showContact ? (
@@ -129,6 +138,59 @@ function ProfilePage() {
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function ReportSection({ targetId }) {
+  const [open, setOpen] = useState(false);
+  const [reason, setReason] = useState('safety_concern');
+  const [details, setDetails] = useState('');
+  const [msg, setMsg] = useState('');
+
+  async function submit(e) {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    const res = await fetch('/api/reports', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ reported_id: targetId, reason, details }),
+    });
+    const data = await res.json();
+    if (res.ok) { setMsg(data.message); setDetails(''); setOpen(false); }
+    else setMsg(data.error);
+  }
+
+  return (
+    <div style={{ textAlign: 'right', marginTop: '12px' }}>
+      {msg && <div className="success-message" style={{ textAlign: 'left' }}>{msg}</div>}
+      {!open ? (
+        <button onClick={() => setOpen(true)} style={{ background: 'none', border: 'none', color: '#d9534f', fontSize: '0.85rem', cursor: 'pointer', padding: '4px' }}>
+          &#x26A0;&#xFE0F; Profil melden
+        </button>
+      ) : (
+        <form onSubmit={submit} style={{ textAlign: 'left', padding: '16px', background: '#fdf0ef', borderRadius: '8px', marginTop: '8px' }}>
+          <div className="form-group">
+            <label>Grund</label>
+            <select value={reason} onChange={e => setReason(e.target.value)}>
+              <option value="safety_concern">Sicherheitsbedenken</option>
+              <option value="fake_profile">Fake-Profil</option>
+              <option value="harassment">Bel&auml;stigung</option>
+              <option value="inappropriate_content">Unangemessene Inhalte</option>
+              <option value="spam">Spam / Werbung</option>
+              <option value="other">Sonstiges</option>
+            </select>
+          </div>
+          <div className="form-group">
+            <label>Details (optional)</label>
+            <textarea value={details} onChange={e => setDetails(e.target.value)} placeholder="Was ist passiert?" />
+          </div>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button type="submit" className="btn btn-sm btn-danger">Meldung absenden</button>
+            <button type="button" className="btn btn-sm btn-outline" onClick={() => setOpen(false)}>Abbrechen</button>
+          </div>
+        </form>
+      )}
     </div>
   );
 }

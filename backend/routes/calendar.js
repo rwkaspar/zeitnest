@@ -2,6 +2,7 @@ const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const { queryOne, queryAll, runSql } = require('../database');
 const { authenticateToken } = require('../middleware/auth');
+const { sendBookingCreatedEmail, sendBookingCancelledEmail } = require('../utils/mail');
 
 const router = express.Router();
 
@@ -106,6 +107,16 @@ router.post('/bookings', authenticateToken, async (req, res) => {
       [id, slot_id, slot.user_id, req.user.id, booking_date, slot.start_time, slot.end_time, note || null]
     );
 
+    // Notify grandparent
+    const parent = await queryOne('SELECT first_name, last_name FROM users WHERE id = $1', [req.user.id]);
+    const gp = await queryOne('SELECT email, first_name FROM users WHERE id = $1', [slot.user_id]);
+    if (parent && gp) {
+      const dateStr = new Date(booking_date).toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      const timeStr = `${String(slot.start_time).substring(0,5)}–${String(slot.end_time).substring(0,5)} Uhr`;
+      sendBookingCreatedEmail(gp.email, gp.first_name, `${parent.first_name} ${parent.last_name}`, dateStr, timeStr)
+        .catch(err => console.error('Booking notification email failed:', err.message));
+    }
+
     res.status(201).json({ id, booking_date, start_time: slot.start_time, end_time: slot.end_time, status: 'confirmed' });
   } catch (err) {
     console.error('Create booking error:', err);
@@ -146,6 +157,17 @@ router.put('/bookings/:id/cancel', authenticateToken, async (req, res) => {
     }
 
     await runSql('UPDATE bookings SET status = $1 WHERE id = $2', ['cancelled', req.params.id]);
+
+    // Notify the OTHER party
+    const otherId = booking.grandparent_id === req.user.id ? booking.parent_id : booking.grandparent_id;
+    const other = await queryOne('SELECT email, first_name FROM users WHERE id = $1', [otherId]);
+    const me = await queryOne('SELECT first_name, last_name FROM users WHERE id = $1', [req.user.id]);
+    if (other && me) {
+      const dateStr = new Date(booking.booking_date).toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      sendBookingCancelledEmail(other.email, other.first_name, `${me.first_name} ${me.last_name}`, dateStr)
+        .catch(err => console.error('Cancellation email failed:', err.message));
+    }
+
     res.json({ message: 'Buchung storniert.' });
   } catch (err) {
     console.error('Cancel booking error:', err);

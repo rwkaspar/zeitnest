@@ -56,6 +56,43 @@ function EditProfilePage() {
 
           {message && <div className={message.includes('erfolgreich') ? 'success-message' : 'error-message'}>{message}</div>}
 
+          <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div className="profile-avatar" style={{ width: '80px', height: '80px', backgroundImage: formData.avatar_url ? `url(${formData.avatar_url})` : 'none', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+              {!formData.avatar_url && (formData.first_name?.[0] || '') + (formData.last_name?.[0] || '')}
+            </div>
+            <div>
+              <label className="btn btn-outline btn-sm" style={{ cursor: 'pointer' }}>
+                Profilbild hochladen
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  style={{ display: 'none' }}
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const fd = new FormData();
+                    fd.append('avatar', file);
+                    const token = localStorage.getItem('token');
+                    const res = await fetch('/api/profiles/avatar', {
+                      method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: fd,
+                    });
+                    const data = await res.json();
+                    if (res.ok) {
+                      setFormData(prev => ({ ...prev, avatar_url: data.avatar_url }));
+                      updateUser({ avatar_url: data.avatar_url });
+                      setMessage('Profilbild erfolgreich hochgeladen!');
+                    } else {
+                      setMessage(data.error);
+                    }
+                  }}
+                />
+              </label>
+              <p style={{ fontSize: '0.8rem', color: '#5a6878', marginTop: '4px' }}>
+                JPG, PNG oder WebP, max. 2 MB
+              </p>
+            </div>
+          </div>
+
           <form onSubmit={handleSubmit}>
             <div className="form-row">
               <div className="form-group">

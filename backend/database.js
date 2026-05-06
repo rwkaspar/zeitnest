@@ -119,12 +119,36 @@ async function initDatabase() {
 
     // Migrations
     await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS is_demo BOOLEAN DEFAULT FALSE`);
-    await client.query(`UPDATE users SET is_demo = TRUE WHERE email LIKE '%@example.de'`);
+    await client.query(`UPDATE users SET is_demo = TRUE WHERE email LIKE '%@example.de' OR email LIKE '%@zeitnest.local'`);
+    // Anonymize legacy demo users (PII in old seed data)
+    await client.query(`UPDATE users SET phone = NULL, postal_code = NULL WHERE is_demo = TRUE`);
     await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS email_verified BOOLEAN DEFAULT FALSE`);
     await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS verification_token TEXT`);
     await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS verification_token_expires TIMESTAMPTZ`);
     await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token TEXT`);
     await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token_expires TIMESTAMPTZ`);
+
+    // Reports table for user reporting
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS reports (
+        id TEXT PRIMARY KEY,
+        reporter_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        reported_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        reason TEXT NOT NULL,
+        details TEXT,
+        status TEXT DEFAULT 'open' CHECK(status IN ('open', 'reviewed', 'closed')),
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      )
+    `);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_reports_reported ON reports(reported_id)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_reports_status ON reports(status)`);
+
+    // 2FA columns
+    await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS totp_secret TEXT`);
+    await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS totp_enabled BOOLEAN DEFAULT FALSE`);
+
+    // Admin column (for /admin panel access)
+    await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE`);
     // Mark existing/demo users as verified
     await client.query(`UPDATE users SET email_verified = TRUE WHERE email_verified IS NULL OR email LIKE '%@example.de'`);
 
@@ -157,11 +181,11 @@ async function seedDemoData(client) {
   const hashedPassword = bcrypt.hashSync('demo1234', 10);
 
   const demoUsers = [
-    { id: uuidv4(), email: 'maria.schmidt@example.de', role: 'grandparent', first_name: 'Maria', last_name: 'Schmidt', city: 'München', postal_code: '80331', phone: '+49 170 1234567', bio: 'Pensionierte Grundschullehrerin mit viel Erfahrung im Umgang mit Kindern. Ich liebe es, Geschichten vorzulesen und zu basteln.' },
-    { id: uuidv4(), email: 'hans.mueller@example.de', role: 'grandparent', first_name: 'Hans', last_name: 'Müller', city: 'München', postal_code: '80333', phone: '+49 171 2345678', bio: 'Aktiver Rentner, der gerne Zeit in der Natur verbringt. Wandern, Gärtnern und Fahrradfahren sind meine Leidenschaft.' },
-    { id: uuidv4(), email: 'ingrid.weber@example.de', role: 'grandparent', first_name: 'Ingrid', last_name: 'Weber', city: 'Berlin', postal_code: '10115', phone: '+49 172 3456789', bio: 'Ehemalige Krankenschwester, liebevoll und geduldig. Erste-Hilfe-Kenntnisse inklusive!' },
-    { id: uuidv4(), email: 'lisa.braun@example.de', role: 'parent', first_name: 'Lisa', last_name: 'Braun', city: 'München', postal_code: '80335', phone: '+49 173 4567890', bio: 'Alleinerziehende Mama von zwei aufgeweckten Kindern (3 und 6 Jahre). Suche liebevolle Unterstützung.' },
-    { id: uuidv4(), email: 'thomas.wagner@example.de', role: 'parent', first_name: 'Thomas', last_name: 'Wagner', city: 'Berlin', postal_code: '10117', phone: '+49 174 5678901', bio: 'Berufstätiger Vater, Frau und ich arbeiten beide Vollzeit. Unsere Tochter (4) würde sich über eine Leih-Oma freuen!' },
+    { id: uuidv4(), email: 'demo-maria@zeitnest.local', role: 'grandparent', first_name: 'Maria (Demo)', last_name: 'Beispiel', city: 'Beispielstadt', postal_code: null, phone: null, bio: 'Beispielprofil — Pensionierte Grundschullehrerin mit viel Erfahrung im Umgang mit Kindern. Liebt es, Geschichten vorzulesen und zu basteln.' },
+    { id: uuidv4(), email: 'demo-hans@zeitnest.local', role: 'grandparent', first_name: 'Hans (Demo)', last_name: 'Beispiel', city: 'Beispielstadt', postal_code: null, phone: null, bio: 'Beispielprofil — Aktiver Rentner, der gerne Zeit in der Natur verbringt. Wandern, Gärtnern und Fahrradfahren als Leidenschaft.' },
+    { id: uuidv4(), email: 'demo-ingrid@zeitnest.local', role: 'grandparent', first_name: 'Ingrid (Demo)', last_name: 'Beispiel', city: 'Beispielstadt', postal_code: null, phone: null, bio: 'Beispielprofil — Ehemalige Krankenschwester, liebevoll und geduldig. Erste-Hilfe-Kenntnisse inklusive.' },
+    { id: uuidv4(), email: 'demo-lisa@zeitnest.local', role: 'parent', first_name: 'Lisa (Demo)', last_name: 'Beispiel', city: 'Beispielstadt', postal_code: null, phone: null, bio: 'Beispielprofil — Alleinerziehende Mama von zwei aufgeweckten Kindern. Sucht liebevolle Unterstützung.' },
+    { id: uuidv4(), email: 'demo-thomas@zeitnest.local', role: 'parent', first_name: 'Thomas (Demo)', last_name: 'Beispiel', city: 'Beispielstadt', postal_code: null, phone: null, bio: 'Beispielprofil — Berufstätiger Vater, Eltern arbeiten beide Vollzeit. Würde sich über eine Leih-Oma freuen.' },
   ];
 
   for (const u of demoUsers) {

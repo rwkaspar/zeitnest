@@ -70,6 +70,8 @@ function AccountPage() {
             </div>
           </div>
 
+          <TwoFactorSection />
+
           <div className="profile-section">
             <h3>Datenschutz (DSGVO)</h3>
             <p style={{ color: '#6b7c93', fontSize: '0.9rem', marginBottom: '16px' }}>
@@ -128,6 +130,87 @@ function AccountPage() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function TwoFactorSection() {
+  const [enabled, setEnabled] = useState(false);
+  const [setup, setSetup] = useState(null); // { qr, secret }
+  const [code, setCode] = useState('');
+  const [msg, setMsg] = useState('');
+
+  React.useEffect(() => {
+    const token = localStorage.getItem('token');
+    fetch('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } })
+      .then(r => r.json())
+      .then(d => setEnabled(!!d.totp_enabled))
+      .catch(() => {});
+  }, []);
+
+  async function startSetup() {
+    setMsg('');
+    const token = localStorage.getItem('token');
+    const res = await fetch('/api/2fa/setup', { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
+    const data = await res.json();
+    if (res.ok) setSetup(data);
+    else setMsg(data.error);
+  }
+
+  async function confirmEnable() {
+    const token = localStorage.getItem('token');
+    const res = await fetch('/api/2fa/enable', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ token: code }),
+    });
+    const data = await res.json();
+    if (res.ok) { setEnabled(true); setSetup(null); setCode(''); setMsg('2FA aktiviert!'); }
+    else setMsg(data.error);
+  }
+
+  async function disable() {
+    const code = prompt('Bitte geben Sie Ihren aktuellen 2FA-Code ein:');
+    if (!code) return;
+    const token = localStorage.getItem('token');
+    const res = await fetch('/api/2fa/disable', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ token: code }),
+    });
+    const data = await res.json();
+    if (res.ok) { setEnabled(false); setMsg('2FA deaktiviert.'); }
+    else setMsg(data.error);
+  }
+
+  return (
+    <div className="profile-section">
+      <h3>Zwei-Faktor-Authentifizierung (2FA)</h3>
+      <p style={{ color: '#5a6878', fontSize: '0.9rem', marginBottom: '12px' }}>
+        Schützt Ihr Konto mit einem zusätzlichen 6-stelligen Code aus einer Authenticator-App
+        (z.B. Google Authenticator, Authy, 1Password).
+      </p>
+      {msg && <div className={msg.includes('aktiviert') || msg.includes('deaktiviert') ? 'success-message' : 'error-message'}>{msg}</div>}
+
+      {enabled ? (
+        <button className="btn btn-sm btn-outline" onClick={disable}>2FA deaktivieren</button>
+      ) : !setup ? (
+        <button className="btn btn-sm btn-primary" onClick={startSetup}>2FA einrichten</button>
+      ) : (
+        <div style={{ padding: '16px', background: 'var(--bg)', borderRadius: '8px' }}>
+          <p style={{ marginBottom: '12px' }}>1. Scannen Sie diesen QR-Code mit Ihrer App:</p>
+          <img src={setup.qr} alt="2FA QR-Code" style={{ maxWidth: '200px', display: 'block', marginBottom: '12px' }} />
+          <p style={{ fontSize: '0.85rem', color: '#5a6878', marginBottom: '12px' }}>
+            Oder geben Sie den Schlüssel manuell ein: <code>{setup.secret}</code>
+          </p>
+          <p style={{ marginBottom: '8px' }}>2. Geben Sie den 6-stelligen Code aus der App ein:</p>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <input type="text" inputMode="numeric" pattern="[0-9]{6}" maxLength={6} value={code} onChange={e => setCode(e.target.value)} placeholder="123456" style={{ maxWidth: '120px' }} />
+            <button className="btn btn-primary" onClick={confirmEnable}>Aktivieren</button>
+            <button className="btn btn-outline" onClick={() => setSetup(null)}>Abbrechen</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/', authenticateToken, async (req, res) => {
   try {
-    const { city, postal_code, page = 1, limit = 20 } = req.query;
+    const { city, postal_code, near_postal_code, page = 1, limit = 20 } = req.query;
     const offset = (page - 1) * limit;
     const searchRole = req.user.role === 'parent' ? 'grandparent' : 'parent';
 
@@ -32,6 +32,12 @@ router.get('/', authenticateToken, async (req, res) => {
       params.push(`${postal_code}%`);
       paramIdx++;
     }
+    // Region match: first 2 digits of postal code = same region (~ 50-100km radius)
+    if (near_postal_code && near_postal_code.length >= 2) {
+      query += ` AND u.postal_code LIKE $${paramIdx}`;
+      params.push(`${near_postal_code.substring(0, 2)}%`);
+      paramIdx++;
+    }
 
     query += ` ORDER BY u.created_at DESC LIMIT $${paramIdx} OFFSET $${paramIdx + 1}`;
     params.push(parseInt(limit), parseInt(offset));
@@ -49,6 +55,7 @@ router.get('/', authenticateToken, async (req, res) => {
     let cIdx = 3;
     if (city) { countQuery += ` AND LOWER(u.city) LIKE LOWER($${cIdx})`; countParams.push(`%${city}%`); cIdx++; }
     if (postal_code) { countQuery += ` AND u.postal_code LIKE $${cIdx}`; countParams.push(`${postal_code}%`); cIdx++; }
+    if (near_postal_code && near_postal_code.length >= 2) { countQuery += ` AND u.postal_code LIKE $${cIdx}`; countParams.push(`${near_postal_code.substring(0, 2)}%`); cIdx++; }
     const totalRow = await queryOne(countQuery, countParams);
     const total = parseInt(totalRow?.total) || 0;
 

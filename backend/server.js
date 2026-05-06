@@ -63,6 +63,10 @@ initDatabase().then(() => {
   app.use('/api/messages', require('./routes/messages'));
   app.use('/api/search', require('./routes/search'));
   app.use('/api/calendar', require('./routes/calendar'));
+  app.use('/api/reviews', require('./routes/reviews'));
+  app.use('/api/reports', require('./routes/reports'));
+  app.use('/api/2fa', require('./routes/twofactor'));
+  app.use('/api/admin', require('./routes/admin'));
 
   // Serve frontend in production
   const frontendPath = path.join(__dirname, '../frontend/dist');

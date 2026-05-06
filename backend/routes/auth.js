@@ -6,6 +6,7 @@ const { v4: uuidv4 } = require('uuid');
 const { queryOne, queryAll, runSql } = require('../database');
 const { JWT_SECRET, authenticateToken } = require('../middleware/auth');
 const { sendVerificationEmail, sendPasswordResetEmail } = require('../utils/mail');
+const { authenticator } = require('otplib');
 
 const router = express.Router();
 
@@ -16,6 +17,23 @@ function sanitize(str, maxLen = 200) {
 
 function validateEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 254;
+}
+
+async function verifyCaptcha(token, ip) {
+  if (!process.env.HCAPTCHA_SECRET) return true; // disabled
+  if (!token) return false;
+  try {
+    const res = await fetch('https://api.hcaptcha.com/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ secret: process.env.HCAPTCHA_SECRET, response: token, remoteip: ip || '' }),
+    });
+    const data = await res.json();
+    return !!data.success;
+  } catch (err) {
+    console.error('Captcha verify error:', err.message);
+    return false;
+  }
 }
 
 function validatePassword(password) {
@@ -40,6 +58,12 @@ router.post('/register', async (req, res) => {
     if (!email || !password || !role || !first_name || !last_name) {
       return res.status(400).json({ error: 'Bitte alle Pflichtfelder ausfüllen.' });
     }
+
+    const captchaOk = await verifyCaptcha(req.body.captcha, req.ip);
+    if (!captchaOk) {
+      return res.status(400).json({ error: 'CAPTCHA-Verifizierung fehlgeschlagen. Bitte erneut versuchen.' });
+    }
+
     if (!validateEmail(email)) {
       return res.status(400).json({ error: 'Bitte eine gültige E-Mail-Adresse eingeben.' });
     }
@@ -159,6 +183,16 @@ router.post('/login', async (req, res) => {
       });
     }
 
+    if (user.totp_enabled) {
+      const totpToken = req.body.totp;
+      if (!totpToken) {
+        return res.status(401).json({ error: 'Bitte 2FA-Code eingeben.', totp_required: true });
+      }
+      if (!authenticator.check(totpToken, user.totp_secret)) {
+        return res.status(401).json({ error: 'Ungültiger 2FA-Code.', totp_required: true });
+      }
+    }
+
     const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
     res.json({
       token,
@@ -238,7 +272,7 @@ router.post('/reset-password', async (req, res) => {
 // === ME ===
 router.get('/me', authenticateToken, async (req, res) => {
   try {
-    const user = await queryOne('SELECT id, email, role, first_name, last_name, city, postal_code, phone, bio, avatar_url, email_verified, created_at FROM users WHERE id = $1', [req.user.id]);
+    const user = await queryOne('SELECT id, email, role, first_name, last_name, city, postal_code, phone, bio, avatar_url, email_verified, totp_enabled, is_admin, created_at FROM users WHERE id = $1', [req.user.id]);
     if (!user) return res.status(404).json({ error: 'Benutzer nicht gefunden.' });
 
     let profile = null;

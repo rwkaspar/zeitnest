@@ -121,4 +121,74 @@ Ihr Zeitnest-Team`;
   });
 }
 
-module.exports = { sendVerificationEmail, sendPasswordResetEmail };
+async function sendNotification(email, firstName, subject, intro, ctaText, ctaPath, footer = '') {
+  const link = `${BASE_URL}${ctaPath}`;
+  const text = `${intro.replace(/<[^>]+>/g, '')}\n\n${link}\n\n${footer}\n\n— Zeitnest`;
+  const body = `
+<tr><td>
+<h1 style="color:#e8725a;font-size:22px;margin:0 0 16px;">${subject}</h1>
+<p style="font-size:16px;line-height:1.5;margin:0 0 16px;">Hallo ${firstName},</p>
+<p style="font-size:16px;line-height:1.5;margin:0 0 16px;">${intro}</p>
+<p style="margin:24px 0;text-align:center;">
+<a href="${link}" style="background-color:#e8725a;color:#ffffff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block;">${ctaText}</a>
+</p>
+<p style="font-size:14px;line-height:1.5;margin:0;color:#5a6878;">${footer}</p>
+</td></tr>`;
+
+  await transporter.sendMail({
+    from: FROM,
+    to: email,
+    subject: `Zeitnest – ${subject}`,
+    text,
+    html: htmlTemplate(subject, body),
+  });
+}
+
+async function sendMatchRequestEmail(email, firstName, fromName) {
+  return sendNotification(
+    email, firstName,
+    'Neue Anfrage',
+    `<strong>${fromName}</strong> möchte Sie kennenlernen und hat Ihnen eine Anfrage über Zeitnest geschickt.`,
+    'Anfrage ansehen', '/anfragen',
+    'Sie können in Ihrer Anfragen-Liste annehmen oder ablehnen.'
+  );
+}
+
+async function sendBookingCreatedEmail(email, firstName, fromName, dateStr, timeStr) {
+  return sendNotification(
+    email, firstName,
+    'Neuer Termin gebucht',
+    `<strong>${fromName}</strong> hat einen Termin am <strong>${dateStr}</strong> um <strong>${timeStr}</strong> gebucht.`,
+    'Termin im Kalender', '/kalender',
+    'Sie können den Termin im Kalender einsehen oder ihn als .ics-Datei für Google/Apple Calendar exportieren.'
+  );
+}
+
+async function sendBookingCancelledEmail(email, firstName, fromName, dateStr) {
+  return sendNotification(
+    email, firstName,
+    'Termin storniert',
+    `<strong>${fromName}</strong> hat den Termin am <strong>${dateStr}</strong> storniert.`,
+    'Kalender öffnen', '/kalender',
+    ''
+  );
+}
+
+async function sendNewMessageEmail(email, firstName, fromName, matchId) {
+  return sendNotification(
+    email, firstName,
+    'Neue Nachricht',
+    `<strong>${fromName}</strong> hat Ihnen eine neue Nachricht geschickt.`,
+    'Nachricht lesen', `/nachrichten/${matchId}`,
+    ''
+  );
+}
+
+module.exports = {
+  sendVerificationEmail,
+  sendPasswordResetEmail,
+  sendMatchRequestEmail,
+  sendBookingCreatedEmail,
+  sendBookingCancelledEmail,
+  sendNewMessageEmail,
+};

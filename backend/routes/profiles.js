@@ -1,8 +1,55 @@
 const express = require('express');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+const crypto = require('crypto');
 const { queryOne, queryAll, runSql } = require('../database');
 const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
+
+const UPLOAD_DIR = path.join(__dirname, '..', 'uploads', 'avatars');
+fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: UPLOAD_DIR,
+    filename: (req, file, cb) => {
+      const ext = path.extname(file.originalname).toLowerCase();
+      const safe = crypto.randomBytes(16).toString('hex') + ext;
+      cb(null, safe);
+    },
+  }),
+  limits: { fileSize: 2 * 1024 * 1024 }, // 2 MB
+  fileFilter: (req, file, cb) => {
+    const allowed = ['image/jpeg', 'image/png', 'image/webp'];
+    if (allowed.includes(file.mimetype)) cb(null, true);
+    else cb(new Error('Nur JPG, PNG oder WebP erlaubt.'));
+  },
+});
+
+router.post('/avatar', authenticateToken, (req, res) => {
+  upload.single('avatar')(req, res, async (err) => {
+    if (err) return res.status(400).json({ error: err.message });
+    if (!req.file) return res.status(400).json({ error: 'Keine Datei.' });
+
+    try {
+      // Delete old avatar if exists
+      const oldUser = await queryOne('SELECT avatar_url FROM users WHERE id = $1', [req.user.id]);
+      if (oldUser?.avatar_url) {
+        const oldPath = path.join(__dirname, '..', oldUser.avatar_url.replace(/^\//, ''));
+        fs.unlink(oldPath, () => {});
+      }
+
+      const avatarUrl = `/uploads/avatars/${req.file.filename}`;
+      await runSql('UPDATE users SET avatar_url = $1, updated_at = NOW() WHERE id = $2', [avatarUrl, req.user.id]);
+      res.json({ avatar_url: avatarUrl });
+    } catch (e) {
+      console.error('Avatar upload error:', e.message);
+      res.status(500).json({ error: 'Upload fehlgeschlagen.' });
+    }
+  });
+});
 
 router.get('/:id', authenticateToken, async (req, res) => {
   try {

@@ -1,9 +1,20 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 function Navbar() {
   const { user, logout } = useAuth();
+  const [open, setOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    setOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [open]);
 
   return (
     <nav className="navbar">
@@ -12,7 +23,17 @@ function Navbar() {
           <img src="/logo.png" alt="Zeitnest Logo" className="navbar-logo" />
           Zeitnest
         </Link>
-        <div className="navbar-links">
+
+        <button
+          className={`navbar-burger ${open ? 'active' : ''}`}
+          onClick={() => setOpen(!open)}
+          aria-label="Menü öffnen"
+          aria-expanded={open}
+        >
+          <span /><span /><span />
+        </button>
+
+        <div className={`navbar-links ${open ? 'open' : ''}`}>
           <Link to="/leitfaden">Leitfaden</Link>
           {user ? (
             <>
@@ -21,6 +42,7 @@ function Navbar() {
               <Link to="/kalender">Kalender</Link>
               <Link to="/profil/bearbeiten">Profil</Link>
               <Link to="/konto">Konto</Link>
+              {user.is_admin && <Link to="/admin">Admin</Link>}
               <button onClick={logout}>Abmelden</button>
             </>
           ) : (
@@ -30,6 +52,8 @@ function Navbar() {
             </>
           )}
         </div>
+
+        {open && <div className="navbar-overlay" onClick={() => setOpen(false)} />}
       </div>
     </nav>
   );

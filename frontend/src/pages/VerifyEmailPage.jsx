@@ -38,6 +38,9 @@ function VerifyEmailPage() {
             <div style={{ fontSize: '3rem', marginBottom: '16px' }}>&#x2705;</div>
             <h1>Best&auml;tigt!</h1>
             <p style={{ color: '#6b7c93', margin: '12px 0 24px' }}>{message}</p>
+            <p style={{ color: '#6b7c93', margin: '0 0 24px', fontSize: '0.9rem' }}>
+              Tipp: F&uuml;llen Sie nach dem Login Ihr Profil aus, damit andere Sie finden k&ouml;nnen.
+            </p>
             <Link to="/login" className="btn btn-primary">Jetzt anmelden</Link>
           </>
         )}

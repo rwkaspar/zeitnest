@@ -2,6 +2,7 @@ const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const { queryOne, queryAll, runSql } = require('../database');
 const { authenticateToken } = require('../middleware/auth');
+const { sendMatchRequestEmail } = require('../utils/mail');
 
 const router = express.Router();
 
@@ -22,6 +23,14 @@ router.post('/', authenticateToken, async (req, res) => {
 
     const id = uuidv4();
     await runSql(`INSERT INTO matches (id, parent_id, grandparent_id, status, message) VALUES ($1, $2, $3, 'pending', $4)`, [id, parent_id, grandparent_id, message || null]);
+
+    // Notify target by email (best-effort)
+    const sender = await queryOne('SELECT first_name, last_name FROM users WHERE id = $1', [req.user.id]);
+    const recipient = await queryOne('SELECT email, first_name FROM users WHERE id = $1', [target_id]);
+    if (sender && recipient) {
+      sendMatchRequestEmail(recipient.email, recipient.first_name, `${sender.first_name} ${sender.last_name}`)
+        .catch(err => console.error('Match notification email failed:', err.message));
+    }
 
     res.status(201).json({ id, status: 'pending', message: 'Anfrage gesendet!' });
   } catch (err) {

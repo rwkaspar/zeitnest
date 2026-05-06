@@ -2,6 +2,7 @@ const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const { queryOne, queryAll, runSql } = require('../database');
 const { authenticateToken } = require('../middleware/auth');
+const { sendNewMessageEmail } = require('../utils/mail');
 
 const router = express.Router();
 
@@ -56,6 +57,21 @@ router.post('/:matchId', authenticateToken, async (req, res) => {
 
     const id = uuidv4();
     await runSql('INSERT INTO messages (id, match_id, sender_id, content) VALUES ($1, $2, $3, $4)', [id, req.params.matchId, req.user.id, content.trim()]);
+
+    // Notify the other party (only if there are no other unread messages already in this conversation, to avoid spam)
+    const otherId = match.parent_id === req.user.id ? match.grandparent_id : match.parent_id;
+    const recentUnread = await queryOne(
+      `SELECT COUNT(*) as c FROM messages WHERE match_id = $1 AND sender_id = $2 AND read = FALSE AND id != $3`,
+      [req.params.matchId, req.user.id, id]
+    );
+    if (parseInt(recentUnread?.c) === 0) {
+      const sender = await queryOne('SELECT first_name, last_name FROM users WHERE id = $1', [req.user.id]);
+      const recipient = await queryOne('SELECT email, first_name FROM users WHERE id = $1', [otherId]);
+      if (sender && recipient) {
+        sendNewMessageEmail(recipient.email, recipient.first_name, `${sender.first_name} ${sender.last_name}`, req.params.matchId)
+          .catch(err => console.error('Message notification email failed:', err.message));
+      }
+    }
 
     res.status(201).json({ id, match_id: req.params.matchId, sender_id: req.user.id, content: content.trim(), created_at: new Date().toISOString() });
   } catch (err) {

@@ -7,6 +7,8 @@ services:
       POSTGRES_DB: ${DB_NAME:-zeitnest}
       POSTGRES_USER: ${DB_USER:-zeitnest}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-zeitnest-secret}
+    ports:
+      - "127.0.0.1:5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -37,6 +39,7 @@ services:
       - SMTP_PASSWORD=${SMTP_PASSWORD}
       - SMTP_FROM=${SMTP_FROM}
       - BASE_URL=${BASE_URL}
+      - HCAPTCHA_SECRET=${HCAPTCHA_SECRET:-}
     ports:
       - "3001:3001"
     healthcheck:
@@ -75,6 +78,26 @@ services:
     depends_on:
       - zeitnest
 
+  backup-sender:
+    build: ./backup-sender
+    container_name: zeitnest-backup-sender
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - PG_HOST=127.0.0.1
+      - PG_PORT=5432
+      - PG_USER=${DB_USER:-zeitnest}
+      - PG_PASSWORD=${DB_PASSWORD:-zeitnest-secret}
+      - PG_DB=${DB_NAME:-zeitnest}
+      - RSYNC_ZEITNEST_PASSWORD=${RSYNC_ZEITNEST_PASSWORD}
+      - NAS_TAILSCALE_IP=${NAS_TAILSCALE_IP}
+      - BACKUP_HOUR=${BACKUP_HOUR:-3}
+      - BACKUP_MINUTE=${BACKUP_MINUTE:-0}
+      - TZ=Europe/Berlin
+    volumes:
+      - backup-snapshots:/snapshots
+
 volumes:
   pgdata:
   certbot-webroot:
+  backup-snapshots:

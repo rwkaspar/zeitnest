@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -7,8 +7,29 @@ function RegisterPage() {
     email: '', password: '', role: '', first_name: '', last_name: '', city: '', postal_code: ''
   });
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const captchaRef = useRef(null);
+  const HCAPTCHA_SITEKEY = import.meta.env.VITE_HCAPTCHA_SITEKEY || '';
+
+  useEffect(() => {
+    if (!HCAPTCHA_SITEKEY) return;
+    if (document.querySelector('script[src*="hcaptcha.com/1/api.js"]')) return;
+    const s = document.createElement('script');
+    s.src = 'https://js.hcaptcha.com/1/api.js?onload=onHCaptchaLoad&render=explicit';
+    s.async = true; s.defer = true;
+    document.head.appendChild(s);
+    window.onHCaptchaLoad = () => {
+      if (captchaRef.current && window.hcaptcha) {
+        window.hcaptcha.render(captchaRef.current, {
+          sitekey: HCAPTCHA_SITEKEY,
+          callback: (token) => setCaptchaToken(token),
+          'expired-callback': () => setCaptchaToken(''),
+        });
+      }
+    };
+  }, [HCAPTCHA_SITEKEY]);
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -26,10 +47,14 @@ function RegisterPage() {
       setError('Bitte stimmen Sie der Datenschutzerkl\u00e4rung zu.');
       return;
     }
+    if (HCAPTCHA_SITEKEY && !captchaToken) {
+      setError('Bitte l\u00f6sen Sie das CAPTCHA.');
+      return;
+    }
     setError('');
     setLoading(true);
     try {
-      await register(formData);
+      await register({ ...formData, captcha: captchaToken });
       navigate('/dashboard');
     } catch (err) {
       setError(err.message);
@@ -89,10 +114,16 @@ function RegisterPage() {
             </div>
           </div>
 
+          {HCAPTCHA_SITEKEY && (
+            <div className="form-group">
+              <div ref={captchaRef} />
+            </div>
+          )}
+
           <div className="form-group" style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
             <input type="checkbox" id="privacy" checked={privacyAccepted} onChange={(e) => setPrivacyAccepted(e.target.checked)} style={{ marginTop: '4px' }} />
             <label htmlFor="privacy" style={{ fontSize: '0.85rem', color: '#6b7c93', fontWeight: 'normal' }}>
-              Ich habe die <a href="/datenschutz" target="_blank">Datenschutzerkl&auml;rung</a> gelesen und stimme der Verarbeitung meiner Daten zu.
+              Ich habe die <a href="/datenschutz" target="_blank">Datenschutzerkl&auml;rung</a> und die <a href="/agb" target="_blank">AGB</a> gelesen und stimme zu.
             </label>
           </div>
 

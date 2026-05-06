@@ -19,6 +19,8 @@ import AccountPage from './pages/AccountPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import AgbPage from './pages/AgbPage';
+import AdminPage from './pages/AdminPage';
 import './App.css';
 
 function PrivateRoute({ children }) {
@@ -45,6 +47,7 @@ function AppRoutes() {
       <Route path="/passwort-reset/:token" element={<ResetPasswordPage />} />
       <Route path="/datenschutz" element={<DatenschutzPage />} />
       <Route path="/impressum" element={<ImpressumPage />} />
+      <Route path="/agb" element={<AgbPage />} />
       <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
       <Route path="/suche" element={<PrivateRoute><SearchPage /></PrivateRoute>} />
       <Route path="/profil/:id" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
@@ -52,6 +55,7 @@ function AppRoutes() {
       <Route path="/anfragen" element={<PrivateRoute><MatchesPage /></PrivateRoute>} />
       <Route path="/kalender" element={<PrivateRoute><CalendarPage /></PrivateRoute>} />
       <Route path="/konto" element={<PrivateRoute><AccountPage /></PrivateRoute>} />
+      <Route path="/admin" element={<PrivateRoute><AdminPage /></PrivateRoute>} />
       <Route path="/nachrichten/:matchId" element={<PrivateRoute><MessagesPage /></PrivateRoute>} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
@@ -72,6 +76,7 @@ function App() {
               <p>&copy; 2026 Zeitnest &middot; Zeit schenken. Zeit gewinnen.</p>
               <div className="footer-links">
                 <a href="/leitfaden">Leitfaden</a>
+                <a href="/agb">AGB</a>
                 <a href="/datenschutz">Datenschutz</a>
                 <a href="/impressum">Impressum</a>
               </div>

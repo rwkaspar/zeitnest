@@ -9,6 +9,7 @@ function SearchPage() {
   const [loading, setLoading] = useState(true);
   const [city, setCity] = useState('');
   const [postalCode, setPostalCode] = useState('');
+  const [nearMe, setNearMe] = useState(false);
 
   const searchLabel = user?.role === 'parent' ? 'Leih-Gro\u00dfeltern' : 'Familien';
 
@@ -18,6 +19,7 @@ function SearchPage() {
       const params = {};
       if (city) params.city = city;
       if (postalCode) params.postal_code = postalCode;
+      if (nearMe && user?.postal_code) params.near_postal_code = user.postal_code;
       const data = await api.search(params);
       setResults(data.results || []);
     } catch (err) {
@@ -25,7 +27,7 @@ function SearchPage() {
     } finally {
       setLoading(false);
     }
-  }, [city, postalCode]);
+  }, [city, postalCode, nearMe, user]);
 
   useEffect(() => {
     doSearch();
@@ -44,6 +46,12 @@ function SearchPage() {
         <form onSubmit={handleSearch} className="search-filters">
           <input type="text" placeholder="Stadt eingeben..." value={city} onChange={(e) => setCity(e.target.value)} />
           <input type="text" placeholder="PLZ..." value={postalCode} onChange={(e) => setPostalCode(e.target.value)} />
+          {user?.postal_code && (
+            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem', color: '#5a6878' }}>
+              <input type="checkbox" checked={nearMe} onChange={(e) => setNearMe(e.target.checked)} />
+              In meiner Region
+            </label>
+          )}
           <button type="submit" className="btn btn-primary">Suchen</button>
         </form>
 
