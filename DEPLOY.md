@@ -46,6 +46,51 @@ docker compose up -d
 - Certbot erneuert Zertifikate automatisch
 - DB-Daten liegen im Docker Volume `pgdata`
 
+## E-Mail / SMTP-Setup
+
+Zeitnest verschickt transaktionale E-Mails (Verifizierung, Passwort-Reset,
+Match-/Booking-/Message-Notifications) über einen externen SMTP-Relay.
+
+### Relevante Env-Variablen (`.env`)
+```
+SMTP_HOST=mail.neotactiq.ai
+SMTP_PORT=587
+SMTP_USER=relay@mail.neotactiq.ai
+SMTP_PASSWORD=<aus Mailserver-Admin>
+SMTP_FROM=noreply@zeitnest.org
+BASE_URL=https://zeitnest.org
+```
+
+- Verbindung: STARTTLS auf Port 587 (`requireTLS: true`, siehe
+  `backend/utils/mail.js:7`)
+- Absender im Header: `"Zeitnest" <noreply@zeitnest.org>`
+- `BASE_URL` wird in allen Mail-Links verwendet (Verify-Link, Reset-Link,
+  CTA-Buttons)
+
+### Relay-Konto
+TODO: Wie wurde `relay@mail.neotactiq.ai` angelegt? (Mailserver-Software,
+Admin-Zugang, wo liegt das Passwort gesichert?)
+
+### DNS-Records für `zeitnest.org`
+Damit Mails nicht im Spam landen, sollten SPF/DKIM/DMARC gesetzt sein:
+
+- **SPF**: TXT-Record auf `zeitnest.org`, der `mail.neotactiq.ai` als
+  zulässigen Sender deklariert
+- **DKIM**: vom Mailserver erzeugter Public Key als TXT-Record
+  (`<selector>._domainkey.zeitnest.org`)
+- **DMARC**: TXT auf `_dmarc.zeitnest.org` (mindestens `p=none` zum Start)
+
+TODO: aktuellen Status der drei Records prüfen und hier eintragen
+(z.B. via `dig TXT zeitnest.org`, `dig TXT _dmarc.zeitnest.org`).
+
+### Test
+```bash
+# Im laufenden Backend-Container: Verbindung prüfen
+docker compose exec zeitnest node -e "require('./backend/utils/mail.js')"
+
+# End-to-End: User registrieren und Verify-Mail prüfen
+```
+
 ## Nuetzliche Befehle
 ```bash
 # Logs anschauen
