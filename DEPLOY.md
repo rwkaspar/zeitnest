@@ -67,21 +67,70 @@ BASE_URL=https://zeitnest.org
 - `BASE_URL` wird in allen Mail-Links verwendet (Verify-Link, Reset-Link,
   CTA-Buttons)
 
-### Relay-Konto
-TODO: Wie wurde `relay@mail.neotactiq.ai` angelegt? (Mailserver-Software,
-Admin-Zugang, wo liegt das Passwort gesichert?)
+### Relay-Konto auf `mail.neotactiq.ai`
 
-### DNS-Records für `zeitnest.org`
-Damit Mails nicht im Spam landen, sollten SPF/DKIM/DMARC gesetzt sein:
+Der Mailserver läuft auf einem separaten Hetzner-VPS (`neotactiq-vps`,
+public IP `46.225.30.46`, erreichbar via Tailscale-Name `neotactiq-vps`).
+Software-Stack:
 
-- **SPF**: TXT-Record auf `zeitnest.org`, der `mail.neotactiq.ai` als
-  zulässigen Sender deklariert
-- **DKIM**: vom Mailserver erzeugter Public Key als TXT-Record
-  (`<selector>._domainkey.zeitnest.org`)
-- **DMARC**: TXT auf `_dmarc.zeitnest.org` (mindestens `p=none` zum Start)
+- **Postfix 3.8.6** (Submission auf Port 587, SMTP auf 25)
+- **Cyrus SASL** als Auth-Backend (`smtpd_sasl_type = cyrus`,
+  `smtpd_sasl_path = smtpd`) — User-DB in `/etc/sasldb2`
+- **OpenDKIM** für ausgehende Signatur (Multi-Tenant für mehrere Domains)
 
-TODO: aktuellen Status der drei Records prüfen und hier eintragen
-(z.B. via `dig TXT zeitnest.org`, `dig TXT _dmarc.zeitnest.org`).
+Multi-Tenant-Hinweis: derselbe Postfix bedient auch `guardiian.app`,
+`urateme.app`, `dealmonitor.app`. Änderungen mit Vorsicht.
+
+#### SASL-User
+`relay@mail.neotactiq.ai` existiert in `sasldb2`. Passwort setzen/rotieren:
+```bash
+ssh root@neotactiq-vps
+saslpasswd2 -c -u mail.neotactiq.ai relay        # interaktiv
+# oder nicht-interaktiv:
+echo -n 'NEUES_PASSWORT' | saslpasswd2 -p -c -u mail.neotactiq.ai relay
+# prüfen:
+sasldblistusers2
+```
+
+#### Berechtigung: welche From-Adressen darf der SASL-User benutzen?
+Mapping in `/etc/postfix/sender_login` (hash-Map, `postmap` nach
+Änderung). Aktueller Eintrag für Zeitnest:
+```
+@zeitnest.org    relay@mail.neotactiq.ai
+```
+Bedeutet: SASL-Login `relay@mail.neotactiq.ai` darf **jede** Adresse auf
+`@zeitnest.org` als Absender setzen. Postfix erzwingt das via
+`smtpd_sender_restrictions = ... reject_sender_login_mismatch ...`.
+
+### DNS-Records für `zeitnest.org` (Stand 2026-05-13)
+
+Alle drei Records sind bereits gesetzt und werden vom Mailserver matched:
+
+```
+zeitnest.org           TXT  "v=spf1 ip4:46.225.30.46 include:_spf.mx.cloudflare.net ~all"
+_dmarc.zeitnest.org    TXT  "v=DMARC1; p=none; rua=mailto:dmarc@zeitnest.org; adkim=r; aspf=r"
+default._domainkey.zeitnest.org  TXT  "v=DKIM1; h=sha256; k=rsa; p=MIIBIjAN...QIDAQAB"
+```
+
+- **SPF**: Autorisiert die Public IP `46.225.30.46` von `neotactiq-vps` +
+  Cloudflare Email Routing (für die MX-Empfangsroute).
+- **DKIM**: Selector `default`, RSA-Key. Privat-Key liegt in
+  `/etc/opendkim/keys/zeitnest.org/default.private` auf `neotactiq-vps`,
+  Public-Pendant in `default.txt` daneben.
+  - `KeyTable`-Eintrag: `default._domainkey.zeitnest.org zeitnest.org:default:/etc/opendkim/keys/zeitnest.org/default.private`
+  - `SigningTable`-Eintrag: `*@zeitnest.org default._domainkey.zeitnest.org`
+- **DMARC**: `p=none` (Monitoring-Phase) — bei stabilem SPF/DKIM-Pass-Anteil
+  später auf `quarantine`/`reject` heben.
+
+Prüfen:
+```bash
+dig +short TXT zeitnest.org
+dig +short TXT _dmarc.zeitnest.org
+dig +short TXT default._domainkey.zeitnest.org
+```
+
+Eingehende Mails (z.B. an `dmarc@zeitnest.org`) laufen über
+**Cloudflare Email Routing** — siehe MX-Records `route1/2/3.mx.cloudflare.net`.
 
 ### Test
 ```bash
