@@ -54,8 +54,8 @@ if [ -z "$NAS_TAILSCALE_IP" ] || [ -z "$RSYNC_ZEITNEST_PASSWORD" ]; then
   exit 0
 fi
 
-log "rsync zur NAS (${NAS_TAILSCALE_IP})..."
-RSYNC_PASSWORD="$RSYNC_ZEITNEST_PASSWORD" rsync -avz --partial \
+log "rsync zur NAS (${NAS_TAILSCALE_IP}:8873)..."
+RSYNC_PASSWORD="$RSYNC_ZEITNEST_PASSWORD" rsync -avz --partial --port=8873 \
   "$SNAP_ROOT/" \
   "zeitnest@${NAS_TAILSCALE_IP}::zeitnest/"
 
