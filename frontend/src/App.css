@@ -313,11 +313,21 @@ img { max-width: 100%; height: auto; }
 .hero {
   background: linear-gradient(135deg, var(--primary-light) 0%, #fff5f0 50%, var(--secondary-light) 100%);
   padding: 80px 0 60px;
-  text-align: center;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.hero-text {
+  text-align: left;
 }
 
 .hero-logo {
-  height: 120px;
+  height: 96px;
   width: auto;
   margin-bottom: 24px;
 }
@@ -337,14 +347,44 @@ img { max-width: 100%; height: auto; }
   font-size: 1.2rem;
   color: var(--text-light);
   max-width: 600px;
-  margin: 0 auto 32px;
+  margin-bottom: 32px;
 }
 
 .hero-buttons {
   display: flex;
   gap: 16px;
-  justify-content: center;
   flex-wrap: wrap;
+}
+
+.hero-illustration {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-illustration img {
+  width: 100%;
+  max-width: 460px;
+  height: auto;
+  animation: hero-float 6s ease-in-out infinite;
+  filter: drop-shadow(0 20px 40px rgba(232, 114, 90, 0.15));
+}
+
+@keyframes hero-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+/* Mobile: stack + center wieder */
+@media (max-width: 768px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .hero-text { text-align: center; }
+  .hero p { margin-left: auto; margin-right: auto; }
+  .hero-buttons { justify-content: center; }
+  .hero-illustration img { max-width: 320px; }
 }
 
 .features {
@@ -372,6 +412,17 @@ img { max-width: 100%; height: auto; }
 .feature-card .icon {
   font-size: 2.5rem;
   margin-bottom: 16px;
+  min-height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feature-card .icon img {
+  display: block;
+  height: 160px;
+  width: 160px;
+  object-fit: contain;
 }
 
 .feature-card h3 {
@@ -402,6 +453,17 @@ img { max-width: 100%; height: auto; }
 .audience-icon {
   font-size: 3rem;
   margin-bottom: 12px;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.audience-icon img {
+  display: block;
+  height: 200px;
+  width: 200px;
+  object-fit: contain;
 }
 
 .audience-header h2 {
@@ -429,7 +491,7 @@ img { max-width: 100%; height: auto; }
   border: 1px solid var(--border-light);
   border-radius: var(--radius);
   padding: 28px 24px;
-  transition: all 0.2s;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .audience-section:nth-child(odd) .audience-card {
@@ -441,13 +503,69 @@ img { max-width: 100%; height: auto; }
 }
 
 .audience-card:hover {
-  box-shadow: var(--shadow);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
   border-color: var(--border);
+}
+
+.audience-card-icon img,
+.feature-card .icon img {
+  transition: transform 0.3s ease;
+}
+
+.audience-card:hover .audience-card-icon img,
+.feature-card:hover .icon img {
+  transform: scale(1.06);
+}
+
+.feature-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+}
+
+/* Scroll-Reveal: Karten/Sektionen faden + sliden beim Erscheinen ein
+   (CSS Scroll-Driven-Animations — Chrome/Edge/Safari TP, FF noch ohne, dort kein Effekt). */
+@supports (animation-timeline: view()) {
+  .feature-card,
+  .audience-card,
+  .audience-header,
+  .step {
+    animation: scroll-fade-up linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 50%;
+  }
+
+  @keyframes scroll-fade-up {
+    from { opacity: 0; transform: translateY(32px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* Helligkeit für die dunkleren Illustrationen anziehen */
+img[src*="feature-kennenlernen"],
+img[src*="header-eltern"],
+img[src*="senioren-wissen"] {
+  filter: brightness(1.18) saturate(1.05);
 }
 
 .audience-card-icon {
   font-size: 1.8rem;
   margin-bottom: 12px;
+  min-height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.audience-card-icon img {
+  display: block;
+  height: 110px;
+  width: 110px;
+  object-fit: contain;
 }
 
 .audience-card h3 {

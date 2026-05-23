@@ -2,3 +2,7 @@
 node_modules/
 nginx/certs/
 .claude/
+
+# Generierte Bild-Assets (Master) — werden nur lokal gehalten
+Bilder_anstelle_emoji/*.png
+Bilder_anstelle_emoji/_*

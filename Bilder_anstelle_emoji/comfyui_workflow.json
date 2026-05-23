@@ -1,0 +1,319 @@
+{
+  "id": "zeitnest-batch-z-image-turbo",
+  "revision": 0,
+  "last_node_id": 16,
+  "last_link_id": 16,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "MarkdownNote",
+      "pos": [40, 40],
+      "size": [580, 320],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "Zeitnest Batch · z-image-turbo · 18 Bilder",
+      "properties": {},
+      "widgets_values": [
+        "## Setup\n\n**Benötigte Custom-Nodes:**\n- Background-Removal-Pack mit `RemoveBackground` + `LoadBackgroundRemovalModel` (hast du schon)\n- `JoinImageWithAlpha` ist ComfyUI built-in (`image/transform`).\n\n**Models** (in den drei Loader-Nodes setzen):\n- UNET: `z_image_turbo_bf16.safetensors`\n- CLIP: `qwen_3_4b.safetensors` (type **lumina2**, device default)\n- VAE: `ae.safetensors`\n\n## Zwei Wege\n\n**(A) Manuell, ein Bild nach dem anderen:**\n1. Workflow laden.\n2. In `CLIPTextEncode` einen Prompt aus `prompts.txt` einkopieren.\n3. In `SaveImage` den Filename setzen (z.B. `feature-kennenlernen`).\n4. Queue Prompt. 18× wiederholen.\n\n**(B) Automatisch per Skript (Empfohlen):**\n1. `python3 batch_generate.py` ausführen — feuert alle 18 über die ComfyUI-API.\n2. Siehe `README.md`."
+      ],
+      "color": "#432",
+      "bgcolor": "#000"
+    },
+
+    {
+      "id": 2,
+      "type": "UNETLoader",
+      "pos": [40, 400],
+      "size": [320, 110],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "MODEL", "type": "MODEL", "links": [1]}
+      ],
+      "properties": {"Node name for S&R": "UNETLoader"},
+      "widgets_values": ["z_image_turbo_bf16.safetensors", "default"]
+    },
+    {
+      "id": 3,
+      "type": "CLIPLoader",
+      "pos": [40, 550],
+      "size": [320, 130],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "CLIP", "type": "CLIP", "links": [2]}
+      ],
+      "properties": {"Node name for S&R": "CLIPLoader"},
+      "widgets_values": ["qwen_3_4b.safetensors", "lumina2", "default"]
+    },
+    {
+      "id": 4,
+      "type": "VAELoader",
+      "pos": [40, 720],
+      "size": [320, 100],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "VAE", "type": "VAE", "links": [3]}
+      ],
+      "properties": {"Node name for S&R": "VAELoader"},
+      "widgets_values": ["ae.safetensors"]
+    },
+    {
+      "id": 5,
+      "type": "ModelSamplingAuraFlow",
+      "pos": [400, 400],
+      "size": [310, 90],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 1}
+      ],
+      "outputs": [
+        {"name": "MODEL", "type": "MODEL", "links": [4]}
+      ],
+      "properties": {"Node name for S&R": "ModelSamplingAuraFlow"},
+      "widgets_values": [3]
+    },
+
+    {
+      "id": 7,
+      "type": "CLIPTextEncode",
+      "pos": [400, 550],
+      "size": [450, 300],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 2}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [6, 7]}
+      ],
+      "title": "Prompt (hier einkopieren)",
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["Two hands — one older and weathered, one younger and smooth — meeting in the center of frame to pass a small ceramic tea cup with steaming amber tea between them. Warm soft daylight from the side. Symbol of trust passed between generations. Style: warm, intimate, photo-realistic close-up. Focus on hands, faces in 3/4 profile, or symbolic objects — avoid awkward full-body anatomy. Natural soft daylight, warm beige / cream / soft orange color palette matching the Zeitnest brand. Shallow depth of field. Plain off-white background (#FAFBFC) so background removal is clean. No text, no logos, no watermarks."]
+    },
+    {
+      "id": 8,
+      "type": "ConditioningZeroOut",
+      "pos": [900, 550],
+      "size": [225, 60],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {"name": "conditioning", "type": "CONDITIONING", "link": 7}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [8]}
+      ],
+      "properties": {"Node name for S&R": "ConditioningZeroOut"},
+      "widgets_values": []
+    },
+    {
+      "id": 9,
+      "type": "EmptySD3LatentImage",
+      "pos": [900, 660],
+      "size": [260, 110],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [9]}
+      ],
+      "properties": {"Node name for S&R": "EmptySD3LatentImage"},
+      "widgets_values": [1024, 1024, 1]
+    },
+
+    {
+      "id": 10,
+      "type": "KSampler",
+      "pos": [1200, 400],
+      "size": [320, 300],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 4},
+        {"name": "positive", "type": "CONDITIONING", "link": 6},
+        {"name": "negative", "type": "CONDITIONING", "link": 8},
+        {"name": "latent_image", "type": "LATENT", "link": 9}
+      ],
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [10]}
+      ],
+      "properties": {"Node name for S&R": "KSampler"},
+      "widgets_values": [0, "randomize", 4, 1, "res_multistep", "simple", 1]
+    },
+    {
+      "id": 11,
+      "type": "VAEDecode",
+      "pos": [1560, 400],
+      "size": [230, 80],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {"name": "samples", "type": "LATENT", "link": 10},
+        {"name": "vae", "type": "VAE", "link": 3}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [11, 12]}
+      ],
+      "properties": {"Node name for S&R": "VAEDecode"},
+      "widgets_values": []
+    },
+
+    {
+      "id": 12,
+      "type": "LoadBackgroundRemovalModel",
+      "pos": [1560, 540],
+      "size": [320, 80],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "bg_model", "type": "BACKGROUND_REMOVAL", "links": [13]}
+      ],
+      "properties": {"Node name for S&R": "LoadBackgroundRemovalModel"},
+      "widgets_values": [null]
+    },
+    {
+      "id": 13,
+      "type": "RemoveBackground",
+      "pos": [1920, 400],
+      "size": [240, 90],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {"name": "image", "type": "IMAGE", "link": 11},
+        {"name": "bg_removal_model", "type": "BACKGROUND_REMOVAL", "link": 13}
+      ],
+      "outputs": [
+        {"name": "mask", "type": "MASK", "links": [14]}
+      ],
+      "properties": {"Node name for S&R": "RemoveBackground"},
+      "widgets_values": []
+    },
+    {
+      "id": 16,
+      "type": "InvertMask",
+      "pos": [2200, 400],
+      "size": [220, 60],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {"name": "mask", "type": "MASK", "link": 14}
+      ],
+      "outputs": [
+        {"name": "MASK", "type": "MASK", "links": [16]}
+      ],
+      "properties": {"Node name for S&R": "InvertMask"},
+      "widgets_values": []
+    },
+    {
+      "id": 14,
+      "type": "JoinImageWithAlpha",
+      "pos": [2460, 400],
+      "size": [240, 80],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {"name": "image", "type": "IMAGE", "link": 12},
+        {"name": "alpha", "type": "MASK", "link": 16}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [15]}
+      ],
+      "properties": {"Node name for S&R": "JoinImageWithAlpha"},
+      "widgets_values": []
+    },
+    {
+      "id": 15,
+      "type": "SaveImage",
+      "pos": [2740, 400],
+      "size": [400, 400],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 15}
+      ],
+      "outputs": [],
+      "properties": {"Node name for S&R": "SaveImage"},
+      "widgets_values": ["zeitnest"]
+    }
+  ],
+
+  "links": [
+    [1, 2, 0, 5, 0, "MODEL"],
+    [2, 3, 0, 7, 0, "CLIP"],
+    [3, 4, 0, 11, 1, "VAE"],
+    [4, 5, 0, 10, 0, "MODEL"],
+    [6, 7, 0, 10, 1, "CONDITIONING"],
+    [7, 7, 0, 8, 0, "CONDITIONING"],
+    [8, 8, 0, 10, 2, "CONDITIONING"],
+    [9, 9, 0, 10, 3, "LATENT"],
+    [10, 10, 0, 11, 0, "LATENT"],
+    [11, 11, 0, 13, 0, "IMAGE"],
+    [12, 11, 0, 14, 0, "IMAGE"],
+    [13, 12, 0, 13, 1, "BACKGROUND_REMOVAL"],
+    [14, 13, 0, 16, 0, "MASK"],
+    [16, 16, 0, 14, 1, "MASK"],
+    [15, 14, 0, 15, 0, "IMAGE"]
+  ],
+
+  "groups": [
+    {
+      "title": "Load Models",
+      "bounding": [20, 380, 360, 470],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "title": "Prompt + Encoding",
+      "bounding": [390, 530, 770, 340],
+      "color": "#88a",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "title": "Sample + Decode",
+      "bounding": [1190, 380, 610, 340],
+      "color": "#a1309b",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "title": "Background Removal + Save",
+      "bounding": [1900, 380, 1260, 470],
+      "color": "#3a4",
+      "font_size": 24,
+      "flags": {}
+    }
+  ],
+
+  "config": {},
+  "extra": {
+    "ds": {"scale": 0.7, "offset": [0, 0]},
+    "frontendVersion": "1.43.18"
+  },
+  "version": 0.4
+}

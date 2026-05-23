@@ -1,10 +1,7 @@
 node_modules
-*.db
-.env
+backend/node_modules
+frontend/node_modules
 .git
 .gitignore
-frontend/node_modules
-frontend/src
-frontend/index.html
-frontend/vite.config.js
-frontend/package.json
+.env
+*.db

@@ -1,0 +1,184 @@
+{
+  "$schema_note": "Style-Block gilt für alle Bilder. Generator hängt 'style.suffix' an jeden 'images[].prompt' an, nutzt 'style.negative' als negative prompt, generiert auf 'style.resolution', und schickt das Ergebnis durch 'style.background_removal'.",
+
+  "style": {
+    "suffix": "Style: warm, intimate, photo-realistic close-up. Focus on hands, faces in 3/4 profile, or symbolic objects — avoid awkward full-body anatomy. Natural soft daylight, warm beige / cream / soft orange color palette matching the Zeitnest brand. Shallow depth of field. Plain off-white background (#FAFBFC) so background removal is clean. No text, no logos, no watermarks.",
+    "negative": "text, watermark, logo, signature, blurry faces, distorted hands, extra fingers, mutated limbs, malformed anatomy, deformed proportions, cartoon, anime, stockphoto vibe, glamour, restaurant scene, neon lighting, busy background",
+    "resolution": [1024, 1024],
+    "format": "PNG",
+    "background_removal": {
+      "enabled": true,
+      "tool": "rembg",
+      "model": "birefnet-general",
+      "alpha_matting": true,
+      "alpha_matting_foreground_threshold": 240,
+      "alpha_matting_background_threshold": 10,
+      "post_process_mask": true,
+      "output_dir": "transparent/"
+    },
+    "diversity_note": "Across the 18 images, deliberately vary skin tones, hair colors, perceived gender, and (where adults are shown) ages within each generation. Don't let the set become inadvertently monochromatic."
+  },
+
+  "images": [
+    {
+      "id": "feature-eltern-entlastung",
+      "section": "Warum Zeitnest? — Feature Card",
+      "title": "Entlastung für Eltern",
+      "filename": "feature-eltern-entlastung.png",
+      "status": "todo_revision",
+      "current_file": "z-image-turbo_00022_.png",
+      "issue": "Bestehende Version zeigt gestresste Mutter — zu negativ als Einstieg",
+      "prompt": "A relaxed mother sitting on a sofa with a cup of coffee, eyes softly closed in relief, gentle smile. In the soft-blurred background, a senior woman is playfully reading a picture book to a small child on the floor. The mother is in focus, the background scene blurred but warm. Conveys: relief, 'I have help now.'"
+    },
+    {
+      "id": "feature-senioren-sinn",
+      "section": "Warum Zeitnest? — Feature Card",
+      "title": "Sinn & Freude für Senioren",
+      "filename": "feature-senioren-sinn.png",
+      "status": "optional_reuse",
+      "current_file": "z-image-turbo_00016_.png",
+      "note": "Bestehendes Bild (Seniorin + rennender Junge) passt hier — kann übernommen werden, sonst neu mit Prompt unten generieren.",
+      "prompt": "Close-up portrait of a senior person with bright eyes and a genuine wide smile, looking slightly down at a child whose hand is reaching up into frame. The senior's face shows joy and purpose. 3/4 profile, warm side-light. Vary across runs: grey beard / silver hair in bun / glasses on forehead."
+    },
+    {
+      "id": "feature-kennenlernen",
+      "section": "Warum Zeitnest? — Feature Card",
+      "title": "Sicheres Kennenlernen",
+      "filename": "feature-kennenlernen.png",
+      "status": "done",
+      "current_file": "z-image-turbo_00030_.png",
+      "note": "Anker-Bild — Stilreferenz für alle anderen.",
+      "prompt": "Two hands — one older and weathered, one younger and smooth — meeting in the center of frame to pass a small ceramic tea cup with steaming amber tea between them. Warm soft daylight from the side. Skin tones contrast gently. Symbol of trust passed between generations."
+    },
+
+    {
+      "id": "header-kinder",
+      "section": "Audience Header",
+      "title": "Für Kinder",
+      "filename": "header-kinder.png",
+      "status": "done",
+      "current_file": "z-image-turbo_00025_.png",
+      "prompt": "A child wearing a backpack, looking slightly upward with curious bright eyes, a hint of wonder. Head-and-shoulders crop. Soft daylight. Vary across runs: different hair textures, ethnicities, ages 5–9."
+    },
+    {
+      "id": "header-senioren",
+      "section": "Audience Header",
+      "title": "Für Senioren",
+      "filename": "header-senioren.png",
+      "status": "todo",
+      "note": "Alternativ kann z-image-turbo_00016_.png hier verwendet werden — siehe feature-senioren-sinn.",
+      "prompt": "A senior person, 3/4 profile, with reading glasses pushed up on their forehead, holding a steaming mug close to their chest, looking out a window with a calm thoughtful smile. Wisdom and warmth, not loneliness. Generate variants: male/female, different ethnicities."
+    },
+    {
+      "id": "header-eltern",
+      "section": "Audience Header",
+      "title": "Für Eltern",
+      "filename": "header-eltern.png",
+      "status": "todo_revision",
+      "current_file": "z-image-turbo_00029_.png",
+      "issue": "Kind anatomisch unmöglich zwischen den Beinen platziert — klassischer KI-Tell",
+      "prompt": "Tight close-up of two adult hands clasped together, one wearing a simple wedding band (no diamond), held casually at waist height. Subtle contrast in skin tones. In soft out-of-focus background: blurred silhouette of a small child running on grass. Warm late-afternoon golden light. The child must remain only a silhouette, never detailed."
+    },
+
+    {
+      "id": "kinder-bezugspersonen",
+      "section": "Für Kinder — Card",
+      "title": "Neue Bezugspersonen",
+      "filename": "kinder-bezugspersonen.png",
+      "status": "todo",
+      "prompt": "A small child's hand and a wrinkled senior hand together, thumbs and index fingers forming a heart shape between them. Both hands clearly visible, both relaxed and naturally posed. Soft cream background, warm daylight. The senior hand must look natural — no claw-like or skeletal rendering."
+    },
+    {
+      "id": "kinder-geschichten",
+      "section": "Für Kinder — Card",
+      "title": "Lebenserfahrung & Geschichten",
+      "filename": "kinder-geschichten.png",
+      "status": "todo",
+      "prompt": "An open old hardcover book on a warm wooden table, pages slightly worn. Resting on the open page: a small sepia-toned vintage photograph (faces deliberately too small/fuzzy to identify) and a polished brass compass. Warm window light from the side. No people in frame, no readable text on the page."
+    },
+    {
+      "id": "kinder-soziale-kompetenz",
+      "section": "Für Kinder — Card",
+      "title": "Soziale Kompetenz",
+      "filename": "kinder-soziale-kompetenz.png",
+      "status": "todo",
+      "prompt": "A young green sprout in dark earth, with two pairs of hands gently cupping the soil around it — one pair clearly older (age spots, slight wrinkles), one pair young and small. Slight top-down 3/4 angle. Symbol of growth nurtured across generations."
+    },
+    {
+      "id": "kinder-impulse-hobbys",
+      "section": "Für Kinder — Card",
+      "title": "Neue Impulse & Hobbys",
+      "filename": "kinder-impulse-hobbys.png",
+      "status": "todo",
+      "prompt": "Flatlay on warm wood: colorful crayons fanned out, a small open watercolor paint set, a wooden cooking spoon, a folded paper origami crane, and an unmarked sheet of staff-lined music paper — overlapping casually. Symbol of variety in hobbies. Soft warm light from above-left. No people, no text."
+    },
+
+    {
+      "id": "senioren-erfuellung",
+      "section": "Für Senioren — Card",
+      "title": "Sinn & Erfüllung",
+      "filename": "senioren-erfuellung.png",
+      "status": "todo",
+      "prompt": "A pair of older hands cupped together in the center of the frame, holding a small warm glowing light (like a small candle flame or a soft sun-flare orb) as if cradling something precious. Background warmly out-of-focus. Symbol: purpose, having something meaningful to give."
+    },
+    {
+      "id": "senioren-ohne-enkel",
+      "section": "Für Senioren — Card",
+      "title": "Auch ohne eigene Enkel",
+      "filename": "senioren-ohne-enkel.png",
+      "status": "todo",
+      "prompt": "A senior hand gently holding a small hand-carved wooden toy animal (e.g. a wooden horse or bird) on an open palm. Only the hand from wrist to fingertips, well-lit. No family photos or biological-relation symbols visible. Symbol: care without a blood-relation."
+    },
+    {
+      "id": "senioren-aktiv",
+      "section": "Für Senioren — Card",
+      "title": "Aktiv & verbunden bleiben",
+      "filename": "senioren-aktiv.png",
+      "status": "todo",
+      "prompt": "Close-up of a senior person's hands mid-action playing a wooden recorder flute or holding accordion keys. Music sheet softly visible nearby. Joy, motion, music. Warm golden-hour light from the side."
+    },
+    {
+      "id": "senioren-wissen",
+      "section": "Für Senioren — Card",
+      "title": "Wissen & Werte weitergeben",
+      "filename": "senioren-wissen.png",
+      "status": "todo",
+      "prompt": "An open wooden treasure chest seen from slightly above, filled with mixed objects symbolizing knowledge passed down: a wooden cooking spoon, a ball of hand-knitted yarn, an old leather-bound notebook (closed), a small carpentry hammer, a single dried rose. Warm light from above. No people, no text."
+    },
+
+    {
+      "id": "eltern-dorf",
+      "section": "Für Eltern — Card",
+      "title": "Zurück zum Dorf-Prinzip",
+      "filename": "eltern-dorf.png",
+      "status": "todo",
+      "prompt": "Two hands of different generations passing a wooden tray with fresh bread loaves over a low garden fence. Garden context softly out-of-focus. Symbol: neighborly help, village mentality. Warm afternoon light. (Photo-realistic to stay consistent with the rest of the set.)"
+    },
+    {
+      "id": "eltern-paarzeit",
+      "section": "Für Eltern — Card",
+      "title": "Paarzeit schützen",
+      "filename": "eltern-paarzeit.png",
+      "status": "todo_revision",
+      "current_file": "z-image-turbo_00019_.png",
+      "issue": "Glamouröses Candle-Light-Dinner — wirkt wie Restaurant-Werbung, nicht wie Zeitnest",
+      "prompt": "Close-up of two adult hands holding wine glasses, clinking gently. In soft focus behind: two people on a sofa laughing, casual blanket on lap, home setting (no restaurant). Cozy lamp light, evening atmosphere. Intimacy through casualness, not luxury."
+    },
+    {
+      "id": "eltern-metime",
+      "section": "Für Eltern — Card",
+      "title": "Me-Time ohne schlechtes Gewissen",
+      "filename": "eltern-metime.png",
+      "status": "todo",
+      "prompt": "A single adult from behind, sitting cross-legged on grass beneath a tree, holding a paperback book half-open. Sunlight filters through the leaves. Peaceful, not lonely. No phone, no laptop, no other people visible. Symbol: 'this break is allowed.'"
+    },
+    {
+      "id": "eltern-vertrauen",
+      "section": "Für Eltern — Card",
+      "title": "Vertrauen statt Fremde",
+      "filename": "eltern-vertrauen.png",
+      "status": "todo",
+      "prompt": "A senior person reading a picture book aloud to a young child sitting next to them on a sofa, both fully engaged in the story. Side view, warm living-room light. In very soft out-of-focus background: a parent in the kitchen, smiling, holding a mug — relaxed, present-but-not-watching. Conveys layered trust."
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "2": {
+    "inputs": {
+      "unet_name": "z_image_turbo_bf16.safetensors",
+      "weight_dtype": "default"
+    },
+    "class_type": "UNETLoader"
+  },
+  "3": {
+    "inputs": {
+      "clip_name": "qwen_3_4b.safetensors",
+      "type": "lumina2",
+      "device": "default"
+    },
+    "class_type": "CLIPLoader"
+  },
+  "4": {
+    "inputs": {
+      "vae_name": "ae.safetensors"
+    },
+    "class_type": "VAELoader"
+  },
+  "5": {
+    "inputs": {
+      "shift": 3,
+      "model": ["2", 0]
+    },
+    "class_type": "ModelSamplingAuraFlow"
+  },
+  "7": {
+    "inputs": {
+      "text": "__PROMPT_PLACEHOLDER__",
+      "clip": ["3", 0]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "8": {
+    "inputs": {
+      "conditioning": ["7", 0]
+    },
+    "class_type": "ConditioningZeroOut"
+  },
+  "9": {
+    "inputs": {
+      "width": 1024,
+      "height": 1024,
+      "batch_size": 1
+    },
+    "class_type": "EmptySD3LatentImage"
+  },
+  "10": {
+    "inputs": {
+      "seed": 0,
+      "steps": 4,
+      "cfg": 1,
+      "sampler_name": "res_multistep",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": ["5", 0],
+      "positive": ["7", 0],
+      "negative": ["8", 0],
+      "latent_image": ["9", 0]
+    },
+    "class_type": "KSampler"
+  },
+  "11": {
+    "inputs": {
+      "samples": ["10", 0],
+      "vae": ["4", 0]
+    },
+    "class_type": "VAEDecode"
+  },
+  "12": {
+    "inputs": {},
+    "class_type": "LoadBackgroundRemovalModel"
+  },
+  "13": {
+    "inputs": {
+      "image": ["11", 0],
+      "bg_removal_model": ["12", 0]
+    },
+    "class_type": "RemoveBackground"
+  },
+  "16": {
+    "inputs": {
+      "mask": ["13", 0]
+    },
+    "class_type": "InvertMask"
+  },
+  "14": {
+    "inputs": {
+      "image": ["11", 0],
+      "alpha": ["16", 0]
+    },
+    "class_type": "JoinImageWithAlpha"
+  },
+  "15": {
+    "inputs": {
+      "filename_prefix": "__FILENAME_PLACEHOLDER__",
+      "images": ["14", 0]
+    },
+    "class_type": "SaveImage"
+  }
+}
