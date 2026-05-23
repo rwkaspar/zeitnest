@@ -42,6 +42,8 @@ services:
       - HCAPTCHA_SECRET=${HCAPTCHA_SECRET:-}
     ports:
       - "3001:3001"
+    volumes:
+      - uploads:/app/backend/uploads
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3001/api/health"]
       interval: 30s
@@ -101,3 +103,4 @@ volumes:
   pgdata:
   certbot-webroot:
   backup-snapshots:
+  uploads:

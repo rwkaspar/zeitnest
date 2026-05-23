@@ -49,7 +49,29 @@ function DatenschutzPage() {
           <li><strong>Terminverwaltung:</strong> Buchung und Verwaltung von Betreuungszeiten (Art. 6 Abs. 1 lit. b DSGVO)</li>
         </ul>
 
-        <h2>4. Besonderer Schutz von Kinderdaten</h2>
+        <h2>4. Erweitertes F&uuml;hrungszeugnis (Leih-Gro&szlig;eltern)</h2>
+        <p>
+          Leih-Gro&szlig;eltern k&ouml;nnen freiwillig ein erweitertes F&uuml;hrungszeugnis nach
+          &sect;30a BZRG hochladen, um Eltern ein zus&auml;tzliches Vertrauenssignal zu geben.
+          F&uuml;r diese besonders sensible Datenkategorie gelten folgende Schutzma&szlig;nahmen:
+        </p>
+        <ul>
+          <li><strong>Zweckbindung:</strong> Das Dokument wird ausschlie&szlig;lich zur Pr&uuml;fung
+            der Vertrauensw&uuml;rdigkeit durch unsere Administrator:innen verwendet (Art. 6 Abs. 1 lit. a DSGVO &mdash; Einwilligung mit Upload).</li>
+          <li><strong>Speicherdauer:</strong> Nach erfolgreicher Pr&uuml;fung wird das Dokument
+            <strong> unverz&uuml;glich aus unserem Speicher gel&ouml;scht</strong>. Es bleibt lediglich der
+            Verifizierungs-Status (gepr&uuml;ft / nicht gepr&uuml;ft) sowie Datum und Ablaufdatum
+            (3 Jahre) erhalten.</li>
+          <li><strong>Zugriff:</strong> Das hochgeladene Dokument ist ausschlie&szlig;lich f&uuml;r
+            Administrator:innen zug&auml;nglich. Andere Nutzer:innen sehen nur den
+            Verifizierungs-Status, nie Datum oder Inhalt.</li>
+          <li><strong>Freiwilligkeit:</strong> Der Upload ist optional. Eine Nicht-Bereitstellung
+            f&uuml;hrt nicht zum Ausschluss von der Plattform.</li>
+          <li><strong>Widerruf:</strong> Sie k&ouml;nnen die Einwilligung jederzeit widerrufen, indem
+            Sie uns kontaktieren oder Ihr Konto l&ouml;schen.</li>
+        </ul>
+
+        <h2>5. Besonderer Schutz von Kinderdaten</h2>
         <p>
           Zeitnest nimmt den Schutz von Daten, die Kinder betreffen, besonders ernst.
           Kinder werden nicht direkt als Nutzer registriert. Angaben zu Kindern (Alter, Anzahl)
@@ -58,7 +80,7 @@ function DatenschutzPage() {
           Daten von Kindern erhoben.
         </p>
 
-        <h2>5. Datenweitergabe</h2>
+        <h2>6. Datenweitergabe</h2>
         <p>
           Ihre Daten werden <strong>nicht an Dritte verkauft oder zu Werbezwecken weitergegeben.</strong> Eine
           Weitergabe erfolgt nur an:
@@ -69,7 +91,7 @@ function DatenschutzPage() {
             Cloudflare wird f&uuml;r die sichere Verbindung genutzt (Auftragsverarbeitungsvertrag vorhanden).</li>
         </ul>
 
-        <h2>6. Datensicherheit</h2>
+        <h2>7. Datensicherheit</h2>
         <p>Wir setzen folgende technische Ma&szlig;nahmen zum Schutz Ihrer Daten ein:</p>
         <ul>
           <li>Verschl&uuml;sselte &Uuml;bertragung (HTTPS/TLS)</li>
@@ -80,7 +102,7 @@ function DatenschutzPage() {
           <li>Parametrisierte Datenbankabfragen zum Schutz vor SQL-Injection</li>
         </ul>
 
-        <h2>7. Ihre Rechte</h2>
+        <h2>8. Ihre Rechte</h2>
         <p>Sie haben jederzeit folgende Rechte bez&uuml;glich Ihrer personenbezogenen Daten:</p>
         <ul>
           <li><strong>Auskunft (Art. 15 DSGVO):</strong> Sie k&ouml;nnen &uuml;ber Ihr Konto einsehen, welche Daten wir speichern.</li>
@@ -91,21 +113,21 @@ function DatenschutzPage() {
           <li><strong>Beschwerde (Art. 77 DSGVO):</strong> Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbeh&ouml;rde zu beschweren.</li>
         </ul>
 
-        <h2>8. Speicherdauer</h2>
+        <h2>9. Speicherdauer</h2>
         <p>
           Ihre Daten werden gespeichert, solange Ihr Konto besteht. Bei L&ouml;schung Ihres Kontos
           werden alle personenbezogenen Daten einschlie&szlig;lich Nachrichten, Buchungen und
           Bewertungen unwiderruflich gel&ouml;scht. Eine Wiederherstellung ist nicht m&ouml;glich.
         </p>
 
-        <h2>9. Cookies und lokale Speicherung</h2>
+        <h2>10. Cookies und lokale Speicherung</h2>
         <p>
           Zeitnest verwendet <strong>keine Tracking-Cookies</strong> und <strong>keine Analyse-Tools</strong>.
           Wir speichern ausschlie&szlig;lich einen Authentifizierungs-Token im lokalen Speicher (localStorage)
           Ihres Browsers, um Sie eingeloggt zu halten. Dieser wird bei der Abmeldung gel&ouml;scht.
         </p>
 
-        <h2>10. &Auml;nderungen</h2>
+        <h2>11. &Auml;nderungen</h2>
         <p>
           Wir behalten uns vor, diese Datenschutzerkl&auml;rung anzupassen. Die aktuelle Version
           ist stets auf dieser Seite verf&uuml;gbar.

@@ -11,6 +11,9 @@ const router = express.Router();
 const UPLOAD_DIR = path.join(__dirname, '..', 'uploads', 'avatars');
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
+const FZ_UPLOAD_DIR = path.join(__dirname, '..', 'uploads', 'fz');
+fs.mkdirSync(FZ_UPLOAD_DIR, { recursive: true });
+
 const upload = multer({
   storage: multer.diskStorage({
     destination: UPLOAD_DIR,
@@ -25,6 +28,23 @@ const upload = multer({
     const allowed = ['image/jpeg', 'image/png', 'image/webp'];
     if (allowed.includes(file.mimetype)) cb(null, true);
     else cb(new Error('Nur JPG, PNG oder WebP erlaubt.'));
+  },
+});
+
+const fzUpload = multer({
+  storage: multer.diskStorage({
+    destination: FZ_UPLOAD_DIR,
+    filename: (req, file, cb) => {
+      const ext = path.extname(file.originalname).toLowerCase();
+      const safe = crypto.randomBytes(16).toString('hex') + ext;
+      cb(null, safe);
+    },
+  }),
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
+  fileFilter: (req, file, cb) => {
+    const allowed = ['application/pdf', 'image/jpeg', 'image/png'];
+    if (allowed.includes(file.mimetype)) cb(null, true);
+    else cb(new Error('Nur PDF, JPG oder PNG erlaubt.'));
   },
 });
 
@@ -51,22 +71,79 @@ router.post('/avatar', authenticateToken, (req, res) => {
   });
 });
 
+// Führungszeugnis: aktuellen Status für den eingeloggten User abrufen
+router.get('/me/fz', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'grandparent') {
+    return res.status(403).json({ error: 'Nur für Leih-Großeltern.' });
+  }
+  const row = await queryOne(
+    'SELECT fz_status, fz_submitted_at, fz_verified_at, fz_expires_at, fz_admin_note FROM grandparent_profiles WHERE user_id = $1',
+    [req.user.id]
+  );
+  res.json(row || { fz_status: 'not_submitted' });
+});
+
+// Führungszeugnis hochladen
+router.post('/me/fz', authenticateToken, (req, res) => {
+  if (req.user.role !== 'grandparent') {
+    return res.status(403).json({ error: 'Nur für Leih-Großeltern.' });
+  }
+  fzUpload.single('fz')(req, res, async (err) => {
+    if (err) return res.status(400).json({ error: err.message });
+    if (!req.file) return res.status(400).json({ error: 'Keine Datei.' });
+
+    try {
+      // Bestehende Datei löschen, falls vorher schon eine hochgeladen war
+      const existing = await queryOne('SELECT fz_filename FROM grandparent_profiles WHERE user_id = $1', [req.user.id]);
+      if (existing?.fz_filename) {
+        fs.unlink(path.join(FZ_UPLOAD_DIR, existing.fz_filename), () => {});
+      }
+
+      await runSql(
+        `UPDATE grandparent_profiles
+         SET fz_status = 'pending', fz_submitted_at = NOW(), fz_filename = $1, fz_admin_note = NULL
+         WHERE user_id = $2`,
+        [req.file.filename, req.user.id]
+      );
+      res.json({ fz_status: 'pending', fz_submitted_at: new Date().toISOString() });
+    } catch (e) {
+      console.error('FZ upload error:', e.message);
+      // Datei vom Disk löschen wenn DB-Update fehlschlägt
+      fs.unlink(path.join(FZ_UPLOAD_DIR, req.file.filename), () => {});
+      res.status(500).json({ error: 'Upload fehlgeschlagen.' });
+    }
+  });
+});
+
 router.get('/:id', authenticateToken, async (req, res) => {
   try {
     const user = await queryOne('SELECT id, email, role, first_name, last_name, city, postal_code, bio, avatar_url, is_demo, created_at FROM users WHERE id = $1', [req.params.id]);
     if (!user) return res.status(404).json({ error: 'Profil nicht gefunden.' });
 
     let profile = null;
+    let fz_verified = false;
     if (user.role === 'parent') {
       profile = await queryOne('SELECT * FROM parent_profiles WHERE user_id = $1', [user.id]);
     } else {
       profile = await queryOne('SELECT * FROM grandparent_profiles WHERE user_id = $1', [user.id]);
+      // fz_verified: nur true wenn aktuell verifiziert UND nicht abgelaufen
+      // Keine Daten (Datum/Dokument) im öffentlichen Profil leaken
+      fz_verified = !!(profile?.fz_status === 'verified' &&
+        (!profile.fz_expires_at || new Date(profile.fz_expires_at) > new Date()));
+      if (profile) {
+        delete profile.fz_filename;
+        delete profile.fz_admin_note;
+        delete profile.fz_submitted_at;
+        delete profile.fz_verified_at;
+        delete profile.fz_expires_at;
+        delete profile.fz_status;
+      }
     }
 
     const reviews = await queryAll(`SELECT r.*, u.first_name, u.last_name FROM reviews r JOIN users u ON r.reviewer_id = u.id WHERE r.reviewed_id = $1 ORDER BY r.created_at DESC`, [req.params.id]);
     const rating = await queryOne('SELECT AVG(rating) as avg_rating, COUNT(*) as count FROM reviews WHERE reviewed_id = $1', [req.params.id]);
 
-    res.json({ ...user, profile, reviews, rating });
+    res.json({ ...user, profile, fz_verified, reviews, rating });
   } catch (err) {
     console.error('Get profile error:', err);
     res.status(500).json({ error: 'Fehler beim Laden des Profils.' });

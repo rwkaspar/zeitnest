@@ -72,6 +72,8 @@ function AccountPage() {
 
           <TwoFactorSection />
 
+          {user?.role === 'grandparent' && <FuehrungszeugnisSection />}
+
           <div className="profile-section">
             <h3>Datenschutz (DSGVO)</h3>
             <p style={{ color: '#6b7c93', fontSize: '0.9rem', marginBottom: '16px' }}>
@@ -211,6 +213,122 @@ function TwoFactorSection() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function FuehrungszeugnisSection() {
+  const [info, setInfo] = useState(null);
+  const [file, setFile] = useState(null);
+  const [msg, setMsg] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  React.useEffect(() => {
+    refresh();
+  }, []);
+
+  function refresh() {
+    const token = localStorage.getItem('token');
+    fetch('/api/profiles/me/fz', { headers: { Authorization: `Bearer ${token}` } })
+      .then(r => r.json())
+      .then(d => setInfo(d))
+      .catch(() => {});
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (!file) return;
+    setLoading(true);
+    setMsg('');
+    try {
+      const token = localStorage.getItem('token');
+      const fd = new FormData();
+      fd.append('fz', file);
+      const res = await fetch('/api/profiles/me/fz', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: fd,
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMsg('Hochgeladen. Wir prüfen Ihr Dokument.');
+        setFile(null);
+        refresh();
+      } else {
+        setMsg(data.error || 'Upload fehlgeschlagen.');
+      }
+    } catch {
+      setMsg('Upload fehlgeschlagen.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const status = info?.fz_status || 'not_submitted';
+  const badges = {
+    not_submitted: { text: 'Noch nicht eingereicht', color: '#6b7c93', bg: '#f1f3f5' },
+    pending: { text: 'Wird geprüft', color: '#856404', bg: '#fff8db' },
+    verified: { text: '✓ Geprüft', color: '#1e7a3a', bg: '#e6f4ea' },
+    rejected: { text: 'Abgelehnt', color: '#c0392b', bg: '#fdecea' },
+    expired: { text: 'Abgelaufen', color: '#6b7c93', bg: '#f1f3f5' },
+  };
+  const b = badges[status] || badges.not_submitted;
+
+  return (
+    <div className="profile-section">
+      <h3>Erweitertes F&uuml;hrungszeugnis</h3>
+      <p style={{ color: '#5a6878', fontSize: '0.9rem', marginBottom: '12px' }}>
+        Das erweiterte F&uuml;hrungszeugnis nach &sect;30a BZRG ist ein wichtiges Vertrauenssignal
+        f&uuml;r Eltern. Sie k&ouml;nnen es online beim Bundesamt f&uuml;r Justiz beantragen &ndash;
+        f&uuml;r ehrenamtliche T&auml;tigkeiten oft geb&uuml;hrenfrei.
+      </p>
+
+      <div style={{ marginBottom: '16px' }}>
+        <span style={{ display: 'inline-block', padding: '4px 12px', borderRadius: '12px', fontSize: '0.85rem', fontWeight: 600, color: b.color, background: b.bg }}>
+          {b.text}
+        </span>
+        {status === 'verified' && info?.fz_expires_at && (
+          <span style={{ marginLeft: '12px', fontSize: '0.85rem', color: '#5a6878' }}>
+            G&uuml;ltig bis {new Date(info.fz_expires_at).toLocaleDateString('de-DE')}
+          </span>
+        )}
+        {status === 'rejected' && info?.fz_admin_note && (
+          <p style={{ marginTop: '8px', fontSize: '0.9rem', color: '#c0392b' }}>
+            Hinweis vom Admin: {info.fz_admin_note}
+          </p>
+        )}
+      </div>
+
+      {msg && <div className={msg.includes('Hochgeladen') ? 'success-message' : 'error-message'}>{msg}</div>}
+
+      {(status === 'not_submitted' || status === 'rejected' || status === 'expired') && (
+        <form onSubmit={handleSubmit} style={{ marginBottom: '12px' }}>
+          <p style={{ fontSize: '0.9rem', marginBottom: '8px' }}>
+            Datei hochladen (PDF, JPG oder PNG, max. 5 MB):
+          </p>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+            <input type="file" accept="application/pdf,image/jpeg,image/png" onChange={(e) => setFile(e.target.files?.[0] || null)} />
+            <button type="submit" className="btn btn-sm btn-primary" disabled={!file || loading}>
+              {loading ? 'L&auml;dt hoch...' : 'Hochladen'}
+            </button>
+          </div>
+        </form>
+      )}
+
+      {status === 'pending' && (
+        <p style={{ fontSize: '0.9rem', color: '#5a6878' }}>
+          Ihr Dokument wurde am {info?.fz_submitted_at ? new Date(info.fz_submitted_at).toLocaleDateString('de-DE') : '?'} eingereicht
+          und wird gepr&uuml;ft. Sie erhalten eine Nachricht, sobald die Pr&uuml;fung abgeschlossen ist.
+        </p>
+      )}
+
+      <p style={{ fontSize: '0.85rem', color: '#5a6878', marginTop: '12px' }}>
+        Antrag stellen:{' '}
+        <a href="https://www.fuehrungszeugnis.bund.de/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)' }}>
+          fuehrungszeugnis.bund.de
+        </a>
+        . Nach erfolgreicher Pr&uuml;fung wird Ihr Dokument aus unserem Speicher gel&ouml;scht &ndash; nur der Verifizierungs-Status bleibt erhalten.
+      </p>
     </div>
   );
 }

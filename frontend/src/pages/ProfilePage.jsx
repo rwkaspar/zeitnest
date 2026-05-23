@@ -55,6 +55,11 @@ function ProfilePage() {
             </div>
             <h1>{profile.first_name} {profile.last_name}</h1>
             {profile.is_demo && <span className="demo-badge">Beispielprofil</span>}
+            {profile.fz_verified && (
+              <span title="Erweitertes Führungszeugnis wurde geprüft" style={{ display: 'inline-block', marginLeft: '8px', padding: '4px 10px', background: '#e6f4ea', color: '#1e7a3a', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 600 }}>
+                &#x2713; F&uuml;hrungszeugnis gepr&uuml;ft
+              </span>
+            )}
             <p style={{ color: '#6b7c93' }}>&#x1F4CD; {profile.city || 'Keine Angabe'}</p>
             <span className={`role-badge ${profile.role}`}>{roleLabel}</span>
           </div>
@@ -74,7 +79,7 @@ function ProfilePage() {
               {profile.profile.preferred_age_range && <div className="profile-detail"><span className="label">Bevorzugtes Alter</span><span>{profile.profile.preferred_age_range}</span></div>}
               {profile.profile.offered_activities && <div className="profile-detail"><span className="label">Aktivit&auml;ten</span><span>{profile.profile.offered_activities}</span></div>}
               {profile.profile.mobility && <div className="profile-detail"><span className="label">Mobilit&auml;t</span><span>{profile.profile.mobility}</span></div>}
-              <div className="profile-detail"><span className="label">F&uuml;hrungszeugnis</span><span>{profile.profile.has_fuehrungszeugnis ? '&#x2705; Vorhanden' : '&#x274C; Nicht hinterlegt'}</span></div>
+              <div className="profile-detail"><span className="label">F&uuml;hrungszeugnis</span><span>{profile.fz_verified ? '✅ Geprüft' : profile.profile.has_fuehrungszeugnis ? 'Selbst-erklärt' : 'Nicht hinterlegt'}</span></div>
             </div>
           )}
 

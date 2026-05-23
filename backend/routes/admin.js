@@ -1,6 +1,10 @@
 const express = require('express');
+const path = require('path');
+const fs = require('fs');
 const { queryOne, queryAll, runSql } = require('../database');
 const { authenticateToken } = require('../middleware/auth');
+
+const FZ_UPLOAD_DIR = path.join(__dirname, '..', 'uploads', 'fz');
 
 const router = express.Router();
 
@@ -61,6 +65,70 @@ router.delete('/users/:id', async (req, res) => {
   if (req.params.id === req.user.id) return res.status(400).json({ error: 'Sie können sich nicht selbst löschen.' });
   await runSql('DELETE FROM users WHERE id = $1', [req.params.id]);
   res.json({ message: 'Benutzer gelöscht.' });
+});
+
+// ===== Führungszeugnis-Prüfungen =====
+
+router.get('/fz/pending', async (req, res) => {
+  const rows = await queryAll(`
+    SELECT u.id, u.email, u.first_name, u.last_name, u.city,
+      gp.fz_status, gp.fz_submitted_at, gp.fz_verified_at, gp.fz_expires_at, gp.fz_admin_note
+    FROM users u
+    JOIN grandparent_profiles gp ON u.id = gp.user_id
+    WHERE gp.fz_status IN ('pending', 'rejected')
+    ORDER BY gp.fz_submitted_at DESC NULLS LAST
+    LIMIT 200
+  `);
+  res.json(rows);
+});
+
+router.get('/fz/:userId/file', async (req, res) => {
+  const row = await queryOne('SELECT fz_filename FROM grandparent_profiles WHERE user_id = $1', [req.params.userId]);
+  if (!row?.fz_filename) return res.status(404).json({ error: 'Keine Datei.' });
+  const filePath = path.join(FZ_UPLOAD_DIR, row.fz_filename);
+  if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Datei nicht im Speicher.' });
+  res.sendFile(filePath);
+});
+
+router.patch('/fz/:userId', async (req, res) => {
+  const { action, note } = req.body;
+  if (!['approve', 'reject'].includes(action)) {
+    return res.status(400).json({ error: 'action muss approve oder reject sein.' });
+  }
+  const row = await queryOne('SELECT fz_filename FROM grandparent_profiles WHERE user_id = $1', [req.params.userId]);
+  if (!row) return res.status(404).json({ error: 'User nicht gefunden.' });
+
+  if (action === 'approve') {
+    // 3 Jahre Gültigkeit, Datei nach Verifizierung löschen
+    await runSql(
+      `UPDATE grandparent_profiles
+       SET fz_status = 'verified',
+           fz_verified_at = NOW(),
+           fz_expires_at = NOW() + INTERVAL '3 years',
+           fz_admin_note = NULL,
+           fz_filename = NULL
+       WHERE user_id = $1`,
+      [req.params.userId]
+    );
+    if (row.fz_filename) {
+      fs.unlink(path.join(FZ_UPLOAD_DIR, row.fz_filename), () => {});
+    }
+    console.log(`[FZ] approved user=${req.params.userId} by=${req.user.id}`);
+  } else {
+    await runSql(
+      `UPDATE grandparent_profiles
+       SET fz_status = 'rejected',
+           fz_admin_note = $1,
+           fz_filename = NULL
+       WHERE user_id = $2`,
+      [note || null, req.params.userId]
+    );
+    if (row.fz_filename) {
+      fs.unlink(path.join(FZ_UPLOAD_DIR, row.fz_filename), () => {});
+    }
+    console.log(`[FZ] rejected user=${req.params.userId} by=${req.user.id} note="${note || ''}"`);
+  }
+  res.json({ message: 'Status aktualisiert.' });
 });
 
 module.exports = router;

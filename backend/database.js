@@ -149,6 +149,16 @@ async function initDatabase() {
 
     // Admin column (for /admin panel access)
     await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE`);
+
+    // Führungszeugnis (FZ) verification — Stage-1 (Upload + Admin-Approval)
+    // Status: not_submitted | pending | verified | rejected | expired
+    await client.query(`ALTER TABLE grandparent_profiles ADD COLUMN IF NOT EXISTS fz_status TEXT NOT NULL DEFAULT 'not_submitted'`);
+    await client.query(`ALTER TABLE grandparent_profiles ADD COLUMN IF NOT EXISTS fz_submitted_at TIMESTAMPTZ`);
+    await client.query(`ALTER TABLE grandparent_profiles ADD COLUMN IF NOT EXISTS fz_verified_at TIMESTAMPTZ`);
+    await client.query(`ALTER TABLE grandparent_profiles ADD COLUMN IF NOT EXISTS fz_expires_at TIMESTAMPTZ`);
+    await client.query(`ALTER TABLE grandparent_profiles ADD COLUMN IF NOT EXISTS fz_admin_note TEXT`);
+    await client.query(`ALTER TABLE grandparent_profiles ADD COLUMN IF NOT EXISTS fz_filename TEXT`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_gp_fz_status ON grandparent_profiles(fz_status)`);
     // Mark existing/demo users as verified
     await client.query(`UPDATE users SET email_verified = TRUE WHERE email_verified IS NULL OR email LIKE '%@example.de'`);
 

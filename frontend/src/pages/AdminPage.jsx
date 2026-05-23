@@ -17,6 +17,8 @@ function AdminPage() {
   const [stats, setStats] = useState(null);
   const [reports, setReports] = useState([]);
   const [users, setUsers] = useState([]);
+  const [fzPending, setFzPending] = useState([]);
+  const [fzNote, setFzNote] = useState({});
 
   const auth = () => ({ Authorization: `Bearer ${localStorage.getItem('token')}` });
 
@@ -32,7 +34,39 @@ function AdminPage() {
     } else if (tab === 'users') {
       const r = await fetch('/api/admin/users', { headers: auth() });
       if (r.ok) setUsers(await r.json());
+    } else if (tab === 'fz') {
+      const r = await fetch('/api/admin/fz/pending', { headers: auth() });
+      if (r.ok) setFzPending(await r.json());
     }
+  }
+
+  async function fzDecide(userId, action) {
+    const note = fzNote[userId] || '';
+    if (action === 'reject' && !note.trim()) {
+      alert('Bitte einen Hinweis für die Ablehnung eintragen.');
+      return;
+    }
+    await fetch(`/api/admin/fz/${userId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', ...auth() },
+      body: JSON.stringify({ action, note }),
+    });
+    setFzNote({ ...fzNote, [userId]: '' });
+    load();
+  }
+
+  function downloadFz(userId, name) {
+    const token = localStorage.getItem('token');
+    fetch(`/api/admin/fz/${userId}/file`, { headers: { Authorization: `Bearer ${token}` } })
+      .then(r => r.blob())
+      .then(b => {
+        const url = URL.createObjectURL(b);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `fz-${name.replace(/\s+/g, '-')}.pdf`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
   }
 
   async function updateReport(id, status) {
@@ -60,7 +94,7 @@ function AdminPage() {
         </h1>
 
         <div style={{ display: 'flex', gap: '8px', marginBottom: '24px', borderBottom: '1px solid var(--border)' }}>
-          {['stats', 'reports', 'users'].map(t => (
+          {['stats', 'reports', 'users', 'fz'].map(t => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -71,7 +105,7 @@ function AdminPage() {
                 fontWeight: tab === t ? 600 : 400, fontSize: '0.95rem',
               }}
             >
-              {t === 'stats' ? 'Statistik' : t === 'reports' ? 'Meldungen' : 'Benutzer'}
+              {t === 'stats' ? 'Statistik' : t === 'reports' ? 'Meldungen' : t === 'users' ? 'Benutzer' : 'Führungszeugnisse'}
             </button>
           ))}
         </div>
@@ -118,6 +152,61 @@ function AdminPage() {
                   <div style={{ display: 'flex', gap: '6px' }}>
                     {r.status === 'open' && <button className="btn btn-sm btn-outline" onClick={() => updateReport(r.id, 'reviewed')}>Geprüft</button>}
                     {r.status !== 'closed' && <button className="btn btn-sm btn-success" onClick={() => updateReport(r.id, 'closed')}>Schließen</button>}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {tab === 'fz' && (
+          <div>
+            {fzPending.length === 0 && <p>Keine offenen F&uuml;hrungszeugnis-Pr&uuml;fungen.</p>}
+            {fzPending.map(u => (
+              <div key={u.id} className="card" style={{ marginBottom: '12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
+                  <div style={{ flex: '1 1 320px' }}>
+                    <strong>{u.first_name} {u.last_name}</strong>
+                    <span className={`match-status ${u.fz_status === 'pending' ? 'pending' : 'declined'}`} style={{ marginLeft: '8px' }}>
+                      {u.fz_status === 'pending' ? 'Zur Prüfung' : 'Abgelehnt'}
+                    </span>
+                    <p style={{ margin: '8px 0', fontSize: '0.9rem', color: '#5a6878' }}>
+                      {u.email} {u.city && `· ${u.city}`}
+                    </p>
+                    {u.fz_submitted_at && (
+                      <p style={{ fontSize: '0.85rem', color: '#5a6878' }}>
+                        Eingereicht am {new Date(u.fz_submitted_at).toLocaleString('de-DE')}
+                      </p>
+                    )}
+                    {u.fz_admin_note && (
+                      <p style={{ fontSize: '0.85rem', color: '#c0392b' }}>
+                        Vorheriger Ablehnungs-Hinweis: {u.fz_admin_note}
+                      </p>
+                    )}
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', minWidth: '260px' }}>
+                    {u.fz_status === 'pending' && (
+                      <>
+                        <button className="btn btn-sm btn-outline" onClick={() => downloadFz(u.id, `${u.first_name}-${u.last_name}`)}>
+                          Dokument herunterladen
+                        </button>
+                        <input
+                          type="text"
+                          placeholder="Hinweis (bei Ablehnung erforderlich)"
+                          value={fzNote[u.id] || ''}
+                          onChange={(e) => setFzNote({ ...fzNote, [u.id]: e.target.value })}
+                          style={{ fontSize: '0.9rem' }}
+                        />
+                        <div style={{ display: 'flex', gap: '6px' }}>
+                          <button className="btn btn-sm btn-success" onClick={() => fzDecide(u.id, 'approve')}>
+                            Genehmigen
+                          </button>
+                          <button className="btn btn-sm btn-danger" onClick={() => fzDecide(u.id, 'reject')}>
+                            Ablehnen
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
