@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -71,17 +72,7 @@ function App() {
           <main className="main-content">
             <AppRoutes />
           </main>
-          <footer className="footer">
-            <div className="container">
-              <p>&copy; 2026 Zeitnest &middot; Zeit schenken. Zeit gewinnen.</p>
-              <div className="footer-links">
-                <a href="/leitfaden">Leitfaden</a>
-                <a href="/agb">AGB</a>
-                <a href="/datenschutz">Datenschutz</a>
-                <a href="/impressum">Impressum</a>
-              </div>
-            </div>
-          </footer>
+          <Footer />
         </div>
       </Router>
     </AuthProvider>
