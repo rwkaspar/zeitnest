@@ -1,269 +1,253 @@
-# Zeitnest — Elevator Pitch & Gesprächsleitfaden für die Presse
+# Zeitnest — Gesprächsleitfaden für Erstkontakt mit Wunschgroßeltern Altmühlfranken (oder vergleichbaren Stellen)
 
-Leitfaden für ein Erstgespräch mit einer Pressesprecherin (Wohlfahrtsverband,
-Landratsamt, Diakonie, Caritas, lokale/regionale Zeitung, Funkhaus, etc.).
-Ziel: Interesse wecken, Story-Angles vorgeben, Nächste Schritte vereinbaren.
-
----
-
-## 1. Vorbereitung (vor dem Termin)
-
-**Pflicht-Recherche zur Gesprächspartnerin (10 Min):**
-- Welche Themen treibt ihre Organisation aktuell? (Demografischer Wandel?
-  Vereinsamung? Familienunterstützung?)
-- Gab es zuletzt Pressemitteilungen zu vergleichbaren Themen?
-- Hat sie Kontakte zu bestehenden „Wunschgroßeltern"-Projekten?
-
-**Was mitnehmen:**
-- Laptop oder Tablet mit Live-Demo (zeitnest.org)
-- Ein-Pager (siehe Anhang unten — könnte als A4-PDF gedruckt werden)
-- Visitenkarte / Kontaktdaten
-
-**Mindset:** Du verkaufst kein Produkt — du bietest ihr eine **Geschichte**,
-die sie ihrem Publikum erzählen kann. Du machst sie zur Heldin, nicht dich.
+Leitfaden für das Erstgespräch — primär mit der Pressestelle des
+Landratsamts Weißenburg-Gunzenhausen, ggf. mit Karina Milles als
+Koordinatorin der „Wunschgroßeltern in Altmühlfranken". Ziel ist
+ausdrücklich **Zusammenarbeit** mit einem etablierten, gut funktionierenden
+Projekt — nicht der Aufbau einer Konkurrenz.
 
 ---
 
-## 2. Der Hook (erste 30 Sekunden)
+## 1. Wichtigster Punkt: die Haltung
 
-Wenn du dich vorstellst, **starte nicht** mit „Ich habe eine App entwickelt".
-Starte mit einem Bild:
+**Wunschgroßeltern in Altmühlfranken läuft seit Jahren erfolgreich.**
+29 aktive Wunschgroßeltern (Stand 2021), klare gelebte Geschichten wie
+die von Familie Schneider und Oskar Grimm. Karina Milles macht eine
+großartige Arbeit, die ein digitales Werkzeug **nicht ersetzen kann**.
 
-> „Eine Großmutter in Pasing freut sich seit drei Wochen jeden Mittwoch
-> auf die kleine Lina, die ihr aus der Schule erzählt. Lina hat keine
-> Oma mehr. Die Mutter von Lina kann endlich freitags zum Sport.
-> Drei Menschen, die füreinander da sind — über drei Generationen,
-> ohne Blutsverwandtschaft. **Wir nennen das Zeitnest.**"
-
-Dann ein einzelner Satz mit dem Was:
-
-> „Zeitnest ist eine Plattform, die Familien und ältere Menschen
-> zusammenbringt, die füreinander Zeit haben — sicher, kostenlos und
-> dauerhaft."
-
-**Halt dann inne.** Lass sie nachfragen. Wenn nicht, weiter mit dem
-Problem.
+Das ist die Tonlage, mit der ich ins Gespräch gehe. Ich bin nicht der
+disruptive Startup-Founder, der erklärt, wie man's besser macht. Ich
+bin ein Entwickler, der gefragt hat: *„Was läuft eigentlich schon, und
+wie könnte meine Idee dazu passen, statt daneben zu existieren?"*
 
 ---
 
-## 3. Story-Arc (2–3 Minuten Hauptpitch)
+## 2. Vorbereitung
 
-### Das Problem (60 Sek)
+**Pflicht-Recherche:**
+- Aktuelle Presseberichte zum Projekt (Landkreis-Homepage,
+  Altmühlfranken-Seite, lokale Medien).
+- Wer ist die richtige Ansprechperson? Pressestelle → ggf. Karina
+  Milles persönlich, ggf. Leitung der Kinderschutzstelle.
+- Gibt es vergleichbare Projekte in anderen Landkreisen, mit denen
+  Altmühlfranken evtl. schon vernetzt ist?
 
-Drei gesellschaftliche Linien, die zusammenlaufen:
+**Mitnehmen:**
+- Laptop mit Live-Demo (drei Demo-Accounts — siehe `DEMO_CREDENTIALS.md`).
+- Ein-Pager (Abschnitt 9) als PDF.
 
-1. **Eltern sind erschöpft.** Etwa jede fünfte Familie in Deutschland
-   ist alleinerziehend. Doppelverdiener-Paare sind die Norm, nicht die
-   Ausnahme. Eine professionelle Betreuung über Kita-Stunden hinaus
-   ist teuer und unpersönlich.
-2. **Senioren sind einsam.** Ein Drittel der über 65-Jährigen fühlt
-   sich regelmäßig einsam. Das ist nachweislich gesundheitsschädigend —
-   vergleichbar mit Rauchen.
-3. **Großeltern leben oft weit weg.** Wer in München arbeitet, dessen
-   Eltern leben in Bremen. Die natürliche Generationsbrücke ist im
-   modernen Berufsleben oft gekappt.
-
-> „Es gibt in jeder Stadt einsame Großeltern, die Zeit hätten — und
-> erschöpfte Familien, die Zeit bräuchten. Sie kennen sich nur nicht."
-
-### Die Lösung (60 Sek)
-
-> „Wir machen das, was früher das Dorf gemacht hat — digital."
-
-- **Wer sucht, wer schenkt:** Familien legen ein Profil an, Senioren
-  ebenfalls. Die Plattform schlägt geographisch und nach Interessen
-  Passungen vor.
-- **Sicher**: Erweitertes Führungszeugnis nach §30a BZRG für die
-  Großeltern, von uns geprüft. Sichtbares Vertrauens-Badge im Profil.
-  Bewertungen nach echten Begegnungen.
-- **Kostenlos und nicht-kommerziell**: Keiner bezahlt jemanden. Es
-  geht um geschenkte Zeit, nicht um eine bezahlte Betreuung. Das ist
-  ein wichtiger Unterschied zu Babysitter-Apps.
-- **Privatsphäre zuerst**: Daten werden in Deutschland gehostet,
-  Führungszeugnisse nach Verifizierung wieder gelöscht, keine
-  Werbung, keine Datenweitergabe.
-
-### Das Besondere (30 Sek)
-
-> „Es gibt regional bereits ‚Wunschgroßeltern'-Projekte — etwa in
-> Altmühlfranken. Großartige Arbeit, aber jeweils lokal, jeweils von
-> Hand vermittelt. Zeitnest macht das gleiche **skalierbar** und
-> trotzdem anschlussfähig: Koordinierungsstellen können in unserer
-> Plattform die Familien in ihrem Landkreis vermitteln. Wir
-> konkurrieren nicht mit den Behörden — wir geben ihnen ein Werkzeug."
+**Mindset:** Ich biete ein **Werkzeug**, kein Produkt. Sie entscheiden, ob
+sie es benutzen wollen.
 
 ---
 
-## 4. Demo-Walkthrough (wenn Zeit ist, 3–4 Min)
+## 3. Der ehrliche Hook (60 Sekunden)
 
-Nur zeigen, **was Story erzählt**. Nicht alle Features.
+> „Mein Name ist Robert Kaspar. Ich bin Selbstständiger und entwickle
+> hauptsächlich kommerzielle Web-Projekte. Daneben baue ich gelegentlich
+> kleinere Non-Profit-Sachen für Themen, die mir am Herzen liegen.
+>
+> Vor einigen Wochen hatte ich die Idee, eine Plattform zu bauen, die
+> Familien und ältere Menschen zusammenbringt, die füreinander Zeit
+> haben möchten. Erst nach den ersten Tagen Entwicklung bin ich auf
+> Ihr Projekt — Wunschgroßeltern in Altmühlfranken — gestoßen. Auf das
+> Interview mit Karolin Schneider und Oskar Grimm. Und ich war
+> ehrlich gesagt erleichtert: Das hier ist also keine Theorie. 29
+> Wunschgroßeltern, Geschichten, die seit Jahren funktionieren.
+>
+> Mein Anliegen ist deshalb nicht, ein konkurrierendes Produkt zu
+> bauen. Sondern zu fragen: Kann das, was ich gebaut habe, für Ihre
+> Arbeit irgendwie nützlich sein?"
 
-1. **Landing Page** (zeitnest.org) — die emotionalen Illustrationen
-   zeigen die drei Zielgruppen. Hier hat sie sofort das Konzept.
-2. **Beispielprofil einer Leih-Oma** mit grünem
-   „✓ Führungszeugnis geprüft"-Badge im Profilkopf — das ist das
-   Trust-Argument visuell.
-3. **Registrierung als Familie** — Onboarding mit den strukturierten
-   Feldern, die im Altmühlfranken-Bogen üblich sind. „Sehen Sie,
-   wir orientieren uns an den etablierten Behörden-Standards."
-4. **Match-Anfrage** — eine Familie schickt einer Leih-Oma eine
-   Anfrage. Sie kann annehmen oder ablehnen. So einfach.
-
-**Was du nicht zeigen sollst:** Code, Admin-Backend, technische Details.
-Das ist nicht relevant für die Story.
-
----
-
-## 5. Häufige Fragen + vorbereitete Antworten
-
-### „Wer steckt dahinter? Eine Firma?"
-> „Es ist ein nicht-kommerzielles Projekt eines einzelnen Entwicklers
-> (Robert Kaspar). Open Source, gehostet in Deutschland.
-> Wir suchen Partner, keine Investoren."
-
-### „Wie verdienen Sie damit Geld?"
-> „Aktuell gar nicht. Die laufenden Kosten sind sehr niedrig.
-> Wenn das Projekt wächst, denken wir an Förderungen, an
-> Patenschaften durch Kommunen, oder freiwillige Unterstützung — aber
-> nie an Werbung oder Datenverkauf. Das ist eine bewusste Entscheidung."
-
-### „Wie verhindern Sie Missbrauch?"
-> „Drei Ebenen:
-> 1. Erweitertes Führungszeugnis nach §30a BZRG für Leih-Großeltern,
->    von uns geprüft;
-> 2. Persönliches Kennenlernen vor jeder Betreuung — wir geben einen
->    Leitfaden vor;
-> 3. Bewertungssystem und Meldefunktion. Plus: Wir empfehlen,
->    Eltern bei den ersten Treffen dabei zu sein."
-
-### „Was ist mit Datenschutz?"
-> „DSGVO-konform, server in Deutschland (über Cloudflare-Tunnel),
-> keine Werbe-Tracker, keine Datenweitergabe. Führungszeugnisse
-> werden nach Verifizierung **gelöscht** — nur der Status bleibt.
-> Wir haben mit den Behörden-Standards verglichen, die uns dort
-> übertreffen, ergänzen wir das. Datenschutzerklärung ist öffentlich."
-
-### „Gibt es schon viele Nutzer?"
-> Ehrlich antworten. Wenn wenige: „Wir sind in der frühen Phase,
-> jeder gewonnene Partner — auch in der Presse — hilft uns spürbar
-> beim Aufbau." Das ist kein Schwächen, sondern eine Einladung zur
-> Mitgestaltung.
-
-### „Wie unterscheiden Sie sich von Großeltern.de, Wir machen Familie,
-###   Babysits, Care.com?"
-> „Babysits und Care.com sind Marktplätze — Geld fließt für Stunden
-> Betreuung. Wir sind keine Marktplatz-App. Wir matchen Menschen,
-> die einander geschenkte Zeit geben wollen. Eine Leih-Oma ist nicht
-> die billigste Babysitterin, sondern ein neuer Teil der Familie.
-> Andere Projekte wie ‚Großeltern.de' sind eher Foren — wir sind
-> strukturierter, sicherer, mit klarem Match-Prozess."
-
-### „Wir hatten schon mal ein ähnliches Projekt, da gab es Probleme..."
-> Zuhören! Nicht verteidigen. Frage: „Was war konkret das Problem?
-> Wie könnten wir das anders machen?" — Das ist Gold.
+Dann **Pause**. Reaktion abwarten.
 
 ---
 
-## 6. Konkrete Story-Angles, die du anbieten kannst
+## 4. Was ich gebaut habe (90 Sek)
 
-Erleichtere ihr die Arbeit, indem du gleich 3–4 möglichen Aufhänger
-formulierst:
-
-1. **„Generationsbrücke gegen Einsamkeit"**: Pflege-Studie X zeigt,
-   dass… Zeitnest ist die digitale Antwort.
-2. **„Wenn die eigene Oma weit weg lebt"**: Beispiel-Familie aus
-   ihrer Region (wenn du eine kennst).
-3. **„Vom Wunschoma-Projekt zur Plattform"**: Anknüpfung an
-   bestehende lokale Initiativen wie Altmühlfranken — wir sehen
-   uns als Ergänzung, nicht Konkurrenz.
-4. **„Datenschutz Made in Germany"**: Plattform für deutsche
-   Familien, von einem deutschen Entwickler, in Deutschland gehostet.
-5. **„Wie es früher das Dorf gemacht hat"** — kulturelle Geschichte,
-   eignet sich für Sonntagszeitungen und Magazine.
-
-**Tipp:** Frage sie umgekehrt: „Welche Story-Form passt am besten zu
-Ihrem Publikum?" Sie wird das wissen.
-
----
-
-## 7. Die Frage / der Ask
-
-Sei konkret, was du dir wünschst. Drei mögliche „Asks", priorisiert:
-
-1. **Niedrigschwellig:** „Würden Sie uns Ihrem Verteiler in der
-   Region empfehlen? Wir suchen die ersten 50–100 Familien und
-   Leih-Großeltern pro Stadt."
-2. **Mittel:** „Können Sie sich vorstellen, einen kurzen Hinweis in
-   Ihrer Verbandszeitung / Mitarbeiter-Mail zu setzen?"
-3. **Groß:** „Wäre eine offizielle Partnerschaft denkbar?
-   Beispielsweise: Ihr Verband / Ihre Behörde als 'empfohlener
-   Vermittlungspartner' in unserer Plattform; im Gegenzug verweisen
-   wir auf Sie."
-
-**Schließe mit einem konkreten nächsten Schritt:** „Wenn das spannend
-klingt, schicke ich Ihnen die Pressemappe als PDF — wann passt's
-zum Nachhaken?"
+> „Zeitnest ist eine kostenlose Web-Plattform — [zeitnest.org](https://zeitnest.org). Drei
+> Rollen:
+>
+> - **Familien** legen ein Profil an, mit den gleichen Feldern, die
+>   Sie in Ihrem Aufnahmebogen verwenden — ich habe Ihren Bogen als
+>   Vorlage genommen, damit unsere Datenstruktur kompatibel ist.
+> - **Wunschgroßeltern** legen ebenfalls ein Profil an. Sie können
+>   ein erweitertes Führungszeugnis nach §30a BZRG hochladen — wir
+>   prüfen und vergeben ein sichtbares Vertrauens-Badge.
+> - **Koordinierungsstellen** wie Sie haben einen eigenen Zugang.
+>   Sie sehen die Familien und Wunschgroßeltern in den
+>   Postleitzahlen, für die Sie zuständig sind — und können
+>   vermitteln wie heute, nur mit besserer Übersicht und schneller.
+>
+> Plattform ist **kostenlos**, **nicht-kommerziell**, **werbefrei**.
+> Daten in Deutschland gehostet. Quelloffener Code. Ich verdiene
+> damit nichts und will damit nichts verdienen."
 
 ---
 
-## 8. Anhang: Ein-Pager (zum Mitgeben oder Mailen)
+## 5. Worauf das Gespräch hinaus will (60 Sek)
+
+Mehrere Möglichkeiten — der/die Gesprächspartner:in entscheidet, was passt:
+
+1. **Pilot-Nutzung**: Die Koordinierungsstelle Altmühlfranken bekommt
+   einen eigenen Zugang. Bestehende Familien und Wunschgroßeltern
+   werden (mit Einverständnis) als Demo-Datensätze eingespielt. Sie
+   probieren das System ein paar Wochen aus und sagen ehrlich, was
+   nützlich ist und was nicht.
+
+2. **Beauftragung / Förderung**: Wenn das Werkzeug nützlich ist und
+   bleiben soll, würde ich gerne einmalig Aufwand für eine saubere
+   Auflage finanziert bekommen (Hosting für die nächsten Jahre, ein
+   strukturierter Onboarding-Prozess für weitere Landkreise). Im
+   Rahmen einer Stiftungsförderung, Kommunalförderung, oder eines
+   konkreten Auftrags durch den Landkreis.
+
+3. **Vernetzung**: Sie kennen vermutlich Kolleg:innen in anderen
+   Landkreisen, die ähnliche Projekte aufbauen oder daran denken.
+   Empfehlen Sie uns gerne weiter, wenn das passt.
+
+**Keine dieser Optionen ist Voraussetzung für die anderen.** Auch ein
+„Wir nutzen es informell und melden uns mit Feedback" ist ein Erfolg.
+
+---
+
+## 6. Demo-Walkthrough (3–4 Min)
+
+Mit den vorbereiteten Demo-Accounts (siehe `DEMO_CREDENTIALS.md`),
+drei Perspektiven nacheinander:
+
+1. **Sicht der Familie**: Login als Demo-Familie. Profil anschauen,
+   ein paar Wunschgroßeltern in der Region durchblättern.
+2. **Sicht der Wunschoma**: Logout, neuer Login. Eigenes Profil mit
+   Führungszeugnis-Badge, Anfragen-Liste, Kalender.
+3. **Sicht der Koordinierungsstelle**: Logout, dritter Login.
+   Übersicht aller Familien und Wunschgroßeltern in den PLZ-Bereichen
+   91xxx (Altmühlfranken).
+
+Drei Klicks pro Rolle reichen. Es geht nicht darum, alle Features zu
+zeigen, sondern den **Charakter** der Plattform.
+
+---
+
+## 7. Häufige Fragen + ehrliche Antworten
+
+### „Warum brauchen wir das? Wir vermitteln seit Jahren von Hand."
+> „Sie *brauchen* es nicht. Die Frage ist, ob es Ihre Arbeit erleichtern
+> würde. Eine Familie kann sich abends um 22 Uhr registrieren, ohne
+> Termin. Wunschgroßeltern können in der Plattform sehen, wann andere
+> Zeit haben, ohne anzurufen. Das wären die Hauptvorteile. Wenn das für
+> Sie keinen Mehrwert hat, ist das auch eine valide Antwort."
+
+### „Wer steckt finanziell dahinter?"
+> „Ich selbst. Die laufenden Kosten sind sehr niedrig — ich hoste auf
+> einem Server, der ohnehin läuft. Das Projekt ist quelloffen, niemand
+> verdient daran. Wenn es ernsthaft genutzt wird und bleiben soll, würde
+> ich mich freuen, wenn der Aufwand irgendwann teilfinanziert wird —
+> aber das ist nicht Voraussetzung."
+
+### „Wir haben Datenschutz-Bedenken bei einer externen Plattform."
+> „Verstehe ich. Drei Punkte: Daten in Deutschland gehostet, keine
+> Werbung, keine Datenweitergabe. Führungszeugnisse werden nach
+> Verifizierung gelöscht, nur der Status bleibt. Aber: wenn wir eine
+> ernsthafte Kooperation andenken, würde ich gerne mit Ihrem
+> Datenschutzbeauftragten direkt sprechen und alle Anforderungen
+> formal abklären. Auch eine Auftragsverarbeitungsvereinbarung wäre kein
+> Problem."
+
+### „Was passiert, wenn Sie keine Lust mehr haben oder krank werden?"
+> „Berechtigte Frage. Der Code liegt quelloffen auf GitHub. Wenn das
+> Projekt irgendwann andere übernehmen sollen, gehen die Daten und die
+> Software vollständig mit. Plus: ich plane, die Software so klar zu
+> dokumentieren, dass sie auch von Dritten betrieben werden könnte
+> (Stadt-IT, externer Dienstleister)."
+
+### „Was ist mit den Sicherheitsanforderungen — etwa bei Kontakt zwischen Fremden und Kindern?"
+> „Das ist und bleibt Ihr Hoheitsbereich, soweit Sie als
+> Koordinierungsstelle involviert sind. Die Plattform ist ein
+> Erstkontakt-Werkzeug. Persönliches Kennenlernen, sozialarbeiterische
+> Begleitung, Vertrauens-Aufbau — das, was Frau Milles macht — kann
+> und soll die Plattform nicht ersetzen. Wir liefern nur den
+> Erstkontakt, das Profilfeld-Matching, und die Möglichkeit, in
+> Verbindung zu bleiben."
+
+### „Was bringt eigentlich uns ein Pilot? Mehr Arbeit?"
+> „Ehrlich: ein bisschen Aufwand am Anfang, ja. Ein paar Stunden für
+> das Importieren bestehender Familien, einmal Onboarding der
+> Koordinatorin-Sicht. Danach hoffentlich Zeitersparnis — weil
+> Anfragen sortierter reinkommen, Profile aktueller sind, und Sie auch
+> Familien erreichen, die heute den Schritt nicht machen, weil ein
+> Anruf zu groß ist."
+
+---
+
+## 8. Konkrete Asks (gestaffelt)
+
+1. **Niedrigschwellig:** „Wir bekommen 20 Minuten mit Ihnen und Frau
+   Milles, um Ihnen die drei Perspektiven kurz zu zeigen. Sie geben
+   uns eine ehrliche Einschätzung."
+2. **Mittel:** „Wir vereinbaren einen vier- bis sechswöchigen
+   informellen Pilot. Sie nutzen die Plattform für 1–2 neue
+   Vermittlungen und sagen uns, was nützlich war."
+3. **Groß:** „Wir prüfen eine kleine Beauftragung des Landkreises für
+   eine offizielle Pilotphase, mit klarem Erfolgs-Kriterium und
+   Ausstiegsoption."
+
+---
+
+## 9. Anhang: Ein-Pager (zum Mitgeben oder Mailen)
 
 ### Was ist Zeitnest?
-Eine kostenlose Plattform, die Familien und ältere Menschen
-zusammenbringt, die füreinander Zeit haben.
-
-### Warum?
-- 20% der Familien in Deutschland sind alleinerziehend
-- 1/3 der über 65-Jährigen fühlt sich regelmäßig einsam
-- Großeltern leben heute oft weit weg
-
-### Wie funktioniert es?
-1. Profil anlegen (als Familie oder als Leih-Großelternteil)
-2. Plattform schlägt Passungen vor (geographisch + nach Interessen)
-3. Kennenlernen mit Leitfaden
-4. Regelmäßige Treffen vereinbaren
-
-### Was ist anders?
-- Erweitertes Führungszeugnis von uns geprüft
-- Nicht-kommerziell, keine Bezahlung zwischen Nutzer:innen
-- Server in Deutschland, DSGVO-konform, keine Werbung
-- Anschlussfähig an Behörden-/Wohlfahrts-Programme
+Eine kostenlose Web-Plattform, die das Match zwischen Familien und
+älteren Menschen organisiert, die füreinander Zeit haben möchten.
+Konzeptionell sehr nah am Modell „Wunschgroßeltern in Altmühlfranken".
 
 ### Wer steckt dahinter?
-Robert Kaspar, unabhängiger Entwickler.
-[kasparrobert@gmail.com](mailto:kasparrobert@gmail.com) ·
-[zeitnest.org](https://zeitnest.org)
+Robert Kaspar, selbstständiger Web-Entwickler. Zeitnest ist eines
+seiner Non-Profit-Nebenprojekte. Keine Firma, keine Investoren.
+
+### Was unterscheidet uns von einem klassischen Babysitter-Marktplatz?
+Es fließt kein Geld zwischen Familien und Wunschgroßeltern. Es geht
+um geschenkte Zeit und um langfristige Beziehungen — nicht um
+Stundenbetreuung.
+
+### Warum dieser Termin?
+Wir möchten **nicht** als Konkurrenz zur Koordinierungsstelle agieren.
+Im Gegenteil: Koordinierungsstellen haben in der Plattform eine
+eigene Rolle und behalten die operative Hoheit. Wir liefern das
+digitale Werkzeug, Sie das Vertrauen vor Ort.
+
+### Drei Demo-Accounts zum Selbst-Ansehen
+Login-Daten sind in einer separaten, verschlüsselten Datei. Bitte
+kurz Bescheid geben, wenn Sie sich vor dem Termin in Ruhe anschauen
+möchten — wir schicken die Credentials per Mail.
+
+### Kontakt
+Robert Kaspar · [kasparrobert@gmail.com](mailto:kasparrobert@gmail.com) · [zeitnest.org](https://zeitnest.org)
 
 ---
 
-## 9. Nach dem Gespräch
+## 10. Nach dem Gespräch
 
-- Innerhalb von **24 Stunden** eine Mail nachschicken: kurzer Dank,
-  Pressemappe als PDF (falls nicht direkt mitgegeben), drei
-  konkretisierte Story-Angles aus dem Gespräch.
-- In **3 Wochen** nochmal nachfassen, falls keine Reaktion. Nicht
-  früher — Pressesprecher:innen haben volle Postfächer.
-- Notizen aus dem Gespräch sofort dokumentieren (was hat sie
-  interessiert, was abgelehnt, welche Kontakte erwähnt).
+- **24h später**: Mail mit Dank, Ein-Pager-PDF, drei konkretisierten
+  Vorschlägen aus dem Gespräch.
+- **2–3 Wochen**: nochmal anfragen, falls keine Reaktion.
+- **Notizen sofort dokumentieren**: was wurde positiv aufgenommen, was
+  abgelehnt, welche Folge-Kontakte erwähnt.
 
 ---
 
-## 10. Roter-Faden-Karte (auf einer Seite, falls du sie ausdruckst)
+## 11. Roter-Faden-Karte (eine Seite)
 
 ```
-HOOK (Bild der drei Menschen)
-   ↓
-PROBLEM (Eltern erschöpft · Senioren einsam · Großeltern weg)
-   ↓
-LÖSUNG (Plattform · sicher · kostenlos · familien-zentriert)
-   ↓
-USP (skalierbar UND anschlussfähig an Behörden)
-   ↓
-DEMO (Landing → Profil mit Badge → Onboarding → Match)
-   ↓
-PRESS-ANGLES (Generationsbrücke · Anknüpfung Wunschoma · Datenschutz DE)
-   ↓
-ASK (Empfehlung · Verbandshinweis · Partnerschaft)
-   ↓
-NEXT STEP (Pressemappe, Termin in 3 Wochen)
+HALTUNG  → Zusammenarbeit, nicht Konkurrenz. Anerkennung zuerst.
+         ↓
+HOOK     → Selbstständig + Non-Profit-Nebenprojekt + spät erfahren von WG
+         ↓
+PRODUKT  → 3 Rollen (Familien · Wunschgroßeltern · Koordinierung)
+         ↓
+DEMO     → 3 Logins, je 3 Klicks, Charakter zeigen statt Features
+         ↓
+ASKS     → Feedback · Pilot · ggf. Beauftragung
+         ↓
+NEXT     → Pressemappe, Termin nachfassen in 2-3 Wochen
 ```

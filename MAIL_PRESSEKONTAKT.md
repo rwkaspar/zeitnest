@@ -1,60 +1,65 @@
-# Mail-Vorlage — Erstkontakt zur Pressesprecherin
+# Mail-Vorlage — Erstkontakt zur Pressestelle / Koordinierungsstelle
 
-Kurz, persönlich, mit klarem Anlass und konkreter Bitte um einen Termin.
-Platzhalter in `<...>` vor dem Senden ersetzen. Idealerweise nicht aus
-einem Massenversand schicken — die Variante hier ist auf 1:1-Kontakt
-ausgelegt.
+Kontext: Wir möchten **nicht** als Konkurrenz zum Projekt
+„Wunschgroßeltern in Altmühlfranken" auftreten, sondern als jemand,
+der dort etwas gebaut hat, das die Arbeit der Koordinierungsstelle
+unterstützen *könnte* — und dazu ehrlich um Gespräch und Einschätzung
+bitten. Platzhalter `<...>` vor dem Senden ersetzen.
 
 ---
 
-**Betreff:** Generationen verbinden — kurze Vorstellung von Zeitnest, bitte um Gesprächstermin
+**Betreff:** Anfrage Gespräch — Werkzeug für Wunschgroßeltern-Vermittlung
 
 ---
 
 Sehr geehrte Frau \<Nachname\>,
 
-eine Großmutter in \<Stadt\> freut sich seit Wochen jeden Mittwoch auf ihre
-„Leih-Enkelin". Die Mutter des Mädchens, alleinerziehend, kann seitdem
-endlich freitags zum Sport. Drei Menschen über drei Generationen, die
-füreinander Zeit haben — ohne Blutsverwandtschaft.
+ich heiße Robert Kaspar, bin selbstständiger Web-Entwickler aus
+\<Stadt\>, und ich melde mich mit einem etwas ungewöhnlichen Anliegen.
 
-Genau diese Verbindungen ermöglicht **Zeitnest** ([zeitnest.org](https://zeitnest.org)) —
-eine kostenlose, nicht-kommerzielle Plattform, die Familien und ältere
-Menschen zusammenbringt, die füreinander Zeit haben möchten. Sicher
-(mit geprüftem erweitertem Führungszeugnis nach §30a BZRG),
-datensparsam (Server in Deutschland, DSGVO-konform, keine Werbung),
-und ausdrücklich **anschlussfähig** an bestehende Wohlfahrts- und
-Behörden-Programme wie die „Wunschgroßeltern in Altmühlfranken".
+Neben meinen kommerziellen Projekten entwickle ich gelegentlich kleinere
+Non-Profit-Anwendungen für Themen, die mir am Herzen liegen. Vor einigen
+Wochen hatte ich die Idee zu einer Plattform, die Familien und ältere
+Menschen zusammenbringt, die füreinander Zeit haben möchten. Erst
+nach den ersten Tagen Entwicklung bin ich auf Ihr Projekt
+„Wunschgroßeltern in Altmühlfranken" gestoßen — auf das
+[Interview mit Frau Schneider und Herrn Grimm](https://www.landkreis-wug.de/jugend-und-familie/kinderschutzstelle/wunschgrosseltern/)
+sowie die Arbeit von Frau Milles. Und ich war ehrlich gesagt
+erleichtert: Das ist also keine Theorie. 29 aktive Wunschgroßeltern,
+gewachsene Verbindungen, eine Koordinatorin, die das mit großer Hingabe
+trägt.
 
-Drei Themen, die ich vermute, dass sie auch in Ihrer Arbeit eine Rolle
-spielen, treffen hier zusammen:
+Genau deshalb schreibe ich Ihnen: Mein Anliegen ist **nicht**, ein
+Konkurrenzprodukt zu bauen. Sondern zu fragen, ob das Werkzeug, das ich
+gebaut habe, für Ihre Arbeit irgendwie nützlich sein könnte.
 
-- Eltern sind durch Doppelbelastung und fehlende Großeltern-Nähe
-  zunehmend erschöpft.
-- Etwa jede:r dritte über 65 fühlt sich regelmäßig einsam — mit
-  nachgewiesenen Folgen für die Gesundheit.
-- Die natürliche Generationsbrücke ist in vielen Familien durch
-  Mobilität gekappt.
+Die Plattform — [zeitnest.org](https://zeitnest.org) — hat drei Rollen:
 
-Zeitnest ist die digitale Antwort auf das, was früher das Dorf
-selbstverständlich geleistet hat.
+- **Familien** und **Wunschgroßeltern** legen Profile an, deren
+  Struktur ich am Aufnahmebogen orientiert habe, den Frau Milles
+  verwendet.
+- **Koordinierungsstellen** haben einen eigenen Zugang und sehen alle
+  Familien und Wunschgroßeltern in den von ihnen betreuten
+  Postleitzahlen. Sie behalten die operative Hoheit über die
+  Vermittlung.
 
-**Was ich mir konkret von Ihnen erhoffen würde:** ein kurzes
-Kennenlern-Gespräch (20–30 Minuten, gern auch per Videocall), in dem
-ich Ihnen die Plattform in einer **kurzen Vorführung** zeigen darf
-und wir besprechen können, ob und wie eine Zusammenarbeit für
-\<Organisation der Empfängerin\> spannend wäre — sei es ein Hinweis in
-Ihren Verteilern, ein Beitrag in Ihrem Medium oder, perspektivisch,
-eine offizielle Partnerschaft als Vermittlungsstelle.
+Kostenlos, werbefrei, in Deutschland gehostet, quelloffen.
 
-Wäre eine der folgenden Optionen für Sie denkbar?
+Ich würde mich sehr freuen, Ihnen die drei Perspektiven in einem
+**kurzen Termin (20–30 Min, gerne per Videocall)** zu zeigen und mit
+Ihnen darüber zu sprechen, ob daraus eine Form von Zusammenarbeit
+denkbar wäre — von informellem Feedback über einen kleinen Pilot bis
+hin zu einer offiziellen Beauftragung. Keine dieser Optionen ist
+Voraussetzung für die anderen.
+
+Falls Sie sich vorher kurz selbst durch die drei Perspektiven klicken
+möchten: Ich kann Ihnen gerne drei Demo-Zugänge per Mail schicken.
+
+Wären eine der folgenden Optionen für einen Termin denkbar?
 
 - \<Datum 1, Uhrzeit\>
 - \<Datum 2, Uhrzeit\>
-- Alternativ: Ihr Vorschlag.
-
-Ich freue mich sehr über eine Rückmeldung — gerne auch direkt zur
-Terminabstimmung an meine unten stehende Adresse.
+- Alternativ Ihr Vorschlag.
 
 Herzliche Grüße
 Robert Kaspar
@@ -67,32 +72,29 @@ Robert Kaspar
 
 ## Hinweise zur Verwendung
 
-- **Vor dem Senden**: alle `<...>`-Platzhalter ersetzen. Stadt-Anekdote
-  möglichst aus der Region der Empfängerin wählen — falls keine echte
-  vorhanden, lieber generisch („eine Großmutter in München…") oder den
-  Absatz weglassen.
-- **Anhang**: ein gut gestaltetes Ein-Pager-PDF (Auszug aus
-  ELEVATOR_PITCH.md, Abschnitt 8) erhöht die Antwortrate. Nicht das
-  Repo, nicht die App selbst anhängen.
-- **Follow-up**: bei keiner Reaktion **nach 10–14 Tagen** einmal
-  freundlich nachfassen — kürzer, mit einem konkretisierten Termin-
-  Vorschlag aus der ersten Mail.
-- **Tonalität**: das Du eher vermeiden, außer die Pressesprecherin
-  pflegt selbst einen lockeren Stil (z.B. bei jüngeren Online-Medien).
+- **Anrede:** Pressestelle erstmal allgemein („Sehr geehrte Damen und
+  Herren") oder per Nachname, wenn auf der Landkreis-Seite eine
+  konkrete Pressesprecherin steht. Adressierung an Karina Milles
+  direkt nur, wenn Sie deren E-Mail haben — bei der Erstanfrage
+  läuft es üblicherweise sauberer über die Pressestelle.
+- **Vor dem Senden** alle `<...>`-Platzhalter ersetzen.
+- **Anhang**: Ein-Pager-PDF (Auszug aus ELEVATOR_PITCH.md, Abschnitt 9)
+  beilegen. Demo-Credentials nicht in der ersten Mail, sondern auf
+  Anfrage in einer Folgemail.
+- **Follow-up** nach 10–14 Tagen freundlich nachfassen.
 
-## Kürzere Variante (für Plattformen wie LinkedIn / Direktnachrichten)
+## Kürzere Variante (LinkedIn / Direktnachricht)
 
 > Sehr geehrte Frau \<Nachname\>,
 >
-> ich entwickle [zeitnest.org](https://zeitnest.org) — eine kostenlose
-> Plattform, die Familien und ältere Menschen zusammenbringt, die
-> füreinander Zeit haben möchten. Vergleichbar mit den
-> „Wunschgroßeltern"-Projekten, aber digital und überregional, mit
-> geprüftem Führungszeugnis und ohne kommerzielle Interessen.
+> ich habe ein digitales Werkzeug entwickelt, das die Vermittlung
+> zwischen Familien und Wunschgroßeltern unterstützen könnte —
+> [zeitnest.org](https://zeitnest.org). Ich habe die Plattform unabhängig gebaut und erst
+> danach Ihr Projekt entdeckt. Mir geht es nicht um Konkurrenz, sondern
+> um die Frage, ob das Werkzeug für Ihre Arbeit nützlich sein könnte.
 >
-> Hätten Sie 20 Minuten Zeit für ein kurzes Kennenlernen mit
-> Vorführung der Plattform? Drei Datums-/Uhrzeit-Vorschläge meinerseits:
-> \<Datum 1\>, \<Datum 2\>, \<Datum 3\>.
+> Hätten Sie 20 Minuten Zeit für ein kurzes Kennenlernen? Drei
+> Datumsvorschläge meinerseits: \<Datum 1\>, \<Datum 2\>, \<Datum 3\>.
 >
 > Herzliche Grüße
 > Robert Kaspar · zeitnest.org
