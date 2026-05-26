@@ -153,6 +153,21 @@ async function initDatabase() {
     // Messages: Bearbeiten-Spur
     await client.query(`ALTER TABLE messages ADD COLUMN IF NOT EXISTS edited_at TIMESTAMPTZ`);
 
+    // desired_grandparent + contact_mode jetzt Multi-Select (TEXT[])
+    // Idempotente Konvertierung: falls Spalte noch TEXT, nach TEXT[] umwandeln
+    try {
+      await client.query(`
+        ALTER TABLE families ALTER COLUMN desired_grandparent TYPE TEXT[]
+          USING CASE WHEN desired_grandparent IS NULL THEN NULL ELSE ARRAY[desired_grandparent] END
+      `);
+    } catch (e) { /* already converted */ }
+    try {
+      await client.query(`
+        ALTER TABLE families ALTER COLUMN contact_mode TYPE TEXT[]
+          USING CASE WHEN contact_mode IS NULL THEN NULL ELSE ARRAY[contact_mode] END
+      `);
+    } catch (e) { /* already converted */ }
+
     // Koordinierungsstellen (Stage B) — Behörden/Wohlfahrt vermitteln Familien & Wunschgroßeltern in ihrem Bereich
     await client.query(`
       CREATE TABLE IF NOT EXISTS coordination_offices (

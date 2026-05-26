@@ -175,6 +175,27 @@ async function run() {
   });
   await pool.query(`UPDATE users SET coordination_office_id = $1 WHERE id = $2`, [IDS.familyOffice, IDS.coordinator]);
 
+  // 5) Demo-Verfügbarkeits-Slots für Oskar, damit Familien direkt buchen können.
+  const slotPlan = [
+    { dow: 1, start: '09:00:00', end: '12:00:00' }, // Montag Vormittag
+    { dow: 3, start: '14:00:00', end: '17:00:00' }, // Mittwoch Nachmittag
+    { dow: 6, start: '10:00:00', end: '13:00:00' }, // Samstag Vormittag
+  ];
+  for (const s of slotPlan) {
+    const exists = await queryOne(
+      `SELECT id FROM availability_slots WHERE user_id = $1 AND day_of_week = $2 AND start_time = $3`,
+      [IDS.grandparent, s.dow, s.start]
+    );
+    if (!exists) {
+      await pool.query(
+        `INSERT INTO availability_slots (id, user_id, day_of_week, start_time, end_time, recurring)
+         VALUES ($1, $2, $3, $4, $5, TRUE)`,
+        [uuidv4(), IDS.grandparent, s.dow, s.start, s.end]
+      );
+      console.log(`  ✓ Slot ${s.dow}/${s.start}-${s.end} für Oskar`);
+    }
+  }
+
   console.log('Fertig.');
   console.log('');
   console.log('Login-Daten siehe DEMO_CREDENTIALS.md im Repo-Root (.gitignored).');

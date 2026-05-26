@@ -38,8 +38,25 @@ function MatchesPage() {
         : `${match.parent_first_name} ${match.parent_last_name}`,
       city: isParent ? match.grandparent_city : match.parent_city,
       id: isParent ? match.grandparent_id : match.parent_id,
+      avatar_url: isParent ? match.grandparent_avatar : match.parent_avatar,
     };
   };
+
+  function Avatar({ person, size = 44 }) {
+    const initials = person.name.split(' ').filter(Boolean).map(s => s[0]).slice(0, 2).join('');
+    return (
+      <div
+        className="user-avatar"
+        style={{
+          width: `${size}px`, height: `${size}px`, fontSize: `${size * 0.4}px`,
+          backgroundImage: person.avatar_url ? `url(${person.avatar_url})` : 'none',
+          backgroundSize: 'cover', backgroundPosition: 'center',
+        }}
+      >
+        {!person.avatar_url && initials}
+      </div>
+    );
+  }
 
   const isReceived = (match) => {
     if (user?.role === 'parent') return match.grandparent_id !== user.id;
@@ -69,7 +86,7 @@ function MatchesPage() {
                   return (
                     <div key={match.id} className="card match-card">
                       <div className="match-info">
-                        <div className="user-avatar" style={{ width: '44px', height: '44px', fontSize: '1rem' }}>{other.name[0]}</div>
+                        <Avatar person={other} />
                         <div>
                           <Link to={`/profil/${other.id}`} style={{ fontWeight: '600' }}>{other.name}</Link>
                           <p style={{ fontSize: '0.85rem', color: '#6b7c93' }}>{other.city} &middot; {received ? 'Empfangen' : 'Gesendet'}</p>
@@ -98,7 +115,7 @@ function MatchesPage() {
                   return (
                     <div key={match.id} className="card match-card">
                       <div className="match-info">
-                        <div className="user-avatar" style={{ width: '44px', height: '44px', fontSize: '1rem' }}>{other.name[0]}</div>
+                        <Avatar person={other} />
                         <div>
                           <Link to={`/profil/${other.id}`} style={{ fontWeight: '600' }}>{other.name}</Link>
                           <p style={{ fontSize: '0.85rem', color: '#6b7c93' }}>{other.city}</p>
@@ -122,7 +139,7 @@ function MatchesPage() {
                   return (
                     <div key={match.id} className="card match-card" style={{ opacity: 0.6 }}>
                       <div className="match-info">
-                        <div className="user-avatar" style={{ width: '44px', height: '44px', fontSize: '1rem' }}>{other.name[0]}</div>
+                        <Avatar person={other} />
                         <div>
                           <span style={{ fontWeight: '600' }}>{other.name}</span>
                           <p style={{ fontSize: '0.85rem', color: '#6b7c93' }}>{other.city}</p>

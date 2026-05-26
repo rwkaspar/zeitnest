@@ -149,9 +149,9 @@ function ProfilePage() {
                 {(f.desired_grandparent || f.activities?.length || f.contact_mode || f.max_distance_km) && (
                   <div className="profile-section">
                     <h3>Was wir suchen</h3>
-                    {f.desired_grandparent && <div className="profile-detail"><span className="label">Wunsch</span><span>{labelOf(DESIRED_GRANDPARENT, f.desired_grandparent)}</span></div>}
+                    {f.desired_grandparent?.length > 0 && <div className="profile-detail"><span className="label">Wunsch</span><Chips values={f.desired_grandparent} options={DESIRED_GRANDPARENT} /></div>}
                     {f.activities?.length > 0 && <div className="profile-detail"><span className="label">Aktivit&auml;ten</span><Chips values={f.activities} options={ACTIVITIES} /></div>}
-                    {f.contact_mode && <div className="profile-detail"><span className="label">Kontakt</span><span>{labelOf(CONTACT_MODE, f.contact_mode)}</span></div>}
+                    {f.contact_mode?.length > 0 && <div className="profile-detail"><span className="label">Gemeinsame Zeit</span><Chips values={f.contact_mode} options={CONTACT_MODE} /></div>}
                     {f.contact_location?.length > 0 && <div className="profile-detail"><span className="label">Ort</span><Chips values={f.contact_location} options={CONTACT_LOCATION} /></div>}
                     {f.max_distance_km && <div className="profile-detail"><span className="label">Max. Entfernung</span><span>{f.max_distance_km} km</span></div>}
                     {f.allow_smoker_grandparent != null && <div className="profile-detail"><span className="label">Raucher:in OK</span><span>{f.allow_smoker_grandparent ? 'Ja' : 'Nein'}</span></div>}

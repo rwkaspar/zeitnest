@@ -82,7 +82,7 @@ function AccountPage() {
             </p>
 
             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '24px' }}>
-              <button onClick={handleExport} className="btn btn-secondary">
+              <button onClick={handleExport} className="btn btn-outline">
                 Meine Daten exportieren (JSON)
               </button>
               <a href="/datenschutz" className="btn btn-outline">

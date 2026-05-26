@@ -6,6 +6,52 @@ import {
   SUPPORT_OFFERED, MARITAL_STATUS,
 } from '../constants/profileOptions';
 
+// "Wir wünschen uns"-Auswahl mit Sonderlogik:
+//  - 3 reguläre Chips (oma, opa, both)
+//  - 1 "Egal"-Chip, der die anderen automatisch löscht und umgekehrt
+//  - Speicherung als TEXT[]; alle drei regulären gewählt → ['any']
+const DG_REGULAR = ['oma', 'opa', 'both'];
+function SmartDesiredGroup({ selected, onChange }) {
+  const sel = Array.isArray(selected) ? selected : [];
+  const isAny = sel.includes('any');
+  function toggleAny() {
+    onChange(isAny ? [] : ['any']);
+  }
+  function toggleRegular(key) {
+    const wasAny = sel.includes('any');
+    const base = wasAny ? [] : sel.filter((k) => k !== 'any');
+    const next = base.includes(key) ? base.filter((k) => k !== key) : [...base, key];
+    // Wenn alle drei regulären gewählt sind: auf 'any' verdichten
+    if (DG_REGULAR.every((k) => next.includes(k))) {
+      onChange(['any']);
+    } else {
+      onChange(next);
+    }
+  }
+  function chipStyle(active) {
+    return {
+      padding: '6px 14px', borderRadius: '16px', border: '1px solid',
+      borderColor: active ? 'var(--primary)' : 'var(--border)',
+      background: active ? 'var(--primary-light)' : 'var(--bg-white)',
+      color: active ? 'var(--primary)' : 'var(--text)',
+      cursor: 'pointer', fontSize: '0.9rem', fontWeight: active ? 600 : 400,
+    };
+  }
+  const labels = { oma: 'Eine Wunschoma', opa: 'Einen Wunschopa', both: 'Wunschgroßeltern (beide)' };
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+      {DG_REGULAR.map((k) => (
+        <button key={k} type="button" onClick={() => toggleRegular(k)} style={chipStyle(sel.includes(k) && !isAny)}>
+          {labels[k]}
+        </button>
+      ))}
+      <button type="button" onClick={toggleAny} style={chipStyle(isAny)}>
+        Egal / Alle Optionen
+      </button>
+    </div>
+  );
+}
+
 function ChipGroup({ name, options, selected, onChange }) {
   const sel = Array.isArray(selected) ? selected : [];
   function toggle(key) {
@@ -345,8 +391,11 @@ function EditProfilePage() {
                 <h3 style={section}>Was wir suchen</h3>
 
                 <div className="form-group">
-                  <label>Wir w&uuml;nschen uns</label>
-                  <RadioGroup name="desired_grandparent" options={DESIRED_GRANDPARENT} value={formData.desired_grandparent} onChange={setField} />
+                  <label>Wir w&uuml;nschen uns (Mehrfach m&ouml;glich)</label>
+                  <SmartDesiredGroup
+                    selected={formData.desired_grandparent}
+                    onChange={(v) => setField('desired_grandparent', v)}
+                  />
                 </div>
 
                 <div className="form-group">
@@ -355,8 +404,8 @@ function EditProfilePage() {
                 </div>
 
                 <div className="form-group">
-                  <label>Wer soll besucht werden?</label>
-                  <RadioGroup name="contact_mode" options={CONTACT_MODE} value={formData.contact_mode} onChange={setField} />
+                  <label>Wir m&ouml;chten gemeinsam Zeit verbringen &mdash;</label>
+                  <ChipGroup name="contact_mode" options={CONTACT_MODE} selected={formData.contact_mode} onChange={setField} />
                 </div>
 
                 <div className="form-group">
@@ -499,8 +548,6 @@ function FamilyMembersSection({ family, currentUserId, onChange }) {
     } catch (err) { setMsg(err.message); }
   }
 
-  const isOwner = family.owner_user_id === currentUserId;
-
   return (
     <div className="profile-section" style={{ marginTop: '32px' }}>
       <h3 style={section}>Familien-Mitglieder</h3>
@@ -514,11 +561,10 @@ function FamilyMembersSection({ family, currentUserId, onChange }) {
               </div>
               <div>
                 <strong>{m.first_name} {m.last_name}</strong>
-                {m.id === family.owner_user_id && <span style={{ marginLeft: '8px', fontSize: '0.75rem', padding: '2px 8px', borderRadius: '10px', background: 'var(--primary-light)', color: 'var(--primary)' }}>Owner</span>}
                 {m.id === currentUserId && <span style={{ marginLeft: '8px', fontSize: '0.8rem', color: '#5a6878' }}>(Sie)</span>}
               </div>
             </div>
-            {isOwner && m.id !== currentUserId && (
+            {m.id !== currentUserId && (
               <button type="button" className="btn btn-sm btn-outline" onClick={() => removeMember(m.id)}>Entfernen</button>
             )}
           </div>
@@ -529,11 +575,9 @@ function FamilyMembersSection({ family, currentUserId, onChange }) {
         <button type="button" className="btn btn-sm btn-primary" onClick={createInvite} disabled={loading}>
           Partner:in einladen
         </button>
-        {(family.members?.length > 1 || !isOwner) && (
-          <button type="button" className="btn btn-sm btn-outline" onClick={leaveFamily}>
-            Family verlassen
-          </button>
-        )}
+        <button type="button" className="btn btn-sm btn-outline" onClick={leaveFamily}>
+          Family verlassen
+        </button>
       </div>
 
       {inviteLink && (

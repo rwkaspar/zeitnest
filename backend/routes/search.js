@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/', authenticateToken, async (req, res) => {
   try {
-    const { city, postal_code, near_postal_code, page = 1, limit = 20 } = req.query;
+    const { city, postal_code, near_postal_code, radius_km, page = 1, limit = 20 } = req.query;
     const offset = (page - 1) * limit;
     const searchRole = req.user.role === 'parent' ? 'grandparent' : 'parent';
 
@@ -32,10 +32,17 @@ router.get('/', authenticateToken, async (req, res) => {
       params.push(`${postal_code}%`);
       paramIdx++;
     }
-    // Region match: first 2 digits of postal code = same region (~ 50-100km radius)
-    if (near_postal_code && near_postal_code.length >= 2) {
+    // Umkreis: Mapping von km auf PLZ-Präfix-Länge
+    //   1 km   → 4-stelliger Präfix (faktisch selber Ort)
+    //   10 km  → 3-stelliger Präfix
+    //   50 km  → 2-stelliger Präfix
+    //   150 km → 1-stelliger Präfix
+    if (near_postal_code && near_postal_code.length >= 1) {
+      const km = parseInt(radius_km);
+      const prefixLen = km <= 1 ? 4 : km <= 10 ? 3 : km <= 50 ? 2 : 1;
+      const prefix = near_postal_code.substring(0, Math.min(prefixLen, near_postal_code.length));
       query += ` AND u.postal_code LIKE $${paramIdx}`;
-      params.push(`${near_postal_code.substring(0, 2)}%`);
+      params.push(`${prefix}%`);
       paramIdx++;
     }
 
@@ -55,7 +62,14 @@ router.get('/', authenticateToken, async (req, res) => {
     let cIdx = 3;
     if (city) { countQuery += ` AND LOWER(u.city) LIKE LOWER($${cIdx})`; countParams.push(`%${city}%`); cIdx++; }
     if (postal_code) { countQuery += ` AND u.postal_code LIKE $${cIdx}`; countParams.push(`${postal_code}%`); cIdx++; }
-    if (near_postal_code && near_postal_code.length >= 2) { countQuery += ` AND u.postal_code LIKE $${cIdx}`; countParams.push(`${near_postal_code.substring(0, 2)}%`); cIdx++; }
+    if (near_postal_code && near_postal_code.length >= 1) {
+      const km = parseInt(radius_km);
+      const prefixLen = km <= 1 ? 4 : km <= 10 ? 3 : km <= 50 ? 2 : 1;
+      const prefix = near_postal_code.substring(0, Math.min(prefixLen, near_postal_code.length));
+      countQuery += ` AND u.postal_code LIKE $${cIdx}`;
+      countParams.push(`${prefix}%`);
+      cIdx++;
+    }
     const totalRow = await queryOne(countQuery, countParams);
     const total = parseInt(totalRow?.total) || 0;
 

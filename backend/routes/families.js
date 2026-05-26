@@ -63,11 +63,11 @@ router.put('/me', authenticateToken, async (req, res) => {
         children_in_liability == null ? null : !!children_in_liability,
         confidentiality_accepted == null ? null : !!confidentiality_accepted,
         validateSubset(activities, ACTIVITIES) || null,
-        validateOne(desired_grandparent, DESIRED_GRANDPARENT),
+        validateSubset(desired_grandparent, DESIRED_GRANDPARENT) || null,
         allow_smoker_grandparent == null ? null : !!allow_smoker_grandparent,
         allow_pet_grandparent == null ? null : !!allow_pet_grandparent,
         Number.isFinite(parseInt(max_distance_km)) ? parseInt(max_distance_km) : null,
-        validateOne(contact_mode, CONTACT_MODE),
+        validateSubset(contact_mode, CONTACT_MODE) || null,
         validateSubset(contact_location, CONTACT_LOCATION) || null,
         validateSubset(support_offered, SUPPORT_OFFERED) || null,
         family.id,
@@ -127,15 +127,11 @@ router.post('/join/:token', authenticateToken, async (req, res) => {
   res.json({ message: 'Beigetreten.', family_id: invite.family_id });
 });
 
-// DELETE /api/families/me/leave — Family verlassen
+// DELETE /api/families/me/leave — Family verlassen (jedes Mitglied darf)
 router.delete('/me/leave', authenticateToken, async (req, res) => {
   const family = await loadOwnFamily(req.user.id);
   if (!family) return res.status(404).json({ error: 'Keine Family gefunden.' });
-  // Owner darf nicht ohne Übertragung verlassen, wenn weitere Mitglieder existieren
   const others = await queryAll(`SELECT id FROM users WHERE family_id = $1 AND id != $2`, [family.id, req.user.id]);
-  if (family.owner_user_id === req.user.id && others.length > 0) {
-    return res.status(400).json({ error: 'Bitte vorher die Owner-Rolle übertragen (DELETE /me/members/:id).' });
-  }
   await runSql(`UPDATE users SET family_id = NULL WHERE id = $1`, [req.user.id]);
   if (others.length === 0) {
     await runSql(`DELETE FROM families WHERE id = $1`, [family.id]);
@@ -143,13 +139,10 @@ router.delete('/me/leave', authenticateToken, async (req, res) => {
   res.json({ message: 'Family verlassen.' });
 });
 
-// DELETE /api/families/me/members/:userId — Mitglied entfernen (nur Owner)
+// DELETE /api/families/me/members/:userId — Mitglied entfernen (jedes Mitglied darf)
 router.delete('/me/members/:userId', authenticateToken, async (req, res) => {
   const family = await loadOwnFamily(req.user.id);
   if (!family) return res.status(404).json({ error: 'Keine Family gefunden.' });
-  if (family.owner_user_id !== req.user.id) {
-    return res.status(403).json({ error: 'Nur der Family-Owner darf Mitglieder entfernen.' });
-  }
   if (req.params.userId === req.user.id) {
     return res.status(400).json({ error: 'Verwenden Sie /leave, um selbst auszutreten.' });
   }

@@ -9,7 +9,7 @@ function SearchPage() {
   const [loading, setLoading] = useState(true);
   const [city, setCity] = useState('');
   const [postalCode, setPostalCode] = useState('');
-  const [nearMe, setNearMe] = useState(false);
+  const [radiusKm, setRadiusKm] = useState(50);
 
   const searchLabel = user?.role === 'parent' ? 'Leih-Gro\u00dfeltern' : 'Familien';
 
@@ -18,8 +18,10 @@ function SearchPage() {
     try {
       const params = {};
       if (city) params.city = city;
-      if (postalCode) params.postal_code = postalCode;
-      if (nearMe && user?.postal_code) params.near_postal_code = user.postal_code;
+      if (postalCode) {
+        params.near_postal_code = postalCode;
+        params.radius_km = radiusKm;
+      }
       const data = await api.search(params);
       setResults(data.results || []);
     } catch (err) {
@@ -27,7 +29,7 @@ function SearchPage() {
     } finally {
       setLoading(false);
     }
-  }, [city, postalCode, nearMe, user]);
+  }, [city, postalCode, radiusKm]);
 
   useEffect(() => {
     doSearch();
@@ -44,13 +46,18 @@ function SearchPage() {
         <h1>{searchLabel} in Ihrer N&auml;he finden</h1>
 
         <form onSubmit={handleSearch} className="search-filters">
-          <input type="text" placeholder="Stadt eingeben..." value={city} onChange={(e) => setCity(e.target.value)} />
-          <input type="text" placeholder="PLZ..." value={postalCode} onChange={(e) => setPostalCode(e.target.value)} />
+          <input type="text" placeholder="Stadt..." value={city} onChange={(e) => setCity(e.target.value)} />
+          <input type="text" placeholder="PLZ..." value={postalCode} onChange={(e) => setPostalCode(e.target.value)} style={{ maxWidth: '120px' }} />
+          <select value={radiusKm} onChange={(e) => setRadiusKm(parseInt(e.target.value))} disabled={!postalCode} title="Umkreis um PLZ">
+            <option value={1}>1 km (gleicher Ort)</option>
+            <option value={10}>10 km</option>
+            <option value={50}>50 km</option>
+            <option value={150}>150 km</option>
+          </select>
           {user?.postal_code && (
-            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem', color: '#5a6878' }}>
-              <input type="checkbox" checked={nearMe} onChange={(e) => setNearMe(e.target.checked)} />
-              In meiner Region
-            </label>
+            <button type="button" className="btn btn-outline btn-sm" onClick={() => setPostalCode(user.postal_code)}>
+              Meine PLZ
+            </button>
           )}
           <button type="submit" className="btn btn-primary">Suchen</button>
         </form>
