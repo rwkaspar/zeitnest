@@ -469,10 +469,10 @@ function EditProfilePage() {
                 </div>
 
                 <h3 style={section}>Koordinierungsstellen</h3>
-                <div className="form-group" style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                <div className="form-group consent-row">
                   <input type="checkbox" id="vis-coord-fam" checked={!!formData.visible_to_coordinators}
-                    onChange={(e) => setField('visible_to_coordinators', e.target.checked)} style={{ marginTop: '4px' }} />
-                  <label htmlFor="vis-coord-fam" style={{ margin: 0, fontWeight: 'normal' }}>
+                    onChange={(e) => setField('visible_to_coordinators', e.target.checked)} />
+                  <label htmlFor="vis-coord-fam">
                     Unsere Familie ist f&uuml;r regionale Koordinierungsstellen sichtbar
                     (z.B. „Wunschgro&szlig;eltern in Altm&uuml;hlfranken"). Sie k&ouml;nnen uns dann aktiv
                     bei einer Vermittlung unterst&uuml;tzen.
@@ -515,19 +515,19 @@ function EditProfilePage() {
                   <YesNoNull name="has_liability_insurance" value={formData.has_liability_insurance} onChange={setField} />
                 </div>
 
-                <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <input type="checkbox" name="has_fuehrungszeugnis" checked={!!formData.has_fuehrungszeugnis} onChange={handleChange} style={{ width: 'auto' }} />
-                  <label style={{ margin: 0 }}>F&uuml;hrungszeugnis vorhanden (Selbst-Erkl&auml;rung)</label>
+                <div className="form-group consent-row">
+                  <input type="checkbox" id="has-fz" name="has_fuehrungszeugnis" checked={!!formData.has_fuehrungszeugnis} onChange={handleChange} />
+                  <label htmlFor="has-fz">F&uuml;hrungszeugnis vorhanden (Selbst-Erkl&auml;rung)</label>
                 </div>
                 <p style={{ fontSize: '0.85rem', color: '#5a6878', marginTop: '-8px' }}>
                   Tipp: Ein verifiziertes F&uuml;hrungszeugnis hochladen k&ouml;nnen Sie unter <strong>Kontoeinstellungen</strong>.
                 </p>
 
                 <h3 style={section}>Koordinierungsstellen</h3>
-                <div className="form-group" style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                <div className="form-group consent-row">
                   <input type="checkbox" id="vis-coord-gp" checked={!!formData.visible_to_coordinators}
-                    onChange={(e) => setField('visible_to_coordinators', e.target.checked)} style={{ marginTop: '4px' }} />
-                  <label htmlFor="vis-coord-gp" style={{ margin: 0, fontWeight: 'normal' }}>
+                    onChange={(e) => setField('visible_to_coordinators', e.target.checked)} />
+                  <label htmlFor="vis-coord-gp">
                     Mein Profil ist f&uuml;r regionale Koordinierungsstellen sichtbar
                     (z.B. „Wunschgro&szlig;eltern in Altm&uuml;hlfranken"). Eine Vermittlerin kann mich
                     dann passenden Familien vorschlagen.
