@@ -2,6 +2,7 @@
 node_modules/
 nginx/certs/
 .claude/
+DEMO_CREDENTIALS.md
 
 # Generierte Bild-Assets (Master) — werden nur lokal gehalten
 Bilder_anstelle_emoji/*.png
