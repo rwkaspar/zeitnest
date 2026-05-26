@@ -150,6 +150,29 @@ async function initDatabase() {
     // Admin column (for /admin panel access)
     await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE`);
 
+    // Koordinierungsstellen (Stage B) — Behörden/Wohlfahrt vermitteln Familien & Wunschgroßeltern in ihrem Bereich
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS coordination_offices (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        contact_email TEXT,
+        website TEXT,
+        description TEXT,
+        postal_code_prefixes TEXT[],
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      )
+    `);
+    await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS coordination_office_id TEXT REFERENCES coordination_offices(id) ON DELETE SET NULL`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_users_office ON users(coordination_office_id)`);
+
+    // role-CHECK um 'coordinator' erweitern (Postgres: erstmal Constraint droppen, dann neu setzen)
+    try {
+      await client.query(`ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check`);
+      await client.query(`ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('parent', 'grandparent', 'coordinator'))`);
+    } catch (e) {
+      // Bereits angepasst — ignorieren
+    }
+
     // Families (Stage A.5) — Vater/Mutter unabhängig registrieren, gemeinsame Family-Daten
     await client.query(`
       CREATE TABLE IF NOT EXISTS families (

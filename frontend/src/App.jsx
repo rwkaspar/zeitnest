@@ -23,6 +23,7 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import AgbPage from './pages/AgbPage';
 import AdminPage from './pages/AdminPage';
 import FamilyJoinPage from './pages/FamilyJoinPage';
+import CoordinatorPage from './pages/CoordinatorPage';
 import './App.css';
 
 function PrivateRoute({ children }) {
@@ -59,6 +60,7 @@ function AppRoutes() {
       <Route path="/konto" element={<PrivateRoute><AccountPage /></PrivateRoute>} />
       <Route path="/admin" element={<PrivateRoute><AdminPage /></PrivateRoute>} />
       <Route path="/family/join/:token" element={<FamilyJoinPage />} />
+      <Route path="/koordination" element={<PrivateRoute><CoordinatorPage /></PrivateRoute>} />
       <Route path="/nachrichten/:matchId" element={<PrivateRoute><MessagesPage /></PrivateRoute>} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
