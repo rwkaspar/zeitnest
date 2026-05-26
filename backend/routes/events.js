@@ -12,38 +12,43 @@ router.use(authenticateToken);
 
 // Helper: Stellen, die diesen User „sehen" dürften (PLZ-Match + Opt-In),
 // gibt Office-IDs zurück.
-async function visibleOfficeIds(user) {
-  if (!user.postal_code) return [];
+//
+// Achtung: req.user vom JWT enthält nur {id, email, role}. Wir laden die
+// echten Stammdaten aus der DB nach.
+async function visibleOfficeIds(jwtUser) {
+  const u = await queryOne(
+    `SELECT family_id, postal_code, role FROM users WHERE id = $1`,
+    [jwtUser.id]
+  );
+  if (!u) return [];
 
-  if (user.role === 'parent') {
-    // Family-Opt-In gesetzt?
-    const u = await queryOne(`SELECT family_id FROM users WHERE id = $1`, [user.id]);
-    if (!u?.family_id) return [];
+  let pc = null;
+  if (u.role === 'parent') {
+    if (!u.family_id) return [];
     const fam = await queryOne(
       `SELECT visible_to_coordinators, postal_code FROM families WHERE id = $1`,
       [u.family_id]
     );
     if (!fam?.visible_to_coordinators) return [];
-    const pc = fam.postal_code || user.postal_code;
-    if (!pc) return [];
-    const prefix = pc.substring(0, 2);
-    const offices = await queryAll(
-      `SELECT id FROM coordination_offices WHERE $1 = ANY(postal_code_prefixes)`,
-      [prefix]
+    pc = fam.postal_code || u.postal_code;
+  } else if (u.role === 'grandparent') {
+    const gp = await queryOne(
+      `SELECT visible_to_coordinators FROM grandparent_profiles WHERE user_id = $1`,
+      [jwtUser.id]
     );
-    return offices.map((o) => o.id);
-  }
-  if (user.role === 'grandparent') {
-    const gp = await queryOne(`SELECT visible_to_coordinators FROM grandparent_profiles WHERE user_id = $1`, [user.id]);
     if (!gp?.visible_to_coordinators) return [];
-    const prefix = user.postal_code.substring(0, 2);
-    const offices = await queryAll(
-      `SELECT id FROM coordination_offices WHERE $1 = ANY(postal_code_prefixes)`,
-      [prefix]
-    );
-    return offices.map((o) => o.id);
+    pc = u.postal_code;
+  } else {
+    return [];
   }
-  return [];
+  if (!pc) return [];
+
+  const prefix = pc.substring(0, 2);
+  const offices = await queryAll(
+    `SELECT id FROM coordination_offices WHERE $1 = ANY(postal_code_prefixes)`,
+    [prefix]
+  );
+  return offices.map((o) => o.id);
 }
 
 // GET /api/events — Liste meiner zugänglichen Events
