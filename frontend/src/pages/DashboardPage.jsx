@@ -77,6 +77,10 @@ function DashboardPage() {
   ];
   const doneCount = steps.filter(s => s.done).length;
   const allDone = doneCount === steps.length;
+  // Demo-Accounts (Presse-Demo) zeigen die Checkliste immer, auch wenn alles erledigt ist —
+  // damit Pressepartner:innen den Onboarding-Charakter der Plattform live sehen können.
+  const isDemoUser = (me?.email || user?.email || '').endsWith('@zeitnest.local');
+  const showChecklist = !allDone || isDemoUser;
 
   return (
     <div className="dashboard">
@@ -89,26 +93,26 @@ function DashboardPage() {
         {/* Verification-Banner — prominent und nicht-schließbar wenn nicht bestätigt */}
         {!isVerified && (
           <div className="card" style={{ marginBottom: '24px', borderLeft: '4px solid var(--warning)', background: '#fff8db' }}>
-            <h3 style={{ marginBottom: '8px', color: '#856404' }}>&#x2709;&#xFE0F; Bitte best&auml;tigen Sie Ihre E-Mail-Adresse</h3>
+            <h3 style={{ marginBottom: '8px', color: '#856404' }}>✉️ Bitte bestätigen Sie Ihre E-Mail-Adresse</h3>
             <p style={{ fontSize: '0.95rem', color: '#5a6878', marginBottom: '12px' }}>
-              Wir haben einen Best&auml;tigungslink an <strong>{me?.email || user?.email}</strong> geschickt.
-              Bitte klicken Sie ihn an, um Ihr Konto freizuschalten. Solange nicht best&auml;tigt, k&ouml;nnen Sie keine Anfragen senden oder empfangen.
+              Wir haben einen Bestätigungslink an <strong>{me?.email || user?.email}</strong> geschickt.
+              Bitte klicken Sie ihn an, um Ihr Konto freizuschalten. Solange nicht bestätigt, können Sie keine Anfragen senden oder empfangen.
             </p>
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               <button className="btn btn-sm btn-primary" onClick={resendVerification} disabled={resending}>
-                {resending ? 'Sende&hellip;' : 'Best&auml;tigungsmail erneut schicken'}
+                {resending ? 'Sende…' : 'Bestätigungsmail erneut schicken'}
               </button>
               {resendMsg && <span style={{ alignSelf: 'center', fontSize: '0.85rem', color: '#5a6878' }}>{resendMsg}</span>}
             </div>
           </div>
         )}
 
-        {/* Onboarding-Checkliste — verschwindet wenn alles erledigt */}
-        {!allDone && (
+        {/* Onboarding-Checkliste — verschwindet wenn alles erledigt (außer bei Demo-Accounts) */}
+        {showChecklist && (
           <div className="card" style={{ marginBottom: '24px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
               <h3 style={{ fontFamily: 'var(--font-heading)' }}>So legen Sie los</h3>
-              <span style={{ fontSize: '0.85rem', color: '#5a6878' }}>{doneCount}/{steps.length} erledigt</span>
+              <span style={{ fontSize: '0.85rem', color: '#5a6878' }}>{doneCount}/{steps.length} erledigt{isDemoUser && allDone ? ' (Demo-Vorschau)' : ''}</span>
             </div>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
               {steps.map(s => (
