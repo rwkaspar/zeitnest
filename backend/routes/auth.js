@@ -92,7 +92,10 @@ router.post('/register', async (req, res) => {
     );
 
     if (role === 'parent') {
-      await runSql('INSERT INTO parent_profiles (user_id) VALUES ($1)', [id]);
+      await runSql(
+        'INSERT INTO parent_profiles (user_id, confidentiality_accepted) VALUES ($1, $2)',
+        [id, !!req.body.confidentiality_accepted]
+      );
     } else {
       await runSql('INSERT INTO grandparent_profiles (user_id) VALUES ($1)', [id]);
     }

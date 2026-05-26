@@ -5,6 +5,10 @@ const fs = require('fs');
 const crypto = require('crypto');
 const { queryOne, queryAll, runSql } = require('../database');
 const { authenticateToken } = require('../middleware/auth');
+const {
+  ACTIVITIES, MOBILITY, DESIRED_GRANDPARENT, CONTACT_MODE, CONTACT_LOCATION,
+  SUPPORT_OFFERED, MARITAL_STATUS, validateSubset, validateOne,
+} = require('../constants/profileOptions');
 
 const router = express.Router();
 
@@ -117,7 +121,7 @@ router.post('/me/fz', authenticateToken, (req, res) => {
 
 router.get('/:id', authenticateToken, async (req, res) => {
   try {
-    const user = await queryOne('SELECT id, email, role, first_name, last_name, city, postal_code, bio, avatar_url, is_demo, created_at FROM users WHERE id = $1', [req.params.id]);
+    const user = await queryOne('SELECT id, email, role, first_name, last_name, city, postal_code, bio, avatar_url, is_demo, created_at, birth_date, profession, working_hours, marital_status, smoker, pets, mobility, hobbies FROM users WHERE id = $1', [req.params.id]);
     if (!user) return res.status(404).json({ error: 'Profil nicht gefunden.' });
 
     let profile = null;
@@ -152,15 +156,85 @@ router.get('/:id', authenticateToken, async (req, res) => {
 
 router.put('/me', authenticateToken, async (req, res) => {
   try {
-    const { first_name, last_name, city, postal_code, phone, bio } = req.body;
-    await runSql(`UPDATE users SET first_name = $1, last_name = $2, city = $3, postal_code = $4, phone = $5, bio = $6, updated_at = NOW() WHERE id = $7`, [first_name, last_name, city, postal_code, phone, bio, req.user.id]);
+    const {
+      first_name, last_name, city, postal_code, phone, bio,
+      birth_date, profession, working_hours, marital_status,
+      smoker, pets, mobility, hobbies,
+    } = req.body;
+
+    await runSql(
+      `UPDATE users SET
+         first_name = $1, last_name = $2, city = $3, postal_code = $4, phone = $5, bio = $6,
+         birth_date = $7, profession = $8, working_hours = $9, marital_status = $10,
+         smoker = $11, pets = $12, mobility = $13, hobbies = $14,
+         updated_at = NOW()
+       WHERE id = $15`,
+      [
+        first_name, last_name, city, postal_code, phone, bio,
+        birth_date || null, profession || null,
+        Number.isFinite(parseInt(working_hours)) ? parseInt(working_hours) : null,
+        validateOne(marital_status, MARITAL_STATUS),
+        smoker == null ? null : !!smoker,
+        pets || null,
+        validateSubset(mobility, MOBILITY) || null,
+        hobbies || null,
+        req.user.id,
+      ]
+    );
 
     if (req.user.role === 'parent') {
-      const { number_of_children, children_ages, needs_description, availability, preferred_activities } = req.body;
-      await runSql(`UPDATE parent_profiles SET number_of_children = $1, children_ages = $2, needs_description = $3, availability = $4, preferred_activities = $5 WHERE user_id = $6`, [number_of_children, children_ages, needs_description, availability, preferred_activities, req.user.id]);
+      const {
+        number_of_children, children_ages, needs_description, availability, preferred_activities,
+        has_liability_insurance, children_in_liability,
+        activities, desired_grandparent, allow_smoker_grandparent, allow_pet_grandparent,
+        max_distance_km, contact_mode, contact_location, support_offered,
+      } = req.body;
+
+      await runSql(
+        `UPDATE parent_profiles SET
+           number_of_children = $1, children_ages = $2, needs_description = $3,
+           availability = $4, preferred_activities = $5,
+           has_liability_insurance = $6, children_in_liability = $7,
+           activities = $8, desired_grandparent = $9,
+           allow_smoker_grandparent = $10, allow_pet_grandparent = $11,
+           max_distance_km = $12, contact_mode = $13,
+           contact_location = $14, support_offered = $15
+         WHERE user_id = $16`,
+        [
+          number_of_children, children_ages, needs_description, availability, preferred_activities,
+          has_liability_insurance == null ? null : !!has_liability_insurance,
+          children_in_liability == null ? null : !!children_in_liability,
+          validateSubset(activities, ACTIVITIES) || null,
+          validateOne(desired_grandparent, DESIRED_GRANDPARENT),
+          allow_smoker_grandparent == null ? null : !!allow_smoker_grandparent,
+          allow_pet_grandparent == null ? null : !!allow_pet_grandparent,
+          Number.isFinite(parseInt(max_distance_km)) ? parseInt(max_distance_km) : null,
+          validateOne(contact_mode, CONTACT_MODE),
+          validateSubset(contact_location, CONTACT_LOCATION) || null,
+          validateSubset(support_offered, SUPPORT_OFFERED) || null,
+          req.user.id,
+        ]
+      );
     } else {
-      const { experience, availability, preferred_age_range, offered_activities, has_fuehrungszeugnis, mobility } = req.body;
-      await runSql(`UPDATE grandparent_profiles SET experience = $1, availability = $2, preferred_age_range = $3, offered_activities = $4, has_fuehrungszeugnis = $5, mobility = $6 WHERE user_id = $7`, [experience, availability, preferred_age_range, offered_activities, has_fuehrungszeugnis ? true : false, mobility, req.user.id]);
+      const {
+        experience, availability, preferred_age_range, offered_activities, has_fuehrungszeugnis,
+        activities, has_liability_insurance,
+      } = req.body;
+
+      await runSql(
+        `UPDATE grandparent_profiles SET
+           experience = $1, availability = $2, preferred_age_range = $3,
+           offered_activities = $4, has_fuehrungszeugnis = $5,
+           activities = $6, has_liability_insurance = $7
+         WHERE user_id = $8`,
+        [
+          experience, availability, preferred_age_range, offered_activities,
+          has_fuehrungszeugnis ? true : false,
+          validateSubset(activities, ACTIVITIES) || null,
+          has_liability_insurance == null ? null : !!has_liability_insurance,
+          req.user.id,
+        ]
+      );
     }
 
     res.json({ message: 'Profil erfolgreich aktualisiert.' });

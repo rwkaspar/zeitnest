@@ -1,6 +1,92 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../utils/api';
+import {
+  ACTIVITIES, MOBILITY, DESIRED_GRANDPARENT, CONTACT_MODE, CONTACT_LOCATION,
+  SUPPORT_OFFERED, MARITAL_STATUS,
+} from '../constants/profileOptions';
+
+function ChipGroup({ name, options, selected, onChange }) {
+  const sel = Array.isArray(selected) ? selected : [];
+  function toggle(key) {
+    const next = sel.includes(key) ? sel.filter((k) => k !== key) : [...sel, key];
+    onChange(name, next);
+  }
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+      {options.map((o) => (
+        <button
+          key={o.key}
+          type="button"
+          onClick={() => toggle(o.key)}
+          style={{
+            padding: '6px 14px',
+            borderRadius: '16px',
+            border: '1px solid',
+            borderColor: sel.includes(o.key) ? 'var(--primary)' : 'var(--border)',
+            background: sel.includes(o.key) ? 'var(--primary-light)' : 'var(--bg-white)',
+            color: sel.includes(o.key) ? 'var(--primary)' : 'var(--text)',
+            cursor: 'pointer',
+            fontSize: '0.9rem',
+            fontWeight: sel.includes(o.key) ? 600 : 400,
+          }}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function RadioGroup({ name, options, value, onChange, allowNull = true }) {
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+      {allowNull && (
+        <button
+          type="button"
+          onClick={() => onChange(name, null)}
+          style={radioStyle(value == null)}
+        >
+          Keine Angabe
+        </button>
+      )}
+      {options.map((o) => (
+        <button
+          key={o.key}
+          type="button"
+          onClick={() => onChange(name, o.key)}
+          style={radioStyle(value === o.key)}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function radioStyle(active) {
+  return {
+    padding: '6px 14px',
+    borderRadius: '16px',
+    border: '1px solid',
+    borderColor: active ? 'var(--primary)' : 'var(--border)',
+    background: active ? 'var(--primary-light)' : 'var(--bg-white)',
+    color: active ? 'var(--primary)' : 'var(--text)',
+    cursor: 'pointer',
+    fontSize: '0.9rem',
+    fontWeight: active ? 600 : 400,
+  };
+}
+
+function YesNoNull({ name, value, onChange }) {
+  return (
+    <div style={{ display: 'flex', gap: '8px' }}>
+      <button type="button" onClick={() => onChange(name, null)} style={radioStyle(value == null)}>Keine Angabe</button>
+      <button type="button" onClick={() => onChange(name, true)} style={radioStyle(value === true)}>Ja</button>
+      <button type="button" onClick={() => onChange(name, false)} style={radioStyle(value === false)}>Nein</button>
+    </div>
+  );
+}
 
 function EditProfilePage() {
   const { user, updateUser } = useAuth();
@@ -19,6 +105,15 @@ function EditProfilePage() {
           postal_code: data.postal_code || '',
           phone: data.phone || '',
           bio: data.bio || '',
+          birth_date: data.birth_date ? data.birth_date.slice(0, 10) : '',
+          profession: data.profession || '',
+          working_hours: data.working_hours ?? '',
+          marital_status: data.marital_status || '',
+          smoker: data.smoker,
+          pets: data.pets || '',
+          mobility: data.mobility || [],
+          hobbies: data.hobbies || '',
+          avatar_url: data.avatar_url || '',
           ...(data.profile || {}),
         });
       })
@@ -26,12 +121,16 @@ function EditProfilePage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleChange = (e) => {
+  function handleChange(e) {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
-  };
+  }
 
-  const handleSubmit = async (e) => {
+  function setField(name, value) {
+    setFormData(prev => ({ ...prev, [name]: value }));
+  }
+
+  async function handleSubmit(e) {
     e.preventDefault();
     setSaving(true);
     setMessage('');
@@ -44,7 +143,7 @@ function EditProfilePage() {
     } finally {
       setSaving(false);
     }
-  };
+  }
 
   if (loading) return <div className="loading-screen"><div className="spinner" /></div>;
 
@@ -56,6 +155,7 @@ function EditProfilePage() {
 
           {message && <div className={message.includes('erfolgreich') ? 'success-message' : 'error-message'}>{message}</div>}
 
+          {/* Avatar */}
           <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <div className="profile-avatar" style={{ width: '80px', height: '80px', backgroundImage: formData.avatar_url ? `url(${formData.avatar_url})` : 'none', backgroundSize: 'cover', backgroundPosition: 'center' }}>
               {!formData.avatar_url && (formData.first_name?.[0] || '') + (formData.last_name?.[0] || '')}
@@ -78,7 +178,7 @@ function EditProfilePage() {
                     });
                     const data = await res.json();
                     if (res.ok) {
-                      setFormData(prev => ({ ...prev, avatar_url: data.avatar_url }));
+                      setField('avatar_url', data.avatar_url);
                       updateUser({ avatar_url: data.avatar_url });
                       setMessage('Profilbild erfolgreich hochgeladen!');
                     } else {
@@ -94,6 +194,9 @@ function EditProfilePage() {
           </div>
 
           <form onSubmit={handleSubmit}>
+            {/* === Kontaktdaten === */}
+            <h3 style={section}>Kontaktdaten</h3>
+
             <div className="form-row">
               <div className="form-group">
                 <label>Vorname</label>
@@ -121,14 +224,65 @@ function EditProfilePage() {
               <input name="phone" value={formData.phone || ''} onChange={handleChange} placeholder="+49 ..." />
             </div>
 
+            {/* === Über mich === */}
+            <h3 style={section}>&Uuml;ber mich</h3>
+
             <div className="form-group">
-              <label>&Uuml;ber mich</label>
+              <label>Beschreibung</label>
               <textarea name="bio" value={formData.bio || ''} onChange={handleChange} placeholder="Erz&auml;hlen Sie etwas &uuml;ber sich..." />
             </div>
 
+            <div className="form-row">
+              <div className="form-group">
+                <label>Geburtsdatum</label>
+                <input type="date" name="birth_date" value={formData.birth_date || ''} onChange={handleChange} />
+              </div>
+              <div className="form-group">
+                <label>Familienstand</label>
+                <select name="marital_status" value={formData.marital_status || ''} onChange={handleChange}>
+                  <option value="">— keine Angabe —</option>
+                  {MARITAL_STATUS.map(m => <option key={m.key} value={m.key}>{m.label}</option>)}
+                </select>
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Beruf</label>
+                <input name="profession" value={formData.profession || ''} onChange={handleChange} placeholder="z.B. Pensionierte Lehrerin" />
+              </div>
+              <div className="form-group">
+                <label>Berufstätig (Std./Woche)</label>
+                <input type="number" name="working_hours" value={formData.working_hours ?? ''} onChange={handleChange} min="0" max="80" placeholder="0 = nicht berufstätig" />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label>Hobbys &amp; Interessen</label>
+              <textarea name="hobbies" value={formData.hobbies || ''} onChange={handleChange} placeholder="z.B. G&auml;rtnern, Lesen, Wandern" />
+            </div>
+
+            <div className="form-group">
+              <label>Mobilit&auml;t</label>
+              <ChipGroup name="mobility" options={MOBILITY} selected={formData.mobility} onChange={setField} />
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Raucher{user?.role === 'parent' ? 'haushalt' : ''}</label>
+                <YesNoNull name="smoker" value={formData.smoker} onChange={setField} />
+              </div>
+              <div className="form-group">
+                <label>Haustiere</label>
+                <input name="pets" value={formData.pets || ''} onChange={handleChange} placeholder="z.B. Katze, Hund — leer = keine" />
+              </div>
+            </div>
+
+            {/* === Rollen-spezifisch === */}
             {user?.role === 'parent' ? (
               <>
-                <h3 style={{ fontFamily: 'var(--font-heading)', marginBottom: '16px', marginTop: '24px' }}>Familien-Details</h3>
+                <h3 style={section}>Unsere Familie</h3>
+
                 <div className="form-row">
                   <div className="form-group">
                     <label>Anzahl Kinder</label>
@@ -139,46 +293,120 @@ function EditProfilePage() {
                     <input name="children_ages" value={formData.children_ages || ''} onChange={handleChange} placeholder="z.B. 3, 6" />
                   </div>
                 </div>
+
                 <div className="form-group">
                   <label>Betreuungsbedarf</label>
                   <textarea name="needs_description" value={formData.needs_description || ''} onChange={handleChange} placeholder="Was f&uuml;r Betreuung suchen Sie?" />
                 </div>
+
                 <div className="form-group">
-                  <label>Verf&uuml;gbarkeit</label>
+                  <label>Verf&uuml;gbarkeit (Freitext)</label>
                   <input name="availability" value={formData.availability || ''} onChange={handleChange} placeholder="z.B. Mo-Fr Nachmittags" />
                 </div>
+
+                <h3 style={section}>Was wir suchen</h3>
+
+                <div className="form-group">
+                  <label>Wir w&uuml;nschen uns</label>
+                  <RadioGroup name="desired_grandparent" options={DESIRED_GRANDPARENT} value={formData.desired_grandparent} onChange={setField} />
+                </div>
+
                 <div className="form-group">
                   <label>Gew&uuml;nschte Aktivit&auml;ten</label>
-                  <input name="preferred_activities" value={formData.preferred_activities || ''} onChange={handleChange} placeholder="z.B. Vorlesen, Basteln" />
+                  <ChipGroup name="activities" options={ACTIVITIES} selected={formData.activities} onChange={setField} />
+                </div>
+
+                <div className="form-group">
+                  <label>Wer soll besucht werden?</label>
+                  <RadioGroup name="contact_mode" options={CONTACT_MODE} value={formData.contact_mode} onChange={setField} />
+                </div>
+
+                <div className="form-group">
+                  <label>Wo soll der Kontakt stattfinden?</label>
+                  <ChipGroup name="contact_location" options={CONTACT_LOCATION} selected={formData.contact_location} onChange={setField} />
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Max. Entfernung (km)</label>
+                    <input type="number" name="max_distance_km" value={formData.max_distance_km ?? ''} onChange={handleChange} min="1" max="200" />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Wunschoma/-opa darf Raucher:in sein</label>
+                    <YesNoNull name="allow_smoker_grandparent" value={formData.allow_smoker_grandparent} onChange={setField} />
+                  </div>
+                  <div className="form-group">
+                    <label>Wunschoma/-opa darf Haustiere haben</label>
+                    <YesNoNull name="allow_pet_grandparent" value={formData.allow_pet_grandparent} onChange={setField} />
+                  </div>
+                </div>
+
+                <h3 style={section}>Was wir anbieten</h3>
+
+                <div className="form-group">
+                  <label>Unterst&uuml;tzung, die wir den Wunschgro&szlig;eltern anbieten</label>
+                  <ChipGroup name="support_offered" options={SUPPORT_OFFERED} selected={formData.support_offered} onChange={setField} />
+                </div>
+
+                <h3 style={section}>Versicherung</h3>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Eigene Haftpflichtversicherung</label>
+                    <YesNoNull name="has_liability_insurance" value={formData.has_liability_insurance} onChange={setField} />
+                  </div>
+                  <div className="form-group">
+                    <label>Kinder mit eingeschlossen</label>
+                    <YesNoNull name="children_in_liability" value={formData.children_in_liability} onChange={setField} />
+                  </div>
                 </div>
               </>
             ) : (
               <>
-                <h3 style={{ fontFamily: 'var(--font-heading)', marginBottom: '16px', marginTop: '24px' }}>Leih-Gro&szlig;eltern-Details</h3>
+                <h3 style={section}>Erfahrung &amp; Angebot</h3>
+
                 <div className="form-group">
                   <label>Erfahrung mit Kindern</label>
                   <textarea name="experience" value={formData.experience || ''} onChange={handleChange} placeholder="Welche Erfahrung haben Sie?" />
                 </div>
+
                 <div className="form-group">
-                  <label>Verf&uuml;gbarkeit</label>
+                  <label>Verf&uuml;gbarkeit (Freitext)</label>
                   <input name="availability" value={formData.availability || ''} onChange={handleChange} placeholder="z.B. Mo-Fr Vormittags" />
                 </div>
+
                 <div className="form-group">
                   <label>Bevorzugtes Alter der Kinder</label>
                   <input name="preferred_age_range" value={formData.preferred_age_range || ''} onChange={handleChange} placeholder="z.B. 2-8 Jahre" />
                 </div>
+
                 <div className="form-group">
-                  <label>Angebotene Aktivit&auml;ten</label>
-                  <input name="offered_activities" value={formData.offered_activities || ''} onChange={handleChange} placeholder="z.B. Vorlesen, Basteln, Spazieren" />
+                  <label>Aktivit&auml;ten, die ich anbiete</label>
+                  <ChipGroup name="activities" options={ACTIVITIES} selected={formData.activities} onChange={setField} />
                 </div>
+
                 <div className="form-group">
-                  <label>Mobilit&auml;t</label>
-                  <input name="mobility" value={formData.mobility || ''} onChange={handleChange} placeholder="z.B. Mobil mit &Ouml;PNV, Auto" />
+                  <label>Zus&auml;tzliche Hinweise zu Aktivit&auml;ten</label>
+                  <input name="offered_activities" value={formData.offered_activities || ''} onChange={handleChange} placeholder="z.B. Spezielle Vorlieben" />
                 </div>
+
+                <h3 style={section}>Versicherung &amp; F&uuml;hrungszeugnis</h3>
+
+                <div className="form-group">
+                  <label>Haftpflichtversicherung</label>
+                  <YesNoNull name="has_liability_insurance" value={formData.has_liability_insurance} onChange={setField} />
+                </div>
+
                 <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <input type="checkbox" name="has_fuehrungszeugnis" checked={!!formData.has_fuehrungszeugnis} onChange={handleChange} style={{ width: 'auto' }} />
-                  <label style={{ margin: 0 }}>F&uuml;hrungszeugnis vorhanden</label>
+                  <label style={{ margin: 0 }}>F&uuml;hrungszeugnis vorhanden (Selbst-Erkl&auml;rung)</label>
                 </div>
+                <p style={{ fontSize: '0.85rem', color: '#5a6878', marginTop: '-8px' }}>
+                  Tipp: Ein verifiziertes F&uuml;hrungszeugnis hochladen k&ouml;nnen Sie unter <strong>Kontoeinstellungen</strong>.
+                </p>
               </>
             )}
 
@@ -191,5 +419,13 @@ function EditProfilePage() {
     </div>
   );
 }
+
+const section = {
+  fontFamily: 'var(--font-heading)',
+  marginBottom: '16px',
+  marginTop: '32px',
+  fontSize: '1.1rem',
+  color: 'var(--primary)',
+};
 
 export default EditProfilePage;

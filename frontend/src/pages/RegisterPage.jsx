@@ -7,6 +7,7 @@ function RegisterPage() {
     email: '', password: '', role: '', first_name: '', last_name: '', city: '', postal_code: ''
   });
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
+  const [confidentialityAccepted, setConfidentialityAccepted] = useState(false);
   const [captchaToken, setCaptchaToken] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -47,6 +48,10 @@ function RegisterPage() {
       setError('Bitte stimmen Sie der Datenschutzerkl\u00e4rung zu.');
       return;
     }
+    if (formData.role === 'parent' && !confidentialityAccepted) {
+      setError('Bitte best\u00e4tigen Sie die Schweigepflicht-Erkl\u00e4rung.');
+      return;
+    }
     if (HCAPTCHA_SITEKEY && !captchaToken) {
       setError('Bitte l\u00f6sen Sie das CAPTCHA.');
       return;
@@ -54,7 +59,7 @@ function RegisterPage() {
     setError('');
     setLoading(true);
     try {
-      await register({ ...formData, captcha: captchaToken });
+      await register({ ...formData, captcha: captchaToken, confidentiality_accepted: confidentialityAccepted });
       navigate('/dashboard');
     } catch (err) {
       setError(err.message);
@@ -126,6 +131,16 @@ function RegisterPage() {
               Ich habe die <a href="/datenschutz" target="_blank">Datenschutzerkl&auml;rung</a> und die <a href="/agb" target="_blank">AGB</a> gelesen und stimme zu.
             </label>
           </div>
+
+          {formData.role === 'parent' && (
+            <div className="form-group" style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+              <input type="checkbox" id="confidentiality" checked={confidentialityAccepted} onChange={(e) => setConfidentialityAccepted(e.target.checked)} style={{ marginTop: '4px' }} />
+              <label htmlFor="confidentiality" style={{ fontSize: '0.85rem', color: '#6b7c93', fontWeight: 'normal' }}>
+                Ich verpflichte mich zur Schweigepflicht &uuml;ber alle Informationen,
+                die ich w&auml;hrend der Begleitung durch Wunschgro&szlig;eltern in meiner Familie erhalte.
+              </label>
+            </div>
+          )}
 
           <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
             {loading ? 'Registrieren...' : 'Kostenlos registrieren'}

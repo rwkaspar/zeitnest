@@ -150,6 +150,31 @@ async function initDatabase() {
     // Admin column (for /admin panel access)
     await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE`);
 
+    // Strukturierte Profil-Felder (Stage A — Altmühlfranken-Kompat)
+    await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS birth_date DATE`);
+    await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS profession TEXT`);
+    await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS working_hours INTEGER`);
+    await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS marital_status TEXT`);
+    await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS smoker BOOLEAN`);
+    await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS pets TEXT`);
+    await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS mobility TEXT[]`);
+    await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS hobbies TEXT`);
+
+    await client.query(`ALTER TABLE parent_profiles ADD COLUMN IF NOT EXISTS has_liability_insurance BOOLEAN`);
+    await client.query(`ALTER TABLE parent_profiles ADD COLUMN IF NOT EXISTS children_in_liability BOOLEAN`);
+    await client.query(`ALTER TABLE parent_profiles ADD COLUMN IF NOT EXISTS confidentiality_accepted BOOLEAN DEFAULT FALSE`);
+    await client.query(`ALTER TABLE parent_profiles ADD COLUMN IF NOT EXISTS activities TEXT[]`);
+    await client.query(`ALTER TABLE parent_profiles ADD COLUMN IF NOT EXISTS desired_grandparent TEXT`);
+    await client.query(`ALTER TABLE parent_profiles ADD COLUMN IF NOT EXISTS allow_smoker_grandparent BOOLEAN`);
+    await client.query(`ALTER TABLE parent_profiles ADD COLUMN IF NOT EXISTS allow_pet_grandparent BOOLEAN`);
+    await client.query(`ALTER TABLE parent_profiles ADD COLUMN IF NOT EXISTS max_distance_km INTEGER`);
+    await client.query(`ALTER TABLE parent_profiles ADD COLUMN IF NOT EXISTS contact_mode TEXT`);
+    await client.query(`ALTER TABLE parent_profiles ADD COLUMN IF NOT EXISTS contact_location TEXT[]`);
+    await client.query(`ALTER TABLE parent_profiles ADD COLUMN IF NOT EXISTS support_offered TEXT[]`);
+
+    await client.query(`ALTER TABLE grandparent_profiles ADD COLUMN IF NOT EXISTS activities TEXT[]`);
+    await client.query(`ALTER TABLE grandparent_profiles ADD COLUMN IF NOT EXISTS has_liability_insurance BOOLEAN`);
+
     // Führungszeugnis (FZ) verification — Stage-1 (Upload + Admin-Approval)
     // Status: not_submitted | pending | verified | rejected | expired
     await client.query(`ALTER TABLE grandparent_profiles ADD COLUMN IF NOT EXISTS fz_status TEXT NOT NULL DEFAULT 'not_submitted'`);
