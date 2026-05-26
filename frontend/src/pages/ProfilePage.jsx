@@ -113,7 +113,6 @@ function ProfilePage() {
             <div className="profile-section">
               <h3>Erfahrung &amp; Angebot</h3>
               {profile.profile.experience && <div className="profile-detail"><span className="label">Erfahrung</span><span>{profile.profile.experience}</span></div>}
-              {profile.profile.availability && <div className="profile-detail"><span className="label">Verf&uuml;gbarkeit</span><span>{profile.profile.availability}</span></div>}
               {profile.profile.preferred_age_range && <div className="profile-detail"><span className="label">Bevorzugtes Alter</span><span>{profile.profile.preferred_age_range}</span></div>}
               {profile.profile.activities?.length > 0 && <div className="profile-detail"><span className="label">Aktivit&auml;ten</span><Chips values={profile.profile.activities} options={ACTIVITIES} /></div>}
               {profile.profile.offered_activities && <div className="profile-detail"><span className="label">Hinweise</span><span>{profile.profile.offered_activities}</span></div>}
@@ -136,7 +135,6 @@ function ProfilePage() {
                   )}
                   {f.number_of_children && <div className="profile-detail"><span className="label">Anzahl Kinder</span><span>{f.number_of_children}</span></div>}
                   {f.children_ages && <div className="profile-detail"><span className="label">Alter der Kinder</span><span>{f.children_ages} Jahre</span></div>}
-                  {f.availability && <div className="profile-detail"><span className="label">Verf&uuml;gbarkeit</span><span>{f.availability}</span></div>}
                   {f.needs_description && <div className="profile-detail"><span className="label">Betreuungsbedarf</span><span>{f.needs_description}</span></div>}
                   {f.has_liability_insurance != null && (
                     <div className="profile-detail">

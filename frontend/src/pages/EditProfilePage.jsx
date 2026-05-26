@@ -383,11 +383,6 @@ function EditProfilePage() {
                   <textarea name="needs_description" value={formData.needs_description || ''} onChange={handleChange} placeholder="Was f&uuml;r Betreuung suchen Sie?" />
                 </div>
 
-                <div className="form-group">
-                  <label>Verf&uuml;gbarkeit (Freitext)</label>
-                  <input name="availability" value={formData.availability || ''} onChange={handleChange} placeholder="z.B. Mo-Fr Nachmittags" />
-                </div>
-
                 <h3 style={section}>Was wir suchen</h3>
 
                 <div className="form-group">
@@ -404,7 +399,7 @@ function EditProfilePage() {
                 </div>
 
                 <div className="form-group">
-                  <label>Wir m&ouml;chten gemeinsam Zeit verbringen &mdash;</label>
+                  <label>Die Wunschoma / der Wunschopa soll Zeit verbringen &hellip;</label>
                   <ChipGroup name="contact_mode" options={CONTACT_MODE} selected={formData.contact_mode} onChange={setField} />
                 </div>
 
@@ -460,10 +455,10 @@ function EditProfilePage() {
                   <textarea name="experience" value={formData.experience || ''} onChange={handleChange} placeholder="Welche Erfahrung haben Sie?" />
                 </div>
 
-                <div className="form-group">
-                  <label>Verf&uuml;gbarkeit (Freitext)</label>
-                  <input name="availability" value={formData.availability || ''} onChange={handleChange} placeholder="z.B. Mo-Fr Vormittags" />
-                </div>
+                <p style={{ fontSize: '0.85rem', color: '#5a6878', marginTop: '-8px', marginBottom: '16px' }}>
+                  Verf&uuml;gbare Zeitfenster pflegen Sie unter <a href="/kalender" style={{ color: 'var(--primary)' }}>Kalender</a> &mdash;
+                  dort k&ouml;nnen Familien Termine direkt buchen.
+                </p>
 
                 <div className="form-group">
                   <label>Bevorzugtes Alter der Kinder</label>

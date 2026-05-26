@@ -3,8 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 function RegisterPage() {
+  const inviteToken = typeof window !== 'undefined' ? sessionStorage.getItem('pendingFamilyInviteToken') : null;
   const [formData, setFormData] = useState({
-    email: '', password: '', role: '', first_name: '', last_name: '', city: '', postal_code: ''
+    email: '', password: '',
+    // Bei einer wartenden Family-Einladung ist die Rolle festgelegt: Elternteil.
+    role: inviteToken ? 'parent' : '',
+    first_name: '', last_name: '', city: '', postal_code: ''
   });
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [confidentialityAccepted, setConfidentialityAccepted] = useState(false);
@@ -83,17 +87,27 @@ function RegisterPage() {
 
         {error && <div className="error-message">{error}</div>}
 
-        <form onSubmit={handleSubmit}>
-          <div className="role-selector">
-            <div className={`role-option ${formData.role === 'parent' ? 'active' : ''}`} onClick={() => setFormData(p => ({ ...p, role: 'parent' }))}>
-              <span className="role-icon">&#x1F468;&#x200D;&#x1F469;&#x200D;&#x1F467;</span>
-              <span className="role-label">Elternteil</span>
-            </div>
-            <div className={`role-option ${formData.role === 'grandparent' ? 'active' : ''}`} onClick={() => setFormData(p => ({ ...p, role: 'grandparent' }))}>
-              <span className="role-icon">&#x1F9D3;</span>
-              <span className="role-label">Leih-Gro&szlig;elternteil</span>
-            </div>
+        {inviteToken && (
+          <div className="success-message" style={{ marginBottom: '16px' }}>
+            Sie wurden zu einer Familie eingeladen. Nach der Registrierung werden Sie automatisch dazugef&uuml;gt.
           </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          {inviteToken ? (
+            <input type="hidden" name="role" value="parent" />
+          ) : (
+            <div className="role-selector">
+              <div className={`role-option ${formData.role === 'parent' ? 'active' : ''}`} onClick={() => setFormData(p => ({ ...p, role: 'parent' }))}>
+                <span className="role-icon">&#x1F468;&#x200D;&#x1F469;&#x200D;&#x1F467;</span>
+                <span className="role-label">Elternteil</span>
+              </div>
+              <div className={`role-option ${formData.role === 'grandparent' ? 'active' : ''}`} onClick={() => setFormData(p => ({ ...p, role: 'grandparent' }))}>
+                <span className="role-icon">&#x1F9D3;</span>
+                <span className="role-label">Leih-Gro&szlig;elternteil</span>
+              </div>
+            </div>
+          )}
 
           <div className="form-row">
             <div className="form-group">

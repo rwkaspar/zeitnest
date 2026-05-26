@@ -31,8 +31,8 @@ export const DESIRED_GRANDPARENT = [
 ];
 
 export const CONTACT_MODE = [
-  { key: 'children_only', label: 'Mit den Kindern' },
-  { key: 'family', label: 'Mit der Familie' },
+  { key: 'children_only', label: 'mit unseren Kindern (Eltern-Entlastung)' },
+  { key: 'family', label: 'mit uns als Familie (gemeinsame Aktivitäten)' },
 ];
 
 export const CONTACT_LOCATION = [

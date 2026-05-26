@@ -285,7 +285,12 @@ router.post('/reset-password', async (req, res) => {
 // === ME ===
 router.get('/me', authenticateToken, async (req, res) => {
   try {
-    const user = await queryOne('SELECT id, email, role, first_name, last_name, city, postal_code, phone, bio, avatar_url, email_verified, totp_enabled, is_admin, created_at FROM users WHERE id = $1', [req.user.id]);
+    const user = await queryOne(`SELECT
+      id, email, role, first_name, last_name, city, postal_code, phone, bio, avatar_url,
+      email_verified, totp_enabled, is_admin, created_at,
+      birth_date, profession, working_hours, marital_status, smoker, pets, mobility, hobbies,
+      family_id, coordination_office_id
+    FROM users WHERE id = $1`, [req.user.id]);
     if (!user) return res.status(404).json({ error: 'Benutzer nicht gefunden.' });
 
     let profile = null;
