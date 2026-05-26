@@ -122,43 +122,52 @@ function ProfilePage() {
             </div>
           )}
 
-          {profile.profile && profile.role === 'parent' && (
-            <>
-              <div className="profile-section">
-                <h3>Unsere Familie</h3>
-                {profile.profile.number_of_children && <div className="profile-detail"><span className="label">Anzahl Kinder</span><span>{profile.profile.number_of_children}</span></div>}
-                {profile.profile.children_ages && <div className="profile-detail"><span className="label">Alter der Kinder</span><span>{profile.profile.children_ages} Jahre</span></div>}
-                {profile.profile.availability && <div className="profile-detail"><span className="label">Verf&uuml;gbarkeit</span><span>{profile.profile.availability}</span></div>}
-                {profile.profile.needs_description && <div className="profile-detail"><span className="label">Betreuungsbedarf</span><span>{profile.profile.needs_description}</span></div>}
-                {profile.profile.has_liability_insurance != null && (
-                  <div className="profile-detail">
-                    <span className="label">Haftpflicht</span>
-                    <span>{profile.profile.has_liability_insurance ? `✓ vorhanden${profile.profile.children_in_liability ? ' (inkl. Kinder)' : ''}` : 'nicht angegeben'}</span>
+          {profile.family && profile.role === 'parent' && (() => {
+            const f = profile.family;
+            return (
+              <>
+                <div className="profile-section">
+                  <h3>Unsere Familie</h3>
+                  {f.members?.length > 1 && (
+                    <div className="profile-detail">
+                      <span className="label">Mitglieder</span>
+                      <span>{f.members.map(m => `${m.first_name} ${m.last_name}`).join(' & ')}</span>
+                    </div>
+                  )}
+                  {f.number_of_children && <div className="profile-detail"><span className="label">Anzahl Kinder</span><span>{f.number_of_children}</span></div>}
+                  {f.children_ages && <div className="profile-detail"><span className="label">Alter der Kinder</span><span>{f.children_ages} Jahre</span></div>}
+                  {f.availability && <div className="profile-detail"><span className="label">Verf&uuml;gbarkeit</span><span>{f.availability}</span></div>}
+                  {f.needs_description && <div className="profile-detail"><span className="label">Betreuungsbedarf</span><span>{f.needs_description}</span></div>}
+                  {f.has_liability_insurance != null && (
+                    <div className="profile-detail">
+                      <span className="label">Haftpflicht</span>
+                      <span>{f.has_liability_insurance ? `✓ vorhanden${f.children_in_liability ? ' (inkl. Kinder)' : ''}` : 'nicht angegeben'}</span>
+                    </div>
+                  )}
+                </div>
+
+                {(f.desired_grandparent || f.activities?.length || f.contact_mode || f.max_distance_km) && (
+                  <div className="profile-section">
+                    <h3>Was wir suchen</h3>
+                    {f.desired_grandparent && <div className="profile-detail"><span className="label">Wunsch</span><span>{labelOf(DESIRED_GRANDPARENT, f.desired_grandparent)}</span></div>}
+                    {f.activities?.length > 0 && <div className="profile-detail"><span className="label">Aktivit&auml;ten</span><Chips values={f.activities} options={ACTIVITIES} /></div>}
+                    {f.contact_mode && <div className="profile-detail"><span className="label">Kontakt</span><span>{labelOf(CONTACT_MODE, f.contact_mode)}</span></div>}
+                    {f.contact_location?.length > 0 && <div className="profile-detail"><span className="label">Ort</span><Chips values={f.contact_location} options={CONTACT_LOCATION} /></div>}
+                    {f.max_distance_km && <div className="profile-detail"><span className="label">Max. Entfernung</span><span>{f.max_distance_km} km</span></div>}
+                    {f.allow_smoker_grandparent != null && <div className="profile-detail"><span className="label">Raucher:in OK</span><span>{f.allow_smoker_grandparent ? 'Ja' : 'Nein'}</span></div>}
+                    {f.allow_pet_grandparent != null && <div className="profile-detail"><span className="label">Haustiere OK</span><span>{f.allow_pet_grandparent ? 'Ja' : 'Nein'}</span></div>}
                   </div>
                 )}
-              </div>
 
-              {(profile.profile.desired_grandparent || profile.profile.activities?.length || profile.profile.contact_mode || profile.profile.max_distance_km) && (
-                <div className="profile-section">
-                  <h3>Was wir suchen</h3>
-                  {profile.profile.desired_grandparent && <div className="profile-detail"><span className="label">Wunsch</span><span>{labelOf(DESIRED_GRANDPARENT, profile.profile.desired_grandparent)}</span></div>}
-                  {profile.profile.activities?.length > 0 && <div className="profile-detail"><span className="label">Aktivit&auml;ten</span><Chips values={profile.profile.activities} options={ACTIVITIES} /></div>}
-                  {profile.profile.contact_mode && <div className="profile-detail"><span className="label">Kontakt</span><span>{labelOf(CONTACT_MODE, profile.profile.contact_mode)}</span></div>}
-                  {profile.profile.contact_location?.length > 0 && <div className="profile-detail"><span className="label">Ort</span><Chips values={profile.profile.contact_location} options={CONTACT_LOCATION} /></div>}
-                  {profile.profile.max_distance_km && <div className="profile-detail"><span className="label">Max. Entfernung</span><span>{profile.profile.max_distance_km} km</span></div>}
-                  {profile.profile.allow_smoker_grandparent != null && <div className="profile-detail"><span className="label">Raucher:in OK</span><span>{profile.profile.allow_smoker_grandparent ? 'Ja' : 'Nein'}</span></div>}
-                  {profile.profile.allow_pet_grandparent != null && <div className="profile-detail"><span className="label">Haustiere OK</span><span>{profile.profile.allow_pet_grandparent ? 'Ja' : 'Nein'}</span></div>}
-                </div>
-              )}
-
-              {profile.profile.support_offered?.length > 0 && (
-                <div className="profile-section">
-                  <h3>Was wir anbieten</h3>
-                  <div className="profile-detail"><span className="label">Hilfe f&uuml;r die Wunschgro&szlig;eltern</span><Chips values={profile.profile.support_offered} options={SUPPORT_OFFERED} /></div>
-                </div>
-              )}
-            </>
-          )}
+                {f.support_offered?.length > 0 && (
+                  <div className="profile-section">
+                    <h3>Was wir anbieten</h3>
+                    <div className="profile-detail"><span className="label">Hilfe f&uuml;r die Wunschgro&szlig;eltern</span><Chips values={f.support_offered} options={SUPPORT_OFFERED} /></div>
+                  </div>
+                )}
+              </>
+            );
+          })()}
 
           {profile.rating && profile.rating.count > 0 && (
             <div className="profile-section">

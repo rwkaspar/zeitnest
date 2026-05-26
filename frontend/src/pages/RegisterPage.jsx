@@ -60,7 +60,14 @@ function RegisterPage() {
     setLoading(true);
     try {
       await register({ ...formData, captcha: captchaToken, confidentiality_accepted: confidentialityAccepted });
-      navigate('/dashboard');
+      // Falls eine Family-Einladung wartet: dorthin weiterleiten, der FamilyJoinPage
+      // löst dann den Beitritt mit eingeloggtem User aus.
+      const pendingToken = sessionStorage.getItem('pendingFamilyInviteToken');
+      if (pendingToken) {
+        navigate(`/family/join/${pendingToken}`);
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err) {
       setError(err.message);
     } finally {

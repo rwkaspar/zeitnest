@@ -150,6 +150,89 @@ async function initDatabase() {
     // Admin column (for /admin panel access)
     await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE`);
 
+    // Families (Stage A.5) — Vater/Mutter unabhängig registrieren, gemeinsame Family-Daten
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS families (
+        id TEXT PRIMARY KEY,
+        owner_user_id TEXT REFERENCES users(id) ON DELETE SET NULL,
+        city TEXT,
+        postal_code TEXT,
+        phone TEXT,
+        number_of_children INTEGER,
+        children_ages TEXT,
+        needs_description TEXT,
+        availability TEXT,
+        preferred_activities TEXT,
+        confidentiality_accepted BOOLEAN DEFAULT FALSE,
+        has_liability_insurance BOOLEAN,
+        children_in_liability BOOLEAN,
+        activities TEXT[],
+        desired_grandparent TEXT,
+        allow_smoker_grandparent BOOLEAN,
+        allow_pet_grandparent BOOLEAN,
+        max_distance_km INTEGER,
+        contact_mode TEXT,
+        contact_location TEXT[],
+        support_offered TEXT[],
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      )
+    `);
+    await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS family_id TEXT REFERENCES families(id) ON DELETE SET NULL`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_users_family ON users(family_id)`);
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS family_invites (
+        id TEXT PRIMARY KEY,
+        family_id TEXT NOT NULL REFERENCES families(id) ON DELETE CASCADE,
+        invited_by_user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        invited_email TEXT,
+        token TEXT UNIQUE NOT NULL,
+        expires_at TIMESTAMPTZ NOT NULL,
+        accepted_at TIMESTAMPTZ,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      )
+    `);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_family_invites_token ON family_invites(token)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_family_invites_family ON family_invites(family_id)`);
+
+    // Daten-Migration: für jede bestehende parent_profiles-Zeile eine Family anlegen
+    // und alle Family-Felder aus parent_profiles + users (für PLZ/Stadt) in die Family übernehmen.
+    // Idempotent: nur User ohne family_id und Rolle 'parent'.
+    const { rows: orphanParents } = await client.query(`
+      SELECT u.id AS user_id, u.city, u.postal_code, u.phone,
+             pp.number_of_children, pp.children_ages, pp.needs_description,
+             pp.availability, pp.preferred_activities,
+             pp.confidentiality_accepted, pp.has_liability_insurance, pp.children_in_liability,
+             pp.activities, pp.desired_grandparent, pp.allow_smoker_grandparent,
+             pp.allow_pet_grandparent, pp.max_distance_km, pp.contact_mode,
+             pp.contact_location, pp.support_offered
+      FROM users u
+      JOIN parent_profiles pp ON pp.user_id = u.id
+      WHERE u.role = 'parent' AND u.family_id IS NULL
+    `);
+    if (orphanParents.length > 0) {
+      const { v4: uuidv4 } = require('uuid');
+      for (const p of orphanParents) {
+        const familyId = uuidv4();
+        await client.query(
+          `INSERT INTO families (id, owner_user_id, city, postal_code, phone,
+             number_of_children, children_ages, needs_description, availability, preferred_activities,
+             confidentiality_accepted, has_liability_insurance, children_in_liability,
+             activities, desired_grandparent, allow_smoker_grandparent, allow_pet_grandparent,
+             max_distance_km, contact_mode, contact_location, support_offered)
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21)`,
+          [familyId, p.user_id, p.city, p.postal_code, p.phone,
+           p.number_of_children, p.children_ages, p.needs_description, p.availability, p.preferred_activities,
+           p.confidentiality_accepted || false, p.has_liability_insurance, p.children_in_liability,
+           p.activities, p.desired_grandparent, p.allow_smoker_grandparent, p.allow_pet_grandparent,
+           p.max_distance_km, p.contact_mode, p.contact_location, p.support_offered]
+        );
+        await client.query(`UPDATE users SET family_id = $1 WHERE id = $2`, [familyId, p.user_id]);
+      }
+      console.log(`Family-Migration: ${orphanParents.length} Familien aus parent_profiles erstellt.`);
+    }
+
     // Strukturierte Profil-Felder (Stage A — Altmühlfranken-Kompat)
     await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS birth_date DATE`);
     await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS profession TEXT`);

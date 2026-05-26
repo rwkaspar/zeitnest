@@ -46,4 +46,12 @@ export const api = {
   // Messages
   getMessages: (matchId) => apiRequest(`/messages/${matchId}`),
   sendMessage: (matchId, content) => apiRequest(`/messages/${matchId}`, { method: 'POST', body: JSON.stringify({ content }) }),
+
+  // Families
+  getMyFamily: () => apiRequest('/families/me'),
+  updateMyFamily: (data) => apiRequest('/families/me', { method: 'PUT', body: JSON.stringify(data) }),
+  inviteToFamily: (email) => apiRequest('/families/me/invite', { method: 'POST', body: JSON.stringify({ email }) }),
+  joinFamily: (token) => apiRequest(`/families/join/${token}`, { method: 'POST' }),
+  leaveFamily: () => apiRequest('/families/me/leave', { method: 'DELETE' }),
+  removeMember: (userId) => apiRequest(`/families/me/members/${userId}`, { method: 'DELETE' }),
 };

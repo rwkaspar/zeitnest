@@ -59,6 +59,7 @@ initDatabase().then(() => {
   app.use('/api/auth/reset-password', authLimiter);
   app.use('/api/auth', require('./routes/auth'));
   app.use('/api/profiles', require('./routes/profiles'));
+  app.use('/api/families', require('./routes/families'));
   app.use('/api/matches', require('./routes/matches'));
   app.use('/api/messages', require('./routes/messages'));
   app.use('/api/search', require('./routes/search'));

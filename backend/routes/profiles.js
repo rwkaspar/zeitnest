@@ -125,9 +125,20 @@ router.get('/:id', authenticateToken, async (req, res) => {
     if (!user) return res.status(404).json({ error: 'Profil nicht gefunden.' });
 
     let profile = null;
+    let family = null;
     let fz_verified = false;
     if (user.role === 'parent') {
       profile = await queryOne('SELECT * FROM parent_profiles WHERE user_id = $1', [user.id]);
+      const userWithFamily = await queryOne('SELECT family_id FROM users WHERE id = $1', [user.id]);
+      if (userWithFamily?.family_id) {
+        family = await queryOne('SELECT * FROM families WHERE id = $1', [userWithFamily.family_id]);
+        if (family) {
+          family.members = await queryAll(
+            `SELECT id, first_name, last_name, avatar_url FROM users WHERE family_id = $1 ORDER BY created_at ASC`,
+            [family.id]
+          );
+        }
+      }
     } else {
       profile = await queryOne('SELECT * FROM grandparent_profiles WHERE user_id = $1', [user.id]);
       // fz_verified: nur true wenn aktuell verifiziert UND nicht abgelaufen
@@ -147,7 +158,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
     const reviews = await queryAll(`SELECT r.*, u.first_name, u.last_name FROM reviews r JOIN users u ON r.reviewer_id = u.id WHERE r.reviewed_id = $1 ORDER BY r.created_at DESC`, [req.params.id]);
     const rating = await queryOne('SELECT AVG(rating) as avg_rating, COUNT(*) as count FROM reviews WHERE reviewed_id = $1', [req.params.id]);
 
-    res.json({ ...user, profile, fz_verified, reviews, rating });
+    res.json({ ...user, profile, family, fz_verified, reviews, rating });
   } catch (err) {
     console.error('Get profile error:', err);
     res.status(500).json({ error: 'Fehler beim Laden des Profils.' });
@@ -183,38 +194,8 @@ router.put('/me', authenticateToken, async (req, res) => {
     );
 
     if (req.user.role === 'parent') {
-      const {
-        number_of_children, children_ages, needs_description, availability, preferred_activities,
-        has_liability_insurance, children_in_liability,
-        activities, desired_grandparent, allow_smoker_grandparent, allow_pet_grandparent,
-        max_distance_km, contact_mode, contact_location, support_offered,
-      } = req.body;
-
-      await runSql(
-        `UPDATE parent_profiles SET
-           number_of_children = $1, children_ages = $2, needs_description = $3,
-           availability = $4, preferred_activities = $5,
-           has_liability_insurance = $6, children_in_liability = $7,
-           activities = $8, desired_grandparent = $9,
-           allow_smoker_grandparent = $10, allow_pet_grandparent = $11,
-           max_distance_km = $12, contact_mode = $13,
-           contact_location = $14, support_offered = $15
-         WHERE user_id = $16`,
-        [
-          number_of_children, children_ages, needs_description, availability, preferred_activities,
-          has_liability_insurance == null ? null : !!has_liability_insurance,
-          children_in_liability == null ? null : !!children_in_liability,
-          validateSubset(activities, ACTIVITIES) || null,
-          validateOne(desired_grandparent, DESIRED_GRANDPARENT),
-          allow_smoker_grandparent == null ? null : !!allow_smoker_grandparent,
-          allow_pet_grandparent == null ? null : !!allow_pet_grandparent,
-          Number.isFinite(parseInt(max_distance_km)) ? parseInt(max_distance_km) : null,
-          validateOne(contact_mode, CONTACT_MODE),
-          validateSubset(contact_location, CONTACT_LOCATION) || null,
-          validateSubset(support_offered, SUPPORT_OFFERED) || null,
-          req.user.id,
-        ]
-      );
+      // Family-spezifische Felder werden über PUT /api/families/me geschrieben,
+      // nicht mehr hier. parent_profiles ist seit Stage A.5 ein leerer Stub.
     } else {
       const {
         experience, availability, preferred_age_range, offered_activities, has_fuehrungszeugnis,

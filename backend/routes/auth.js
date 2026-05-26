@@ -96,6 +96,16 @@ router.post('/register', async (req, res) => {
         'INSERT INTO parent_profiles (user_id, confidentiality_accepted) VALUES ($1, $2)',
         [id, !!req.body.confidentiality_accepted]
       );
+      // Automatisch eine neue Family für jeden Eltern-Account anlegen.
+      // Wenn der User später einer bestehenden Family beitritt, wird diese Solo-Family
+      // beim Join gelöscht (siehe routes/families.js POST /join/:token).
+      const familyId = uuidv4();
+      await runSql(
+        `INSERT INTO families (id, owner_user_id, city, postal_code, phone, confidentiality_accepted)
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [familyId, id, city || null, postal_code || null, null, !!req.body.confidentiality_accepted]
+      );
+      await runSql(`UPDATE users SET family_id = $1 WHERE id = $2`, [familyId, id]);
     } else {
       await runSql('INSERT INTO grandparent_profiles (user_id) VALUES ($1)', [id]);
     }

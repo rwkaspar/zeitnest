@@ -88,37 +88,57 @@ function YesNoNull({ name, value, onChange }) {
   );
 }
 
+const FAMILY_KEYS = [
+  'city', 'postal_code', 'phone',
+  'number_of_children', 'children_ages', 'needs_description', 'availability', 'preferred_activities',
+  'has_liability_insurance', 'children_in_liability', 'confidentiality_accepted',
+  'activities', 'desired_grandparent', 'allow_smoker_grandparent', 'allow_pet_grandparent',
+  'max_distance_km', 'contact_mode', 'contact_location', 'support_offered',
+];
+
 function EditProfilePage() {
   const { user, updateUser } = useAuth();
   const [formData, setFormData] = useState({});
+  const [family, setFamily] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    api.getMe()
-      .then(data => {
+    async function load() {
+      try {
+        const me = await api.getMe();
+        let fam = null;
+        if (me.role === 'parent') {
+          try { fam = await api.getMyFamily(); } catch { /* solo, falls keine Family */ }
+        }
+        setFamily(fam);
         setFormData({
-          first_name: data.first_name || '',
-          last_name: data.last_name || '',
-          city: data.city || '',
-          postal_code: data.postal_code || '',
-          phone: data.phone || '',
-          bio: data.bio || '',
-          birth_date: data.birth_date ? data.birth_date.slice(0, 10) : '',
-          profession: data.profession || '',
-          working_hours: data.working_hours ?? '',
-          marital_status: data.marital_status || '',
-          smoker: data.smoker,
-          pets: data.pets || '',
-          mobility: data.mobility || [],
-          hobbies: data.hobbies || '',
-          avatar_url: data.avatar_url || '',
-          ...(data.profile || {}),
+          first_name: me.first_name || '',
+          last_name: me.last_name || '',
+          city: fam?.city ?? me.city ?? '',
+          postal_code: fam?.postal_code ?? me.postal_code ?? '',
+          phone: fam?.phone ?? me.phone ?? '',
+          bio: me.bio || '',
+          birth_date: me.birth_date ? me.birth_date.slice(0, 10) : '',
+          profession: me.profession || '',
+          working_hours: me.working_hours ?? '',
+          marital_status: me.marital_status || '',
+          smoker: me.smoker,
+          pets: me.pets || '',
+          mobility: me.mobility || [],
+          hobbies: me.hobbies || '',
+          avatar_url: me.avatar_url || '',
+          // Family-Felder oder profile-Felder mischen (rückwärtskompatibel)
+          ...(fam || me.profile || {}),
         });
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
   }, []);
 
   function handleChange(e) {
@@ -135,7 +155,25 @@ function EditProfilePage() {
     setSaving(true);
     setMessage('');
     try {
-      await api.updateProfile(formData);
+      // User-Felder gehen an /profiles/me; Family-Felder an /families/me (nur für parents mit Family)
+      const isParent = user?.role === 'parent';
+      const familyPayload = {};
+      const userPayload = { ...formData };
+      if (isParent && family) {
+        for (const k of FAMILY_KEYS) {
+          if (k in userPayload) {
+            familyPayload[k] = userPayload[k];
+            // city/postal_code/phone werden auch im User belassen — sind in beiden Tabellen vorhanden
+            if (!['city', 'postal_code', 'phone'].includes(k)) {
+              delete userPayload[k];
+            }
+          }
+        }
+      }
+      await api.updateProfile(userPayload);
+      if (isParent && family) {
+        await api.updateMyFamily(familyPayload);
+      }
       updateUser({ first_name: formData.first_name, last_name: formData.last_name, city: formData.city });
       setMessage('Profil erfolgreich gespeichert!');
     } catch (err) {
@@ -414,8 +452,102 @@ function EditProfilePage() {
               {saving ? 'Speichern...' : 'Profil speichern'}
             </button>
           </form>
+
+          {user?.role === 'parent' && family && (
+            <FamilyMembersSection family={family} currentUserId={user.id} onChange={(f) => setFamily(f)} />
+          )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function FamilyMembersSection({ family, currentUserId, onChange }) {
+  const [inviteLink, setInviteLink] = useState('');
+  const [msg, setMsg] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function reload() {
+    try { onChange(await api.getMyFamily()); } catch {}
+  }
+
+  async function createInvite() {
+    setLoading(true);
+    setMsg('');
+    try {
+      const res = await api.inviteToFamily();
+      const url = window.location.origin + res.invite_url;
+      setInviteLink(url);
+      setMsg('Einladungslink erzeugt. Sie können ihn kopieren und an Ihre:n Partner:in schicken — gültig 14 Tage.');
+    } catch (err) {
+      setMsg(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function removeMember(userId) {
+    if (!confirm('Mitglied wirklich aus der Family entfernen?')) return;
+    try { await api.removeMember(userId); reload(); } catch (err) { setMsg(err.message); }
+  }
+
+  async function leaveFamily() {
+    if (!confirm('Family wirklich verlassen?')) return;
+    try {
+      await api.leaveFamily();
+      window.location.reload();
+    } catch (err) { setMsg(err.message); }
+  }
+
+  const isOwner = family.owner_user_id === currentUserId;
+
+  return (
+    <div className="profile-section" style={{ marginTop: '32px' }}>
+      <h3 style={section}>Familien-Mitglieder</h3>
+
+      <div style={{ marginBottom: '16px' }}>
+        {family.members?.map((m) => (
+          <div key={m.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', borderRadius: '8px', background: 'var(--bg)', marginBottom: '6px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div className="profile-avatar" style={{ width: '36px', height: '36px', fontSize: '0.9rem', backgroundImage: m.avatar_url ? `url(${m.avatar_url})` : 'none', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                {!m.avatar_url && `${m.first_name?.[0] || ''}${m.last_name?.[0] || ''}`}
+              </div>
+              <div>
+                <strong>{m.first_name} {m.last_name}</strong>
+                {m.id === family.owner_user_id && <span style={{ marginLeft: '8px', fontSize: '0.75rem', padding: '2px 8px', borderRadius: '10px', background: 'var(--primary-light)', color: 'var(--primary)' }}>Owner</span>}
+                {m.id === currentUserId && <span style={{ marginLeft: '8px', fontSize: '0.8rem', color: '#5a6878' }}>(Sie)</span>}
+              </div>
+            </div>
+            {isOwner && m.id !== currentUserId && (
+              <button type="button" className="btn btn-sm btn-outline" onClick={() => removeMember(m.id)}>Entfernen</button>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        <button type="button" className="btn btn-sm btn-primary" onClick={createInvite} disabled={loading}>
+          Partner:in einladen
+        </button>
+        {(family.members?.length > 1 || !isOwner) && (
+          <button type="button" className="btn btn-sm btn-outline" onClick={leaveFamily}>
+            Family verlassen
+          </button>
+        )}
+      </div>
+
+      {inviteLink && (
+        <div style={{ marginTop: '12px', padding: '12px', background: 'var(--bg)', borderRadius: '8px' }}>
+          <p style={{ marginBottom: '6px', fontSize: '0.9rem' }}>Einladungslink:</p>
+          <code style={{ display: 'block', padding: '8px', background: '#fff', borderRadius: '4px', wordBreak: 'break-all', fontSize: '0.85rem' }}>{inviteLink}</code>
+          <button type="button" className="btn btn-sm btn-outline" style={{ marginTop: '8px' }}
+            onClick={() => { navigator.clipboard.writeText(inviteLink); setMsg('Link kopiert.'); }}>
+            In Zwischenablage kopieren
+          </button>
+        </div>
+      )}
+
+      {msg && <p style={{ marginTop: '10px', fontSize: '0.9rem', color: msg.includes('kopiert') || msg.includes('erzeugt') ? '#1e7a3a' : '#c0392b' }}>{msg}</p>}
     </div>
   );
 }
