@@ -74,8 +74,23 @@ initDatabase().then(() => {
   const frontendPath = path.join(__dirname, '../frontend/dist');
   const fs = require('fs');
   if (fs.existsSync(frontendPath)) {
-    app.use(express.static(frontendPath));
+    // Hashed Bundles (assets/*) dürfen lange gecached werden,
+    // alles andere (index.html, favicon, logos) muss frisch geladen werden,
+    // sonst sehen User nach Deploys die alte Version.
+    app.use(express.static(frontendPath, {
+      setHeaders: (res, filePath) => {
+        if (filePath.includes(`${path.sep}assets${path.sep}`)) {
+          // Vite-Bundle hat Content-Hash im Namen — immutable cache 1 Jahr.
+          res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+        } else {
+          // index.html, favicon.svg, logo.png, illustrations/* — keine Cache,
+          // damit neue Deploys sofort sichtbar sind.
+          res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        }
+      },
+    }));
     app.get('*', (req, res) => {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       res.sendFile(path.join(frontendPath, 'index.html'));
     });
   }
