@@ -24,6 +24,16 @@ router.post('/', authenticateToken, async (req, res) => {
     const id = uuidv4();
     await runSql(`INSERT INTO matches (id, parent_id, grandparent_id, status, message) VALUES ($1, $2, $3, 'pending', $4)`, [id, parent_id, grandparent_id, message || null]);
 
+    // Wenn eine Nachricht mitgeschickt wurde, gleich als erste Message in den Chat schreiben,
+    // damit der Empfänger sie nach Annahme im Chatverlauf sieht.
+    if (message && message.trim()) {
+      const msgId = uuidv4();
+      await runSql(
+        `INSERT INTO messages (id, match_id, sender_id, content, read) VALUES ($1, $2, $3, $4, FALSE)`,
+        [msgId, id, req.user.id, message.trim()]
+      );
+    }
+
     // Notify target by email (best-effort)
     const sender = await queryOne('SELECT first_name, last_name FROM users WHERE id = $1', [req.user.id]);
     const recipient = await queryOne('SELECT email, first_name FROM users WHERE id = $1', [target_id]);

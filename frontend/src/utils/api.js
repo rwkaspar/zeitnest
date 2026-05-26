@@ -46,6 +46,8 @@ export const api = {
   // Messages
   getMessages: (matchId) => apiRequest(`/messages/${matchId}`),
   sendMessage: (matchId, content) => apiRequest(`/messages/${matchId}`, { method: 'POST', body: JSON.stringify({ content }) }),
+  editMessage: (id, content) => apiRequest(`/messages/${id}`, { method: 'PUT', body: JSON.stringify({ content }) }),
+  deleteMessage: (id) => apiRequest(`/messages/${id}`, { method: 'DELETE' }),
 
   // Families
   getMyFamily: () => apiRequest('/families/me'),

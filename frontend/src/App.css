@@ -1054,16 +1054,19 @@ img[src*="senioren-wissen"] {
   gap: 8px;
 }
 
-.message-input input {
+.message-input input,
+.message-input textarea {
   flex: 1;
   padding: 12px 16px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   font-size: 0.95rem;
   font-family: var(--font-body);
+  min-height: 44px;
 }
 
-.message-input input:focus {
+.message-input input:focus,
+.message-input textarea:focus {
   outline: none;
   border-color: var(--primary);
 }

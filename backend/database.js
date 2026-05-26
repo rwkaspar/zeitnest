@@ -150,6 +150,9 @@ async function initDatabase() {
     // Admin column (for /admin panel access)
     await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE`);
 
+    // Messages: Bearbeiten-Spur
+    await client.query(`ALTER TABLE messages ADD COLUMN IF NOT EXISTS edited_at TIMESTAMPTZ`);
+
     // Koordinierungsstellen (Stage B) — Behörden/Wohlfahrt vermitteln Familien & Wunschgroßeltern in ihrem Bereich
     await client.query(`
       CREATE TABLE IF NOT EXISTS coordination_offices (

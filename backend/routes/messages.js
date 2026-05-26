@@ -80,4 +80,47 @@ router.post('/:matchId', authenticateToken, async (req, res) => {
   }
 });
 
+// PUT /messages/:id — eigene Nachricht bearbeiten (innerhalb 15 Min)
+router.put('/:id', authenticateToken, async (req, res) => {
+  try {
+    const { content } = req.body;
+    if (!content || !content.trim()) return res.status(400).json({ error: 'Nachricht darf nicht leer sein.' });
+
+    const msg = await queryOne('SELECT * FROM messages WHERE id = $1', [req.params.id]);
+    if (!msg) return res.status(404).json({ error: 'Nachricht nicht gefunden.' });
+    if (msg.sender_id !== req.user.id) return res.status(403).json({ error: 'Nur eigene Nachrichten bearbeitbar.' });
+
+    const ageMs = Date.now() - new Date(msg.created_at).getTime();
+    if (ageMs > 15 * 60 * 1000) {
+      return res.status(400).json({ error: 'Bearbeitung nur innerhalb von 15 Minuten möglich.' });
+    }
+
+    await runSql('UPDATE messages SET content = $1, edited_at = NOW() WHERE id = $2', [content.trim(), req.params.id]);
+    res.json({ id: req.params.id, content: content.trim(), edited_at: new Date().toISOString() });
+  } catch (err) {
+    console.error('Edit message error:', err);
+    res.status(500).json({ error: 'Bearbeitung fehlgeschlagen.' });
+  }
+});
+
+// DELETE /messages/:id — eigene Nachricht löschen (innerhalb 15 Min)
+router.delete('/:id', authenticateToken, async (req, res) => {
+  try {
+    const msg = await queryOne('SELECT * FROM messages WHERE id = $1', [req.params.id]);
+    if (!msg) return res.status(404).json({ error: 'Nachricht nicht gefunden.' });
+    if (msg.sender_id !== req.user.id) return res.status(403).json({ error: 'Nur eigene Nachrichten löschbar.' });
+
+    const ageMs = Date.now() - new Date(msg.created_at).getTime();
+    if (ageMs > 15 * 60 * 1000) {
+      return res.status(400).json({ error: 'Löschen nur innerhalb von 15 Minuten möglich.' });
+    }
+
+    await runSql('DELETE FROM messages WHERE id = $1', [req.params.id]);
+    res.json({ message: 'Gelöscht.' });
+  } catch (err) {
+    console.error('Delete message error:', err);
+    res.status(500).json({ error: 'Löschen fehlgeschlagen.' });
+  }
+});
+
 module.exports = router;
