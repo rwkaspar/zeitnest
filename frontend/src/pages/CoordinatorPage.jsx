@@ -37,20 +37,23 @@ function CoordinatorPage() {
   const [statusFilter, setStatusFilter] = useState('');
   const [editingNote, setEditingNote] = useState(null);
   const [noteDraft, setNoteDraft] = useState({ status: 'new', note: '' });
+  const [eventCount, setEventCount] = useState(0);
 
   const auth = () => ({ Authorization: `Bearer ${localStorage.getItem('token')}` });
 
   async function reload() {
-    const [o, s, f, g] = await Promise.all([
+    const [o, s, f, g, e] = await Promise.all([
       fetch('/api/coordinator/me', { headers: auth() }).then(r => r.json()),
       fetch('/api/coordinator/stats', { headers: auth() }).then(r => r.json()),
       fetch('/api/coordinator/families', { headers: auth() }).then(r => r.json()),
       fetch('/api/coordinator/grandparents', { headers: auth() }).then(r => r.json()),
+      fetch('/api/coordinator/events', { headers: auth() }).then(r => r.json()),
     ]);
     setOffice(o.office);
     setStats(s);
     setFamilies(f.families || []);
     setGrandparents(g.grandparents || []);
+    setEventCount((e.events || []).length);
   }
 
   useEffect(() => {
@@ -111,6 +114,55 @@ function CoordinatorPage() {
             )}
           </p>
         )}
+
+        {(() => {
+          // Onboarding-Block für Koordinator:innen — erste Schritte. Verschwindet, sobald
+          // Notiz UND Event mindestens einmal angelegt wurden; bei Demo-Account immer sichtbar.
+          const hasFamilies = families.length > 0 || grandparents.length > 0;
+          const hasNotes = (stats.in_contact || 0) + (stats.matched || 0) > 0;
+          const hasEvents = eventCount > 0;
+          const isDemoCoord = (user?.email || '').endsWith('@zeitnest.local');
+          const onboardingDone = hasNotes && hasEvents;
+          if (onboardingDone && !isDemoCoord) return null;
+          const steps = [
+            { done: hasFamilies, label: 'Familien und Wunschgroßeltern in Ihrem PLZ-Bereich sichten',
+              hint: 'Wer hier auftaucht, hat die Sichtbarkeit für Koordinierungsstellen aktiviert.' },
+            { done: hasNotes, label: 'Erste Notiz oder Status anlegen',
+              hint: 'Klicken Sie bei einem Eintrag auf „Notiz / Status" — Status „Im Erstkontakt" oder „Vermittelt" hilft Ihnen, den Überblick zu behalten.' },
+            { done: hasEvents, label: 'Optional: einen Termin anlegen',
+              hint: 'Schulungen, Vorstellungstreffen, Erfahrungsaustausch — alle eingewilligten Nutzer:innen in Ihrer Region sehen das in ihrem Kalender.',
+              link: 'events' },
+          ];
+          const doneCount = steps.filter(s => s.done).length;
+          return (
+            <div className="card" style={{ marginBottom: '24px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
+                <h3 style={{ fontFamily: 'var(--font-heading)' }}>Erste Schritte in der Koordination</h3>
+                <span style={{ fontSize: '0.85rem', color: '#5a6878' }}>
+                  {doneCount}/{steps.length} erledigt{isDemoCoord && onboardingDone ? ' (Demo-Vorschau)' : ''}
+                </span>
+              </div>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                {steps.map((s, i) => (
+                  <li key={i} style={{ padding: '10px 0', borderBottom: i < steps.length - 1 ? '1px solid var(--border-light)' : 'none', display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                    <span style={{ fontSize: '1.2rem', color: s.done ? 'var(--success)' : '#cdd5dc' }}>{s.done ? '✓' : '○'}</span>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: s.done ? 400 : 500, color: s.done ? '#5a6878' : 'var(--text)', textDecoration: s.done ? 'line-through' : 'none' }}>
+                        {s.label}
+                      </div>
+                      {!s.done && s.hint && (
+                        <div style={{ fontSize: '0.8rem', color: '#5a6878', marginTop: '2px' }}>{s.hint}</div>
+                      )}
+                    </div>
+                    {!s.done && s.link && (
+                      <button className="btn btn-sm btn-outline" onClick={() => setTab(s.link)}>Zu Termine</button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })()}
 
         {/* Statistik-Karten */}
         <div className="dashboard-grid" style={{ marginBottom: '24px' }}>
@@ -413,11 +465,31 @@ function CoordinatorEvents({ auth }) {
           <div className="form-row">
             <div className="form-group">
               <label>Start *</label>
-              <input type="datetime-local" value={form.start_at} onChange={e => setForm({ ...form, start_at: e.target.value })} />
+              <input type="datetime-local" value={form.start_at}
+                onChange={e => {
+                  const start = e.target.value;
+                  // Default-Ende +4h am selben Tag setzen, wenn end leer ist oder noch
+                  // dem zuletzt berechneten Default entspricht (= dann darf überschrieben werden).
+                  const prevAutoEnd = form._autoEnd;
+                  const update = { ...form, start_at: start };
+                  if (start && (!form.end_at || form.end_at === prevAutoEnd)) {
+                    const d = new Date(start);
+                    if (!Number.isNaN(d.getTime())) {
+                      d.setHours(d.getHours() + 4);
+                      const pad = (n) => String(n).padStart(2, '0');
+                      const auto = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+                      update.end_at = auto;
+                      update._autoEnd = auto;
+                    }
+                  }
+                  setForm(update);
+                }}
+              />
             </div>
             <div className="form-group">
-              <label>Ende *</label>
-              <input type="datetime-local" value={form.end_at} onChange={e => setForm({ ...form, end_at: e.target.value })} />
+              <label>Ende * <span style={{ fontSize: '0.8rem', color: '#5a6878', fontWeight: 'normal' }}>(Default: +4h)</span></label>
+              <input type="datetime-local" value={form.end_at}
+                onChange={e => setForm({ ...form, end_at: e.target.value, _autoEnd: undefined })} />
             </div>
           </div>
           <div className="form-row">
