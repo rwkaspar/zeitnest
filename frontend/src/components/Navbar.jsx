@@ -7,6 +7,10 @@ function Navbar() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
 
+  function handleLogout() {
+    if (window.confirm('Wirklich abmelden?')) logout();
+  }
+
   useEffect(() => {
     setOpen(false);
   }, [location.pathname]);
@@ -41,7 +45,7 @@ function Navbar() {
                 <Link to="/koordination">Koordination</Link>
                 <Link to="/konto">Konto</Link>
                 {user.is_admin && <Link to="/admin">Admin</Link>}
-                <button onClick={logout}>Abmelden</button>
+                <button onClick={handleLogout}>Abmelden</button>
               </>
             ) : (
               <>
@@ -51,7 +55,7 @@ function Navbar() {
                 <Link to="/profil/bearbeiten">Profil</Link>
                 <Link to="/konto">Konto</Link>
                 {user.is_admin && <Link to="/admin">Admin</Link>}
-                <button onClick={logout}>Abmelden</button>
+                <button onClick={handleLogout}>Abmelden</button>
               </>
             )
           ) : (

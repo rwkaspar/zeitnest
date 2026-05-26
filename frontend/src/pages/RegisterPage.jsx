@@ -146,17 +146,17 @@ function RegisterPage() {
             </div>
           )}
 
-          <div className="form-group" style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-            <input type="checkbox" id="privacy" checked={privacyAccepted} onChange={(e) => setPrivacyAccepted(e.target.checked)} style={{ marginTop: '4px' }} />
-            <label htmlFor="privacy" style={{ fontSize: '0.85rem', color: '#6b7c93', fontWeight: 'normal' }}>
+          <div className="form-group consent-row">
+            <input type="checkbox" id="privacy" checked={privacyAccepted} onChange={(e) => setPrivacyAccepted(e.target.checked)} />
+            <label htmlFor="privacy">
               Ich habe die <a href="/datenschutz" target="_blank">Datenschutzerkl&auml;rung</a> und die <a href="/agb" target="_blank">AGB</a> gelesen und stimme zu.
             </label>
           </div>
 
           {formData.role === 'parent' && (
-            <div className="form-group" style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-              <input type="checkbox" id="confidentiality" checked={confidentialityAccepted} onChange={(e) => setConfidentialityAccepted(e.target.checked)} style={{ marginTop: '4px' }} />
-              <label htmlFor="confidentiality" style={{ fontSize: '0.85rem', color: '#6b7c93', fontWeight: 'normal' }}>
+            <div className="form-group consent-row">
+              <input type="checkbox" id="confidentiality" checked={confidentialityAccepted} onChange={(e) => setConfidentialityAccepted(e.target.checked)} />
+              <label htmlFor="confidentiality">
                 Ich verpflichte mich zur Schweigepflicht &uuml;ber alle Informationen,
                 die ich w&auml;hrend der Begleitung durch Wunschgro&szlig;eltern in meiner Familie erhalte.
               </label>
