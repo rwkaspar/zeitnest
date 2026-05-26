@@ -156,19 +156,24 @@ async function initDatabase() {
     await client.query(`ALTER TABLE messages ADD COLUMN IF NOT EXISTS edited_at TIMESTAMPTZ`);
 
     // desired_grandparent + contact_mode jetzt Multi-Select (TEXT[])
-    // Idempotente Konvertierung: falls Spalte noch TEXT, nach TEXT[] umwandeln
-    try {
-      await client.query(`
-        ALTER TABLE families ALTER COLUMN desired_grandparent TYPE TEXT[]
-          USING CASE WHEN desired_grandparent IS NULL THEN NULL ELSE ARRAY[desired_grandparent] END
-      `);
-    } catch (e) { /* already converted */ }
-    try {
-      await client.query(`
-        ALTER TABLE families ALTER COLUMN contact_mode TYPE TEXT[]
-          USING CASE WHEN contact_mode IS NULL THEN NULL ELSE ARRAY[contact_mode] END
-      `);
-    } catch (e) { /* already converted */ }
+    // Achtung: ALTER COLUMN TYPE TEXT[] USING ARRAY[col] läuft sonst bei jedem
+    // Container-Restart und packt einen bestehenden TEXT[]-Wert in einen
+    // weiteren Array-Layer — verschachtelte Arrays in der DB sind die Folge.
+    // Daher Idempotenz über udt_name-Check, nicht try/catch.
+    for (const col of ['desired_grandparent', 'contact_mode']) {
+      const info = await client.query(
+        `SELECT udt_name FROM information_schema.columns
+           WHERE table_name = 'families' AND column_name = $1`,
+        [col]
+      );
+      const udt = info.rows[0]?.udt_name;
+      if (udt && udt !== '_text') {
+        await client.query(
+          `ALTER TABLE families ALTER COLUMN ${col} TYPE TEXT[]
+             USING CASE WHEN ${col} IS NULL THEN NULL ELSE ARRAY[${col}] END`
+        );
+      }
+    }
 
     // B.1 Opt-In Sichtbarkeit für Koordinierungsstellen
     // Default FALSE — Datenschutz-Pflicht
