@@ -27,6 +27,9 @@ function htmlTemplate(title, bodyHtml) {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#fafbfc;padding:24px 0;">
 <tr><td align="center">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="background-color:#ffffff;border-radius:8px;padding:32px;max-width:600px;">
+<tr><td align="center" style="padding-bottom:24px;">
+<a href="${BASE_URL}" style="text-decoration:none;"><img src="${BASE_URL}/email-logo.png" alt="Zeitnest" width="220" style="display:block;width:220px;max-width:220px;height:auto;border:0;outline:none;text-decoration:none;"></a>
+</td></tr>
 ${bodyHtml}
 <tr><td style="padding-top:24px;border-top:1px solid #e1e8ee;color:#5a6878;font-size:12px;">
 Zeitnest &ndash; Zeit schenken. Zeit gewinnen.<br>
