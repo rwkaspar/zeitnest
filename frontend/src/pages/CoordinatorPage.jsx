@@ -134,6 +134,7 @@ function CoordinatorPage() {
           {[
             ['families', `Familien (${fFiltered.length}/${families.length})`],
             ['grandparents', `Wunschgroßeltern (${gFiltered.length}/${grandparents.length})`],
+            ['events', `Termine`],
           ].map(([t, label]) => (
             <button
               key={t}
@@ -163,6 +164,10 @@ function CoordinatorPage() {
             {STATUS_OPTIONS.map(s => <option key={s.key} value={s.key}>{s.label}</option>)}
           </select>
         </div>
+
+        {tab === 'events' && (
+          <CoordinatorEvents auth={auth} />
+        )}
 
         {tab === 'families' && (
           <div>
@@ -314,6 +319,188 @@ function CoordinatorPage() {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+const AUDIENCE_LABELS = { parents: 'Familien', grandparents: 'Wunschgroßeltern', both: 'Beide' };
+
+function CoordinatorEvents({ auth }) {
+  const [events, setEvents] = useState([]);
+  const [form, setForm] = useState(null);
+  const [openAttendees, setOpenAttendees] = useState(null);
+
+  async function reload() {
+    const r = await fetch('/api/coordinator/events', { headers: auth() }).then(r => r.json());
+    setEvents(r.events || []);
+  }
+  useEffect(() => { reload(); }, []);
+
+  function startNew() {
+    setForm({
+      title: '',
+      description: '',
+      location: '',
+      start_at: '',
+      end_at: '',
+      capacity: '',
+      audience: 'both',
+    });
+  }
+
+  function startEdit(e) {
+    setForm({
+      id: e.id,
+      title: e.title,
+      description: e.description || '',
+      location: e.location || '',
+      start_at: e.start_at?.slice(0, 16) || '',
+      end_at: e.end_at?.slice(0, 16) || '',
+      capacity: e.capacity ?? '',
+      audience: e.audience,
+    });
+  }
+
+  async function save() {
+    const method = form.id ? 'PUT' : 'POST';
+    const url = form.id ? `/api/coordinator/events/${form.id}` : '/api/coordinator/events';
+    const payload = {
+      title: form.title,
+      description: form.description,
+      location: form.location,
+      start_at: form.start_at,
+      end_at: form.end_at,
+      capacity: form.capacity || null,
+      audience: form.audience,
+    };
+    const res = await fetch(url, {
+      method, headers: { 'Content-Type': 'application/json', ...auth() }, body: JSON.stringify(payload),
+    });
+    if (res.ok) { setForm(null); reload(); }
+    else { const d = await res.json(); alert(d.error || 'Speichern fehlgeschlagen.'); }
+  }
+
+  async function removeEvent(id) {
+    if (!confirm('Termin wirklich löschen?')) return;
+    await fetch(`/api/coordinator/events/${id}`, { method: 'DELETE', headers: auth() });
+    reload();
+  }
+
+  async function openAttendeesPanel(id) {
+    const r = await fetch(`/api/coordinator/events/${id}`, { headers: auth() }).then(r => r.json());
+    setOpenAttendees(r);
+  }
+
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+        <p style={{ color: '#5a6878' }}>
+          Veranstaltungen Ihrer Stelle (Schulungen, Sommerfeste, Vorstellungs-Termine, …).
+          Eltern und Wunschgroßeltern, die für Koordinierungsstellen sichtbar sind, sehen passende Termine in ihrem Kalender.
+        </p>
+        <button className="btn btn-sm btn-primary" onClick={startNew}>+ Termin anlegen</button>
+      </div>
+
+      {form && (
+        <div className="card" style={{ marginBottom: '16px', background: 'var(--bg)' }}>
+          <h3 style={{ fontFamily: 'var(--font-heading)', marginBottom: '12px' }}>
+            {form.id ? 'Termin bearbeiten' : 'Neuer Termin'}
+          </h3>
+          <div className="form-group">
+            <label>Titel *</label>
+            <input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Start *</label>
+              <input type="datetime-local" value={form.start_at} onChange={e => setForm({ ...form, start_at: e.target.value })} />
+            </div>
+            <div className="form-group">
+              <label>Ende *</label>
+              <input type="datetime-local" value={form.end_at} onChange={e => setForm({ ...form, end_at: e.target.value })} />
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Ort</label>
+              <input value={form.location} onChange={e => setForm({ ...form, location: e.target.value })} placeholder="z.B. Bürgersaal, Weißenburg" />
+            </div>
+            <div className="form-group">
+              <label>Plätze (optional)</label>
+              <input type="number" min="1" value={form.capacity} onChange={e => setForm({ ...form, capacity: e.target.value })} />
+            </div>
+          </div>
+          <div className="form-group">
+            <label>Zielgruppe</label>
+            <select value={form.audience} onChange={e => setForm({ ...form, audience: e.target.value })}>
+              <option value="both">Beide</option>
+              <option value="parents">Nur Familien</option>
+              <option value="grandparents">Nur Wunschgroßeltern</option>
+            </select>
+          </div>
+          <div className="form-group">
+            <label>Beschreibung</label>
+            <textarea rows={3} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} />
+          </div>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button className="btn btn-sm btn-primary" onClick={save}>Speichern</button>
+            <button className="btn btn-sm btn-outline" onClick={() => setForm(null)}>Abbrechen</button>
+          </div>
+        </div>
+      )}
+
+      {events.length === 0 && <p style={{ color: '#5a6878' }}>Noch keine Termine angelegt.</p>}
+
+      {events.map(e => (
+        <div key={e.id} className="card" style={{ marginBottom: '12px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
+            <div style={{ flex: '1 1 360px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                <strong>{e.title}</strong>
+                <span style={{ padding: '2px 8px', borderRadius: '10px', background: 'var(--primary-light)', color: 'var(--primary)', fontSize: '0.75rem', fontWeight: 600 }}>
+                  {AUDIENCE_LABELS[e.audience]}
+                </span>
+              </div>
+              <p style={{ margin: '6px 0', fontSize: '0.9rem', color: '#5a6878' }}>
+                {new Date(e.start_at).toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'short' })} – {new Date(e.end_at).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}
+                {e.location && ` · ${e.location}`}
+                {e.capacity && ` · max. ${e.capacity}`}
+              </p>
+              <p style={{ fontSize: '0.85rem', color: '#5a6878' }}>
+                Zugesagt: <strong>{e.going_count}</strong>
+                {e.interested_count > 0 && ` · Interessiert: ${e.interested_count}`}
+              </p>
+              {e.description && <p style={{ fontSize: '0.9rem', marginTop: '8px' }}>{e.description}</p>}
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <button className="btn btn-sm btn-outline" onClick={() => openAttendeesPanel(e.id)}>Teilnehmer</button>
+              <button className="btn btn-sm btn-outline" onClick={() => startEdit(e)}>Bearbeiten</button>
+              <button className="btn btn-sm btn-danger" onClick={() => removeEvent(e.id)}>Löschen</button>
+            </div>
+          </div>
+        </div>
+      ))}
+
+      {openAttendees && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}
+          onClick={() => setOpenAttendees(null)}>
+          <div className="card" style={{ maxWidth: '500px', width: '90%', maxHeight: '80vh', overflow: 'auto' }} onClick={e => e.stopPropagation()}>
+            <h3 style={{ fontFamily: 'var(--font-heading)', marginBottom: '12px' }}>{openAttendees.title}</h3>
+            {openAttendees.attendees?.length > 0 ? (
+              <ul style={{ listStyle: 'none', padding: 0 }}>
+                {openAttendees.attendees.map(a => (
+                  <li key={a.user_id} style={{ padding: '8px 0', borderBottom: '1px solid var(--border-light)' }}>
+                    <strong>{a.first_name} {a.last_name}</strong>
+                    <span style={{ marginLeft: '8px', fontSize: '0.85rem', color: '#5a6878' }}>{a.role === 'parent' ? 'Familie' : 'Wunschoma/-opa'} · {a.status}</span>
+                    <br /><span style={{ fontSize: '0.85rem', color: '#5a6878' }}>{a.email}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : <p>Noch keine Teilnehmer.</p>}
+            <button className="btn btn-sm btn-outline" style={{ marginTop: '12px' }} onClick={() => setOpenAttendees(null)}>Schließen</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

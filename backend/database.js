@@ -120,8 +120,10 @@ async function initDatabase() {
     // Migrations
     await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS is_demo BOOLEAN DEFAULT FALSE`);
     await client.query(`UPDATE users SET is_demo = TRUE WHERE email LIKE '%@example.de' OR email LIKE '%@zeitnest.local'`);
-    // Anonymize legacy demo users (PII in old seed data)
-    await client.query(`UPDATE users SET phone = NULL, postal_code = NULL WHERE is_demo = TRUE`);
+    // Frühere Migration anonymisierte hier phone+postal_code für is_demo=TRUE-User,
+    // weil der allererste Seed echte Adressen hatte. Inzwischen sind die Demo-Datensätze
+    // bewusst regional gestaltet (z.B. Altmühlfranken-Beispiele für die Presse-Demo)
+    // — wir lassen die Felder daher in Ruhe. Echte PII steckt nie hier drin.
     await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS email_verified BOOLEAN DEFAULT FALSE`);
     await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS verification_token TEXT`);
     await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS verification_token_expires TIMESTAMPTZ`);
@@ -172,6 +174,38 @@ async function initDatabase() {
     // Default FALSE — Datenschutz-Pflicht
     await client.query(`ALTER TABLE families ADD COLUMN IF NOT EXISTS visible_to_coordinators BOOLEAN DEFAULT FALSE`);
     await client.query(`ALTER TABLE grandparent_profiles ADD COLUMN IF NOT EXISTS visible_to_coordinators BOOLEAN DEFAULT FALSE`);
+
+    // Stage C: Event-Kalender für Koordinierungsstellen
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS coordinator_events (
+        id TEXT PRIMARY KEY,
+        office_id TEXT NOT NULL REFERENCES coordination_offices(id) ON DELETE CASCADE,
+        title TEXT NOT NULL,
+        description TEXT,
+        location TEXT,
+        start_at TIMESTAMPTZ NOT NULL,
+        end_at TIMESTAMPTZ NOT NULL,
+        capacity INTEGER,
+        audience TEXT NOT NULL DEFAULT 'both' CHECK (audience IN ('parents', 'grandparents', 'both')),
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      )
+    `);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_events_office ON coordinator_events(office_id)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_events_start ON coordinator_events(start_at)`);
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS coordinator_event_attendances (
+        id TEXT PRIMARY KEY,
+        event_id TEXT NOT NULL REFERENCES coordinator_events(id) ON DELETE CASCADE,
+        user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        status TEXT NOT NULL DEFAULT 'going' CHECK (status IN ('interested', 'going', 'cancelled')),
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        UNIQUE (event_id, user_id)
+      )
+    `);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_attendance_event ON coordinator_event_attendances(event_id)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_attendance_user ON coordinator_event_attendances(user_id)`);
 
     // B.2 Coordinator-Notes: Status + freie Notiz pro Eintrag, pro Stelle
     await client.query(`

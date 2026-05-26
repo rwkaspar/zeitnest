@@ -61,6 +61,7 @@ initDatabase().then(() => {
   app.use('/api/profiles', require('./routes/profiles'));
   app.use('/api/families', require('./routes/families'));
   app.use('/api/coordinator', require('./routes/coordinator'));
+  app.use('/api/events', require('./routes/events'));
   app.use('/api/matches', require('./routes/matches'));
   app.use('/api/messages', require('./routes/messages'));
   app.use('/api/search', require('./routes/search'));

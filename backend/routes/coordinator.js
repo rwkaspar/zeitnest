@@ -159,4 +159,92 @@ router.put('/notes/:targetType/:targetId', async (req, res) => {
   res.json({ status: finalStatus, note: note || null });
 });
 
+// ===== Event-Kalender =====
+
+router.get('/events', async (req, res) => {
+  const officeId = req.coordinatorOfficeId;
+  if (!officeId) return res.json({ events: [] });
+  const events = await queryAll(
+    `SELECT e.*,
+       (SELECT COUNT(*)::int FROM coordinator_event_attendances a WHERE a.event_id = e.id AND a.status = 'going') AS going_count,
+       (SELECT COUNT(*)::int FROM coordinator_event_attendances a WHERE a.event_id = e.id AND a.status = 'interested') AS interested_count
+     FROM coordinator_events e
+     WHERE e.office_id = $1
+     ORDER BY e.start_at DESC LIMIT 200`,
+    [officeId]
+  );
+  res.json({ events });
+});
+
+router.get('/events/:id', async (req, res) => {
+  const officeId = req.coordinatorOfficeId;
+  if (!officeId) return res.status(404).json({ error: 'Keine Stelle.' });
+  const event = await queryOne(
+    `SELECT * FROM coordinator_events WHERE id = $1 AND office_id = $2`,
+    [req.params.id, officeId]
+  );
+  if (!event) return res.status(404).json({ error: 'Event nicht gefunden.' });
+  const attendees = await queryAll(
+    `SELECT a.user_id, a.status, a.created_at,
+            u.first_name, u.last_name, u.email, u.role, u.avatar_url
+       FROM coordinator_event_attendances a
+       JOIN users u ON u.id = a.user_id
+       WHERE a.event_id = $1
+       ORDER BY a.status ASC, a.created_at ASC`,
+    [req.params.id]
+  );
+  res.json({ ...event, attendees });
+});
+
+router.post('/events', async (req, res) => {
+  const officeId = req.coordinatorOfficeId;
+  if (!officeId) return res.status(400).json({ error: 'Keine Stelle.' });
+  const { title, description, location, start_at, end_at, capacity, audience } = req.body;
+  if (!title || !start_at || !end_at) {
+    return res.status(400).json({ error: 'Titel, Start und Ende sind Pflicht.' });
+  }
+  const allowedAudience = ['parents', 'grandparents', 'both'];
+  const aud = allowedAudience.includes(audience) ? audience : 'both';
+  const id = uuidv4();
+  await runSql(
+    `INSERT INTO coordinator_events (id, office_id, title, description, location, start_at, end_at, capacity, audience)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+    [id, officeId, title.trim(), description || null, location || null, start_at, end_at,
+     Number.isFinite(parseInt(capacity)) ? parseInt(capacity) : null, aud]
+  );
+  res.status(201).json({ id });
+});
+
+router.put('/events/:id', async (req, res) => {
+  const officeId = req.coordinatorOfficeId;
+  const event = await queryOne(`SELECT * FROM coordinator_events WHERE id = $1 AND office_id = $2`, [req.params.id, officeId]);
+  if (!event) return res.status(404).json({ error: 'Event nicht gefunden.' });
+  const { title, description, location, start_at, end_at, capacity, audience } = req.body;
+  const allowedAudience = ['parents', 'grandparents', 'both'];
+  const aud = allowedAudience.includes(audience) ? audience : event.audience;
+  await runSql(
+    `UPDATE coordinator_events SET
+       title = COALESCE($1, title),
+       description = $2,
+       location = $3,
+       start_at = COALESCE($4, start_at),
+       end_at = COALESCE($5, end_at),
+       capacity = $6,
+       audience = $7,
+       updated_at = NOW()
+     WHERE id = $8`,
+    [title?.trim() || null, description || null, location || null, start_at || null, end_at || null,
+     Number.isFinite(parseInt(capacity)) ? parseInt(capacity) : null, aud, req.params.id]
+  );
+  res.json({ message: 'Event aktualisiert.' });
+});
+
+router.delete('/events/:id', async (req, res) => {
+  const officeId = req.coordinatorOfficeId;
+  const event = await queryOne(`SELECT id FROM coordinator_events WHERE id = $1 AND office_id = $2`, [req.params.id, officeId]);
+  if (!event) return res.status(404).json({ error: 'Event nicht gefunden.' });
+  await runSql(`DELETE FROM coordinator_events WHERE id = $1`, [req.params.id]);
+  res.json({ message: 'Event gelöscht.' });
+});
+
 module.exports = router;

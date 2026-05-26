@@ -173,9 +173,17 @@ router.put('/me', authenticateToken, async (req, res) => {
       smoker, pets, mobility, hobbies,
     } = req.body;
 
+    // city/postal_code/phone defensiv mit COALESCE: wenn das Formular ein
+    // leeres Feld schickt (NULLIF wandelt '' zu NULL), behalten wir den
+    // bisherigen Wert. Verhindert, dass eine versehentlich leere Eingabe
+    // PLZ-Daten löscht, was die Coordinator-Sichtbarkeit kaputt macht.
     await runSql(
       `UPDATE users SET
-         first_name = $1, last_name = $2, city = $3, postal_code = $4, phone = $5, bio = $6,
+         first_name = $1, last_name = $2,
+         city = COALESCE(NULLIF($3, ''), city),
+         postal_code = COALESCE(NULLIF($4, ''), postal_code),
+         phone = COALESCE(NULLIF($5, ''), phone),
+         bio = $6,
          birth_date = $7, profession = $8, working_hours = $9, marital_status = $10,
          smoker = $11, pets = $12, mobility = $13, hobbies = $14,
          updated_at = NOW()

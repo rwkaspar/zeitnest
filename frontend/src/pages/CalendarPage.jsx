@@ -196,8 +196,94 @@ function CalendarPage() {
             )}
           </div>
         </section>
+
+        <CoordinatorEventsSection />
       </div>
     </div>
+  );
+}
+
+function CoordinatorEventsSection() {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  async function reload() {
+    try {
+      const res = await fetch('/api/events', { headers: authHeaders() });
+      const data = await res.json();
+      setEvents(data.events || []);
+    } catch { /* silent */ }
+    finally { setLoading(false); }
+  }
+
+  useEffect(() => { reload(); }, []);
+
+  async function rsvp(id, status) {
+    try {
+      const res = await fetch(`/api/events/${id}/rsvp`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ status }),
+      });
+      if (!res.ok) {
+        const d = await res.json();
+        alert(d.error || 'Fehler');
+      }
+      reload();
+    } catch (err) {
+      alert('Fehler beim Speichern.');
+    }
+  }
+
+  if (loading) return null;
+  if (events.length === 0) return null; // Section nur zeigen wenn es was zu sehen gibt
+
+  return (
+    <section className="calendar-section">
+      <div className="card">
+        <h2>Veranstaltungen Ihrer Koordinierungsstelle</h2>
+        <p className="calendar-hint">
+          Termine wie Vorstellungstreffen, Schulungen oder Feste, organisiert von der Stelle, die Ihren Postleitzahlbereich betreut.
+        </p>
+        {events.map(e => (
+          <div key={e.id} className="card" style={{ marginBottom: '12px', padding: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
+              <div style={{ flex: '1 1 320px' }}>
+                <strong>{e.title}</strong>
+                {e.my_status && (
+                  <span style={{ marginLeft: '8px', padding: '2px 8px', borderRadius: '10px', background: e.my_status === 'going' ? '#e6f4ea' : '#fff8db', color: e.my_status === 'going' ? '#1e7a3a' : '#856404', fontSize: '0.75rem', fontWeight: 600 }}>
+                    {e.my_status === 'going' ? '✓ Zugesagt' : e.my_status === 'interested' ? 'Interessiert' : 'Abgesagt'}
+                  </span>
+                )}
+                <p style={{ margin: '6px 0', fontSize: '0.9rem', color: '#5a6878' }}>
+                  {new Date(e.start_at).toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'short' })} &ndash;{' '}
+                  {new Date(e.end_at).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}
+                  {e.location && ` · ${e.location}`}
+                </p>
+                <p style={{ fontSize: '0.8rem', color: '#5a6878' }}>
+                  Veranstalter: {e.office_name} · {e.going_count} {e.going_count === 1 ? 'Person' : 'Personen'} zugesagt
+                  {e.capacity && ` von max. ${e.capacity}`}
+                </p>
+                {e.description && <p style={{ fontSize: '0.9rem', marginTop: '8px' }}>{e.description}</p>}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <button className={`btn btn-sm ${e.my_status === 'going' ? 'btn-primary' : 'btn-outline'}`} onClick={() => rsvp(e.id, 'going')}>
+                  Zusagen
+                </button>
+                <button className={`btn btn-sm ${e.my_status === 'interested' ? 'btn-primary' : 'btn-outline'}`} onClick={() => rsvp(e.id, 'interested')}>
+                  Interessiert
+                </button>
+                {e.my_status && (
+                  <button className="btn btn-sm btn-outline" onClick={() => rsvp(e.id, 'cancelled')}>
+                    Absagen
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
