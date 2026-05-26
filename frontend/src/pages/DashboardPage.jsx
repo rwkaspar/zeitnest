@@ -7,19 +7,76 @@ function DashboardPage() {
   const { user } = useAuth();
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [me, setMe] = useState(null);
+  const [family, setFamily] = useState(null);
+  const [fz, setFz] = useState(null);
+  const [resending, setResending] = useState(false);
+  const [resendMsg, setResendMsg] = useState('');
 
   useEffect(() => {
-    api.getMatches()
-      .then(setMatches)
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
+    api.getMatches().then(setMatches).catch(console.error).finally(() => setLoading(false));
+    api.getMe().then(setMe).catch(() => {});
+    if (user?.role === 'parent') {
+      api.getMyFamily().then(setFamily).catch(() => {});
+    }
+    if (user?.role === 'grandparent') {
+      const token = localStorage.getItem('token');
+      fetch('/api/profiles/me/fz', { headers: { Authorization: `Bearer ${token}` } })
+        .then(r => r.json()).then(setFz).catch(() => {});
+    }
+  }, [user]);
+
+  async function resendVerification() {
+    setResending(true);
+    setResendMsg('');
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/auth/resend-verification', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setResendMsg(data.message || data.error || 'Mail gesendet.');
+    } catch {
+      setResendMsg('Fehler beim Senden.');
+    } finally {
+      setResending(false);
+    }
+  }
 
   const pendingCount = matches.filter(m => m.status === 'pending').length;
   const acceptedCount = matches.filter(m => m.status === 'accepted').length;
 
-  const roleLabel = user?.role === 'parent' ? 'Elternteil' : 'Leih-Gro\u00dfelternteil';
-  const searchLabel = user?.role === 'parent' ? 'Leih-Gro\u00dfeltern' : 'Familien';
+  const roleLabel = user?.role === 'parent' ? 'Elternteil' : 'Leih-Großelternteil';
+  const searchLabel = user?.role === 'parent' ? 'Leih-Großeltern' : 'Familien';
+
+  // === Onboarding-Checkliste ableiten ===
+  const isVerified = me?.email_verified ?? user?.email_verified ?? false;
+  const hasBio = !!me?.bio;
+  const hasBirthOrProfession = !!(me?.birth_date || me?.profession);
+  const hasFamilyFields = user?.role === 'parent' && family
+    ? !!(family.number_of_children && family.postal_code)
+    : null;
+  const hasFzUpload = user?.role === 'grandparent'
+    ? (fz?.fz_status === 'verified' || fz?.fz_status === 'pending')
+    : null;
+
+  const steps = [
+    { key: 'verify', label: 'E-Mail bestätigen', done: isVerified, link: null,
+      hint: 'Klicken Sie auf den Link in der Bestätigungsmail.' },
+    { key: 'bio', label: 'Über mich ausfüllen', done: hasBio, link: '/profil/bearbeiten',
+      hint: 'Eine kurze Beschreibung hilft beim ersten Match.' },
+    { key: 'personal', label: 'Persönliches ergänzen (Beruf / Geburtsdatum)', done: hasBirthOrProfession, link: '/profil/bearbeiten' },
+    ...(user?.role === 'parent' ? [
+      { key: 'family', label: 'Familien-Angaben (PLZ + Kinder)', done: !!hasFamilyFields, link: '/profil/bearbeiten' },
+    ] : []),
+    ...(user?.role === 'grandparent' ? [
+      { key: 'fz', label: 'Führungszeugnis hochladen', done: !!hasFzUpload, link: '/konto',
+        hint: 'Stärkstes Vertrauenssignal für Familien.' },
+    ] : []),
+  ];
+  const doneCount = steps.filter(s => s.done).length;
+  const allDone = doneCount === steps.length;
 
   return (
     <div className="dashboard">
@@ -28,6 +85,55 @@ function DashboardPage() {
           <h1>Hallo, {user?.first_name}! &#x1F44B;</h1>
           <p>Willkommen bei Zeitnest &ndash; Ihr Dashboard als {roleLabel}</p>
         </div>
+
+        {/* Verification-Banner — prominent und nicht-schließbar wenn nicht bestätigt */}
+        {!isVerified && (
+          <div className="card" style={{ marginBottom: '24px', borderLeft: '4px solid var(--warning)', background: '#fff8db' }}>
+            <h3 style={{ marginBottom: '8px', color: '#856404' }}>&#x2709;&#xFE0F; Bitte best&auml;tigen Sie Ihre E-Mail-Adresse</h3>
+            <p style={{ fontSize: '0.95rem', color: '#5a6878', marginBottom: '12px' }}>
+              Wir haben einen Best&auml;tigungslink an <strong>{me?.email || user?.email}</strong> geschickt.
+              Bitte klicken Sie ihn an, um Ihr Konto freizuschalten. Solange nicht best&auml;tigt, k&ouml;nnen Sie keine Anfragen senden oder empfangen.
+            </p>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              <button className="btn btn-sm btn-primary" onClick={resendVerification} disabled={resending}>
+                {resending ? 'Sende&hellip;' : 'Best&auml;tigungsmail erneut schicken'}
+              </button>
+              {resendMsg && <span style={{ alignSelf: 'center', fontSize: '0.85rem', color: '#5a6878' }}>{resendMsg}</span>}
+            </div>
+          </div>
+        )}
+
+        {/* Onboarding-Checkliste — verschwindet wenn alles erledigt */}
+        {!allDone && (
+          <div className="card" style={{ marginBottom: '24px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
+              <h3 style={{ fontFamily: 'var(--font-heading)' }}>So legen Sie los</h3>
+              <span style={{ fontSize: '0.85rem', color: '#5a6878' }}>{doneCount}/{steps.length} erledigt</span>
+            </div>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+              {steps.map(s => (
+                <li key={s.key} style={{ padding: '10px 0', borderBottom: '1px solid var(--border-light)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: '1 1 320px' }}>
+                    <span style={{ fontSize: '1.2rem', color: s.done ? 'var(--success)' : '#cdd5dc' }}>
+                      {s.done ? '✓' : '○'}
+                    </span>
+                    <div>
+                      <div style={{ fontWeight: s.done ? 400 : 500, color: s.done ? '#5a6878' : 'var(--text)', textDecoration: s.done ? 'line-through' : 'none' }}>
+                        {s.label}
+                      </div>
+                      {!s.done && s.hint && (
+                        <div style={{ fontSize: '0.8rem', color: '#5a6878', marginTop: '2px' }}>{s.hint}</div>
+                      )}
+                    </div>
+                  </div>
+                  {!s.done && s.link && (
+                    <Link to={s.link} className="btn btn-sm btn-outline">Jetzt eintragen</Link>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <div className="dashboard-grid">
           <div className="card stat-card">
@@ -98,11 +204,14 @@ function DashboardPage() {
                 ? `${match.grandparent_first_name} ${match.grandparent_last_name}`
                 : `${match.parent_first_name} ${match.parent_last_name}`;
               const otherCity = isParent ? match.grandparent_city : match.parent_city;
+              const otherAvatar = isParent ? match.grandparent_avatar : match.parent_avatar;
 
               return (
                 <Link key={match.id} to={`/nachrichten/${match.id}`} className="card match-card" style={{ textDecoration: 'none', color: 'inherit' }}>
                   <div className="match-info">
-                    <div className="user-avatar">{otherName[0]}</div>
+                    <div className="user-avatar" style={otherAvatar ? { backgroundImage: `url(${otherAvatar})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}>
+                      {!otherAvatar && otherName[0]}
+                    </div>
                     <div>
                       <h4>{otherName}</h4>
                       <p style={{ fontSize: '0.85rem', color: '#6b7c93' }}>{otherCity}</p>
