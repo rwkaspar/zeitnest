@@ -196,23 +196,25 @@ router.put('/me', authenticateToken, async (req, res) => {
     if (req.user.role === 'parent') {
       // Family-spezifische Felder werden über PUT /api/families/me geschrieben,
       // nicht mehr hier. parent_profiles ist seit Stage A.5 ein leerer Stub.
-    } else {
+    } else if (req.user.role === 'grandparent') {
       const {
         experience, availability, preferred_age_range, offered_activities, has_fuehrungszeugnis,
-        activities, has_liability_insurance,
+        activities, has_liability_insurance, visible_to_coordinators,
       } = req.body;
 
       await runSql(
         `UPDATE grandparent_profiles SET
            experience = $1, availability = $2, preferred_age_range = $3,
            offered_activities = $4, has_fuehrungszeugnis = $5,
-           activities = $6, has_liability_insurance = $7
-         WHERE user_id = $8`,
+           activities = $6, has_liability_insurance = $7,
+           visible_to_coordinators = COALESCE($8, visible_to_coordinators)
+         WHERE user_id = $9`,
         [
           experience, availability, preferred_age_range, offered_activities,
           has_fuehrungszeugnis ? true : false,
           validateSubset(activities, ACTIVITIES) || null,
           has_liability_insurance == null ? null : !!has_liability_insurance,
+          visible_to_coordinators == null ? null : !!visible_to_coordinators,
           req.user.id,
         ]
       );

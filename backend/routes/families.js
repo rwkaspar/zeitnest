@@ -40,6 +40,7 @@ router.put('/me', authenticateToken, async (req, res) => {
       has_liability_insurance, children_in_liability, confidentiality_accepted,
       activities, desired_grandparent, allow_smoker_grandparent, allow_pet_grandparent,
       max_distance_km, contact_mode, contact_location, support_offered,
+      visible_to_coordinators,
     } = req.body;
 
     await runSql(
@@ -53,8 +54,9 @@ router.put('/me', authenticateToken, async (req, res) => {
          allow_smoker_grandparent = $14, allow_pet_grandparent = $15,
          max_distance_km = $16, contact_mode = $17,
          contact_location = $18, support_offered = $19,
+         visible_to_coordinators = COALESCE($20, visible_to_coordinators),
          updated_at = NOW()
-       WHERE id = $20`,
+       WHERE id = $21`,
       [
         city, postal_code, phone,
         Number.isFinite(parseInt(number_of_children)) ? parseInt(number_of_children) : null,
@@ -70,6 +72,7 @@ router.put('/me', authenticateToken, async (req, res) => {
         validateSubset(contact_mode, CONTACT_MODE) || null,
         validateSubset(contact_location, CONTACT_LOCATION) || null,
         validateSubset(support_offered, SUPPORT_OFFERED) || null,
+        visible_to_coordinators == null ? null : !!visible_to_coordinators,
         family.id,
       ]
     );

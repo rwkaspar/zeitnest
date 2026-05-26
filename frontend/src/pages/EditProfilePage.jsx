@@ -140,6 +140,7 @@ const FAMILY_KEYS = [
   'has_liability_insurance', 'children_in_liability', 'confidentiality_accepted',
   'activities', 'desired_grandparent', 'allow_smoker_grandparent', 'allow_pet_grandparent',
   'max_distance_km', 'contact_mode', 'contact_location', 'support_offered',
+  'visible_to_coordinators',
 ];
 
 function EditProfilePage() {
@@ -149,6 +150,27 @@ function EditProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
+
+  // Koordinator:innen brauchen kein persönliches Profil.
+  if (user?.role === 'coordinator') {
+    return (
+      <div className="profile-page">
+        <div className="container">
+          <div className="card">
+            <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.6rem', marginBottom: '12px' }}>Kein persönliches Profil nötig</h1>
+            <p style={{ color: '#5a6878' }}>
+              Als Koordinator:in pflegen Sie kein persönliches Profil auf der Plattform.
+              Ihre Stelle ist <strong>administrativ</strong> hinterlegt. Wenn etwas geändert werden muss
+              (Name der Stelle, Postleitzahlen-Bereich), wenden Sie sich an den Plattform-Admin.
+            </p>
+            <p style={{ color: '#5a6878', marginTop: '8px' }}>
+              Login-Einstellungen (Passwort, 2FA, Datenexport) finden Sie unter <a href="/konto" style={{ color: 'var(--primary)' }}>Kontoeinstellungen</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     async function load() {
@@ -445,6 +467,17 @@ function EditProfilePage() {
                     <YesNoNull name="children_in_liability" value={formData.children_in_liability} onChange={setField} />
                   </div>
                 </div>
+
+                <h3 style={section}>Koordinierungsstellen</h3>
+                <div className="form-group" style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                  <input type="checkbox" id="vis-coord-fam" checked={!!formData.visible_to_coordinators}
+                    onChange={(e) => setField('visible_to_coordinators', e.target.checked)} style={{ marginTop: '4px' }} />
+                  <label htmlFor="vis-coord-fam" style={{ margin: 0, fontWeight: 'normal' }}>
+                    Unsere Familie ist f&uuml;r regionale Koordinierungsstellen sichtbar
+                    (z.B. „Wunschgro&szlig;eltern in Altm&uuml;hlfranken"). Sie k&ouml;nnen uns dann aktiv
+                    bei einer Vermittlung unterst&uuml;tzen.
+                  </label>
+                </div>
               </>
             ) : (
               <>
@@ -489,6 +522,17 @@ function EditProfilePage() {
                 <p style={{ fontSize: '0.85rem', color: '#5a6878', marginTop: '-8px' }}>
                   Tipp: Ein verifiziertes F&uuml;hrungszeugnis hochladen k&ouml;nnen Sie unter <strong>Kontoeinstellungen</strong>.
                 </p>
+
+                <h3 style={section}>Koordinierungsstellen</h3>
+                <div className="form-group" style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                  <input type="checkbox" id="vis-coord-gp" checked={!!formData.visible_to_coordinators}
+                    onChange={(e) => setField('visible_to_coordinators', e.target.checked)} style={{ marginTop: '4px' }} />
+                  <label htmlFor="vis-coord-gp" style={{ margin: 0, fontWeight: 'normal' }}>
+                    Mein Profil ist f&uuml;r regionale Koordinierungsstellen sichtbar
+                    (z.B. „Wunschgro&szlig;eltern in Altm&uuml;hlfranken"). Eine Vermittlerin kann mich
+                    dann passenden Familien vorschlagen.
+                  </label>
+                </div>
               </>
             )}
 

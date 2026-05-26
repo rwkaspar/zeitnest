@@ -168,6 +168,27 @@ async function initDatabase() {
       `);
     } catch (e) { /* already converted */ }
 
+    // B.1 Opt-In Sichtbarkeit für Koordinierungsstellen
+    // Default FALSE — Datenschutz-Pflicht
+    await client.query(`ALTER TABLE families ADD COLUMN IF NOT EXISTS visible_to_coordinators BOOLEAN DEFAULT FALSE`);
+    await client.query(`ALTER TABLE grandparent_profiles ADD COLUMN IF NOT EXISTS visible_to_coordinators BOOLEAN DEFAULT FALSE`);
+
+    // B.2 Coordinator-Notes: Status + freie Notiz pro Eintrag, pro Stelle
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS coordinator_notes (
+        id TEXT PRIMARY KEY,
+        office_id TEXT NOT NULL REFERENCES coordination_offices(id) ON DELETE CASCADE,
+        target_type TEXT NOT NULL CHECK (target_type IN ('family', 'grandparent')),
+        target_id TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'in_contact', 'matched', 'paused')),
+        note TEXT,
+        updated_at TIMESTAMPTZ DEFAULT NOW(),
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        UNIQUE (office_id, target_type, target_id)
+      )
+    `);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_coord_notes_target ON coordinator_notes(target_type, target_id)`);
+
     // Koordinierungsstellen (Stage B) — Behörden/Wohlfahrt vermitteln Familien & Wunschgroßeltern in ihrem Bereich
     await client.query(`
       CREATE TABLE IF NOT EXISTS coordination_offices (
