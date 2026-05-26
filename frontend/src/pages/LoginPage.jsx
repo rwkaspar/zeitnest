@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 function LoginPage() {
-  const [email, setEmail] = useState('');
+  const location = useLocation();
+  const justRegistered = location.state?.justRegistered;
+  const registeredEmail = location.state?.email;
+  const [email, setEmail] = useState(registeredEmail || '');
   const [password, setPassword] = useState('');
   const [totp, setTotp] = useState('');
   const [needTotp, setNeedTotp] = useState(false);
@@ -24,8 +27,11 @@ function LoginPage() {
       const data = await res.json();
       if (res.ok) {
         localStorage.setItem('token', data.token);
-        // Koordinator:innen landen direkt im Koordinator-Dashboard.
-        const target = data.user?.role === 'coordinator' ? '/koordination' : '/dashboard';
+        // Falls eine Family-Einladung wartet, geht's dorthin — sonst nach Rolle.
+        const pendingToken = sessionStorage.getItem('pendingFamilyInviteToken');
+        const target = pendingToken
+          ? `/family/join/${pendingToken}`
+          : (data.user?.role === 'coordinator' ? '/koordination' : '/dashboard');
         window.location.href = target;
       } else if (data.totp_required) {
         setNeedTotp(true);
@@ -45,6 +51,14 @@ function LoginPage() {
       <div className="card auth-card">
         <h1>Willkommen zur&uuml;ck</h1>
         <p className="subtitle">Melden Sie sich bei Zeitnest an</p>
+
+        {justRegistered && (
+          <div className="success-message" style={{ textAlign: 'left' }}>
+            <strong>Fast geschafft!</strong><br />
+            Wir haben Ihnen einen Bestätigungslink an <strong>{registeredEmail}</strong> geschickt.
+            Bitte klicken Sie ihn an, danach können Sie sich hier anmelden.
+          </div>
+        )}
 
         {error && <div className="error-message">{error}</div>}
 

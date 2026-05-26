@@ -115,11 +115,12 @@ router.post('/register', async (req, res) => {
       console.error('Verification email failed:', err.message);
     });
 
-    const token = jwt.sign({ id, email: email.toLowerCase(), role }, JWT_SECRET, { expiresIn: '24h' });
+    // Bewusst KEIN JWT-Token vor Email-Bestätigung. Ein Token würde dem User
+    // erlauben, die Plattform-Daten zu sehen, bevor er die Adresse verifiziert hat.
+    // User muss erst auf den Link in der Mail klicken, dann kann er sich einloggen.
     res.status(201).json({
-      token,
-      user: { id, email: email.toLowerCase(), role, first_name, last_name, city, postal_code, email_verified: false },
-      message: 'Registrierung erfolgreich! Bitte überprüfen Sie Ihr E-Mail-Postfach und bestätigen Sie Ihre Adresse.'
+      email: email.toLowerCase(),
+      message: 'Registrierung erfolgreich! Wir haben Ihnen einen Bestätigungslink geschickt. Bitte klicken Sie diesen, dann können Sie sich anmelden.',
     });
   } catch (err) {
     console.error('Register error:', err.message);

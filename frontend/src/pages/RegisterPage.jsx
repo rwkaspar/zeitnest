@@ -64,14 +64,10 @@ function RegisterPage() {
     setLoading(true);
     try {
       await register({ ...formData, captcha: captchaToken, confidentiality_accepted: confidentialityAccepted });
-      // Falls eine Family-Einladung wartet: dorthin weiterleiten, der FamilyJoinPage
-      // löst dann den Beitritt mit eingeloggtem User aus.
-      const pendingToken = sessionStorage.getItem('pendingFamilyInviteToken');
-      if (pendingToken) {
-        navigate(`/family/join/${pendingToken}`);
-      } else {
-        navigate('/dashboard');
-      }
+      // Kein auto-Login mehr — User muss zuerst die E-Mail bestätigen.
+      // Falls Family-Invite-Token in sessionStorage liegt, bleibt er da
+      // und wird nach dem ersten Login automatisch verwertet (LoginPage).
+      navigate('/login', { state: { justRegistered: true, email: formData.email } });
     } catch (err) {
       setError(err.message);
     } finally {

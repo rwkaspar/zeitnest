@@ -29,10 +29,10 @@ export function AuthProvider({ children }) {
   };
 
   const register = async (formData) => {
+    // Bewusst kein auto-Login: User muss erst E-Mail bestätigen.
+    // Backend liefert keinen Token, sondern nur eine Bestätigungs-Message.
     const data = await api.register(formData);
-    localStorage.setItem('token', data.token);
-    setUser(data.user);
-    return data.user;
+    return data;
   };
 
   const logout = () => {
