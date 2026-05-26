@@ -19,7 +19,7 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className="container">
-        <Link to={user ? '/dashboard' : '/'} className="navbar-brand">
+        <Link to={!user ? '/' : user.role === 'coordinator' ? '/koordination' : '/dashboard'} className="navbar-brand">
           <img src="/logo.png" alt="Zeitnest Logo" className="navbar-logo" />
           Zeitnest
         </Link>
@@ -36,15 +36,24 @@ function Navbar() {
         <div className={`navbar-links ${open ? 'open' : ''}`}>
           <Link to="/leitfaden">Leitfaden</Link>
           {user ? (
-            <>
-              <Link to="/suche">Suche</Link>
-              <Link to="/anfragen">Anfragen</Link>
-              <Link to="/kalender">Kalender</Link>
-              <Link to="/profil/bearbeiten">Profil</Link>
-              <Link to="/konto">Konto</Link>
-              {user.is_admin && <Link to="/admin">Admin</Link>}
-              <button onClick={logout}>Abmelden</button>
-            </>
+            user.role === 'coordinator' ? (
+              <>
+                <Link to="/koordination">Koordination</Link>
+                <Link to="/konto">Konto</Link>
+                {user.is_admin && <Link to="/admin">Admin</Link>}
+                <button onClick={logout}>Abmelden</button>
+              </>
+            ) : (
+              <>
+                <Link to="/suche">Suche</Link>
+                <Link to="/anfragen">Anfragen</Link>
+                <Link to="/kalender">Kalender</Link>
+                <Link to="/profil/bearbeiten">Profil</Link>
+                <Link to="/konto">Konto</Link>
+                {user.is_admin && <Link to="/admin">Admin</Link>}
+                <button onClick={logout}>Abmelden</button>
+              </>
+            )
           ) : (
             <>
               <Link to="/login">Anmelden</Link>

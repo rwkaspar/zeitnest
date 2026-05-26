@@ -24,7 +24,9 @@ function LoginPage() {
       const data = await res.json();
       if (res.ok) {
         localStorage.setItem('token', data.token);
-        window.location.href = '/dashboard';
+        // Koordinator:innen landen direkt im Koordinator-Dashboard.
+        const target = data.user?.role === 'coordinator' ? '/koordination' : '/dashboard';
+        window.location.href = target;
       } else if (data.totp_required) {
         setNeedTotp(true);
         setError(needTotp ? data.error : '');
