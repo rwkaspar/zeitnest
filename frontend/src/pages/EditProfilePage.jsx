@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../utils/api';
+import AvatarCropModal from '../components/AvatarCropModal';
 import {
   ACTIVITIES, MOBILITY, DESIRED_GRANDPARENT, CONTACT_MODE, CONTACT_LOCATION,
   SUPPORT_OFFERED, MARITAL_STATUS,
@@ -150,6 +151,7 @@ function EditProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
+  const [avatarPickedFile, setAvatarPickedFile] = useState(null);
 
   // Koordinator:innen brauchen kein persönliches Profil.
   if (user?.role === 'coordinator') {
@@ -251,10 +253,35 @@ function EditProfilePage() {
     }
   }
 
+  async function handleAvatarSave(croppedFile) {
+    const fd = new FormData();
+    fd.append('avatar', croppedFile);
+    const token = localStorage.getItem('token');
+    const res = await fetch('/api/profiles/avatar', {
+      method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: fd,
+    });
+    const data = await res.json();
+    if (res.ok) {
+      setField('avatar_url', data.avatar_url);
+      updateUser({ avatar_url: data.avatar_url });
+      setMessage('Profilbild erfolgreich hochgeladen!');
+      setAvatarPickedFile(null);
+    } else {
+      setMessage(data.error);
+    }
+  }
+
   if (loading) return <div className="loading-screen"><div className="spinner" /></div>;
 
   return (
     <div className="profile-page">
+      {avatarPickedFile && (
+        <AvatarCropModal
+          file={avatarPickedFile}
+          onCancel={() => setAvatarPickedFile(null)}
+          onSave={handleAvatarSave}
+        />
+      )}
       <div className="container">
         <div className="card">
           <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.6rem', marginBottom: '24px' }}>Profil bearbeiten</h1>
@@ -273,23 +300,11 @@ function EditProfilePage() {
                   type="file"
                   accept="image/jpeg,image/png,image/webp"
                   style={{ display: 'none' }}
-                  onChange={async (e) => {
+                  onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (!file) return;
-                    const fd = new FormData();
-                    fd.append('avatar', file);
-                    const token = localStorage.getItem('token');
-                    const res = await fetch('/api/profiles/avatar', {
-                      method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: fd,
-                    });
-                    const data = await res.json();
-                    if (res.ok) {
-                      setField('avatar_url', data.avatar_url);
-                      updateUser({ avatar_url: data.avatar_url });
-                      setMessage('Profilbild erfolgreich hochgeladen!');
-                    } else {
-                      setMessage(data.error);
-                    }
+                    setAvatarPickedFile(file);
+                    e.target.value = ''; // damit Re-Auswahl derselben Datei wieder triggert
                   }}
                 />
               </label>
