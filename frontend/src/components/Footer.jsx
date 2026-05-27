@@ -12,11 +12,11 @@ function getLocale() {
 const STRINGS = {
   de: {
     supportTitle: 'Zeitnest unterstützen:',
-    madeBy: 'Ein Projekt von Neotactiq →',
+    madeBy: 'Ein Projekt von NeoTactIQ →',
   },
   en: {
     supportTitle: 'Support Zeitnest:',
-    madeBy: 'A project by Neotactiq →',
+    madeBy: 'A project by NeoTactIQ →',
   },
 };
 
