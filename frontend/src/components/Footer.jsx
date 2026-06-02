@@ -11,11 +11,9 @@ function getLocale() {
 
 const STRINGS = {
   de: {
-    supportTitle: 'Zeitnest unterstützen:',
     madeBy: 'Ein Projekt von NeoTactIQ →',
   },
   en: {
-    supportTitle: 'Support Zeitnest:',
     madeBy: 'A project by NeoTactIQ →',
   },
 };
@@ -27,25 +25,6 @@ function Footer() {
   return (
     <footer className="footer">
       <div className="container">
-        <div className="footer-support">
-          <span className="footer-support-title">{t.supportTitle}</span>
-          <a
-            href="https://patreon.com/neotactiq"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="footer-support-link"
-          >
-            <span aria-hidden="true">💜</span> Patreon
-          </a>
-          <a
-            href="https://ko-fi.com/neotactiq"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="footer-support-link"
-          >
-            <span aria-hidden="true">☕</span> Ko-fi
-          </a>
-        </div>
 
         <p>&copy; 2026 Zeitnest &middot; Zeit schenken. Zeit gewinnen.</p>
         <div className="footer-links">
