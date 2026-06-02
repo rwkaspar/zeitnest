@@ -270,9 +270,14 @@ function FuehrungszeugnisSection() {
     pending: { text: 'Wird geprüft', color: '#856404', bg: '#fff8db' },
     verified: { text: '✓ Geprüft', color: '#1e7a3a', bg: '#e6f4ea' },
     rejected: { text: 'Abgelehnt', color: '#c0392b', bg: '#fdecea' },
-    expired: { text: 'Abgelaufen', color: '#6b7c93', bg: '#f1f3f5' },
+    expired: { text: 'Abgelaufen', color: '#c0392b', bg: '#fdecea' },
   };
   const b = badges[status] || badges.not_submitted;
+
+  // Tage bis Ablauf — nur relevant wenn 'verified'
+  const expiresDate = info?.fz_expires_at ? new Date(info.fz_expires_at) : null;
+  const daysUntilExpiry = expiresDate ? Math.ceil((expiresDate.getTime() - Date.now()) / (24 * 60 * 60 * 1000)) : null;
+  const showRenewalBanner = status === 'verified' && daysUntilExpiry != null && daysUntilExpiry <= 90;
 
   return (
     <div className="profile-section">
@@ -298,6 +303,21 @@ function FuehrungszeugnisSection() {
           </p>
         )}
       </div>
+
+      {showRenewalBanner && (
+        <div className="card" style={{ marginBottom: '12px', borderLeft: '4px solid var(--warning)', background: '#fff8db', padding: '12px 16px' }}>
+          <strong style={{ color: '#856404' }}>
+            Erneuerung empfohlen: Ihr Führungszeugnis läuft in {daysUntilExpiry} {daysUntilExpiry === 1 ? 'Tag' : 'Tagen'} ab.
+          </strong>
+          <p style={{ fontSize: '0.9rem', color: '#5a6878', marginTop: '6px' }}>
+            Beantragen Sie rechtzeitig ein neues Zeugnis bei{' '}
+            <a href="https://www.fuehrungszeugnis.bund.de/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)' }}>
+              fuehrungszeugnis.bund.de
+            </a>{' '}
+            und laden Sie es hier wieder hoch — Ihr Badge bleibt dann nahtlos bestehen.
+          </p>
+        </div>
+      )}
 
       {msg && <div className={msg.includes('Hochgeladen') ? 'success-message' : 'error-message'}>{msg}</div>}
 

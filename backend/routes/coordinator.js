@@ -73,7 +73,8 @@ router.get('/grandparents', async (req, res) => {
     `SELECT u.id, u.first_name, u.last_name, u.city, u.postal_code, u.bio, u.avatar_url,
             u.created_at, u.birth_date, u.mobility,
             gp.experience, gp.preferred_age_range, gp.activities,
-            (gp.fz_status = 'verified' AND (gp.fz_expires_at IS NULL OR gp.fz_expires_at > NOW())) AS fz_verified
+            (gp.fz_status = 'verified' AND (gp.fz_expires_at IS NULL OR gp.fz_expires_at > NOW())) AS fz_verified,
+            gp.fz_expires_at
        FROM users u
        JOIN grandparent_profiles gp ON u.id = gp.user_id
        WHERE u.role = 'grandparent'

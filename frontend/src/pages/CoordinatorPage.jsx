@@ -308,11 +308,16 @@ function CoordinatorPage() {
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
                         <strong>{g.first_name} {g.last_name}</strong>
                         <StatusBadge status={g._note?.status || 'new'} />
-                        {g.fz_verified && (
-                          <span style={{ padding: '2px 8px', borderRadius: '10px', background: '#e6f4ea', color: '#1e7a3a', fontSize: '0.75rem', fontWeight: 600 }}>
-                            ✓ FZ
-                          </span>
-                        )}
+                        {g.fz_verified && (() => {
+                          const days = g.fz_expires_at ? Math.ceil((new Date(g.fz_expires_at).getTime() - Date.now()) / 86400000) : null;
+                          const soon = days != null && days <= 90;
+                          return (
+                            <span title={g.fz_expires_at ? `Gültig bis ${new Date(g.fz_expires_at).toLocaleDateString('de-DE')}` : ''}
+                              style={{ padding: '2px 8px', borderRadius: '10px', background: soon ? '#fff8db' : '#e6f4ea', color: soon ? '#856404' : '#1e7a3a', fontSize: '0.75rem', fontWeight: 600 }}>
+                              ✓ FZ{soon ? ` (läuft in ${days}d ab)` : ''}
+                            </span>
+                          );
+                        })()}
                       </div>
                       <p style={{ margin: '6px 0', fontSize: '0.9rem', color: '#5a6878' }}>
                         {g.city || '?'}{g.postal_code ? ` · ${g.postal_code}` : ''}
