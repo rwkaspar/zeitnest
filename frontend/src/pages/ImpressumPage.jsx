@@ -21,6 +21,11 @@ function ImpressumPage() {
           E-Mail: <a href="mailto:info@zeitnest.org">info@zeitnest.org</a>
         </p>
 
+        <h2>Umsatzsteuer-Identifikationsnummer</h2>
+        <p>
+          Umsatzsteuer-Identifikationsnummer gem&auml;&szlig; &sect; 27a UStG: DE419763375
+        </p>
+
         <h2>Verantwortlich f&uuml;r den Inhalt nach &sect; 18 Abs. 2 MStV</h2>
         <p>
           Robert-William Kaspar<br />

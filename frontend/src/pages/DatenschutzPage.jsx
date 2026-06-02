@@ -112,6 +112,11 @@ function DatenschutzPage() {
           <li><strong>Widerruf der Einwilligung (Art. 7 Abs. 3 DSGVO):</strong> Sie k&ouml;nnen Ihre Einwilligung jederzeit widerrufen, indem Sie Ihr Konto l&ouml;schen.</li>
           <li><strong>Beschwerde (Art. 77 DSGVO):</strong> Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbeh&ouml;rde zu beschweren.</li>
         </ul>
+        <p>
+          Zust&auml;ndige Aufsichtsbeh&ouml;rde: Der Landesbeauftragte f&uuml;r den Datenschutz und die
+          Informationsfreiheit Rheinland-Pfalz, Hintere Bleiche 34, 55116 Mainz,
+          <a href="https://www.datenschutz.rlp.de" target="_blank" rel="noopener noreferrer"> https://www.datenschutz.rlp.de</a>
+        </p>
 
         <h2>9. Speicherdauer</h2>
         <p>

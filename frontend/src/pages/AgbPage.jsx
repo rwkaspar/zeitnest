@@ -29,6 +29,11 @@ function AgbPage() {
           zur Kontaktaufnahme bereit. Es kommt <strong>kein Vertragsverh&auml;ltnis zwischen Zeitnest
           und den Nutzern hinsichtlich der Betreuung selbst</strong> zustande.
         </p>
+        <p>
+          <strong>Zeitnest wird als Non-Profit-Initiative betrieben.</strong> Die Plattform erhebt keine
+          Geb&uuml;hren von Eltern oder Leih-Gro&szlig;eltern; eine etwaige Aufwandsentsch&auml;digung
+          wird direkt zwischen den Parteien geregelt. Eine Vereinsgr&uuml;ndung ist in Vorbereitung.
+        </p>
 
         <h2>&sect; 3 Registrierung und Nutzerkonto</h2>
         <p>
