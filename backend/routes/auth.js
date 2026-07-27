@@ -7,6 +7,7 @@ const { queryOne, queryAll, runSql } = require('../database');
 const { JWT_SECRET, authenticateToken } = require('../middleware/auth');
 const { sendVerificationEmail, sendPasswordResetEmail } = require('../utils/mail');
 const { authenticator } = require('otplib');
+const { HELPER_CATEGORIES, validateOne } = require('../constants/profileOptions');
 
 const router = express.Router();
 
@@ -107,7 +108,10 @@ router.post('/register', async (req, res) => {
       );
       await runSql(`UPDATE users SET family_id = $1 WHERE id = $2`, [familyId, id]);
     } else {
-      await runSql('INSERT INTO grandparent_profiles (user_id) VALUES ($1)', [id]);
+      // Phase 2: optionale Helfer-Kategorie („Ich helfe als …"), Default bleibt
+      // Wunschgroßeltern. Rolle und Verifizierungs-Flow sind davon unberührt.
+      const helperCategory = validateOne(sanitize(req.body.helper_category, 40), HELPER_CATEGORIES) || 'grandparent';
+      await runSql('INSERT INTO grandparent_profiles (user_id, helper_category) VALUES ($1, $2)', [id, helperCategory]);
     }
 
     // Send verification email (non-blocking)
