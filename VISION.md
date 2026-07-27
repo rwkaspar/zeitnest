@@ -4,6 +4,14 @@
 > Eine kostenlose, gemeinwohlorientierte Plattform für **freiwillige, verlässliche Kinderbetreuung** —
 > getragen von Vertrauen, lokaler Koordination und dem Miteinander der Generationen.
 
+> **Wie dieses Dokument genutzt wird:** Das ist der Nordstern — er ändert sich selten,
+> und nur der Maintainer editiert ihn. Agenten leiten ihre Arbeit aus der **Roadmap
+> (Abschnitt 10)** ab: Die Phasen-Reihenfolge ist die Arbeits-Reihenfolge, aufgeschlüsselt
+> wird sie in `TODO.md`. Zwei Abschnitte sind dabei **Querschnitts-Vetos**, keine Phasen:
+> **Kinderschutz (Abschnitt 5)** und die **Leitplanken (Abschnitt 11)** gelten für jede
+> Änderung in jeder Phase. Im Konfliktfall gewinnt Kindeswohl vor Feature, dieses Dokument
+> vor jedem Task, eine explizite Maintainer-Anweisung vor allem.
+
 ---
 
 ## 1. Warum wir das breiter fassen
@@ -133,6 +141,11 @@ Familien suchen gezielt, Helfer bieten gezielt an, das Matching wird präzise.
 Bei Kinderbetreuung ist Vertrauen keine Funktion, sondern **das Fundament**. Zeitnest baut
 gestufte, nachvollziehbare Sicherheit — kein anonymes Portal, sondern begleitete Vermittlung.
 
+> **Für die Umsetzung heißt das:** Kein Feature — egal aus welcher Phase — darf eine
+> Verifizierungs-, Sichtbarkeits- oder Schutzregel lockern, umgehen oder „vereinfachen".
+> Änderungen an Trust-Leveln, FZ-Logik, Sichtbarkeits-Gates oder Kinder-/Notfalldaten
+> sind immer Maintainer-Entscheidungen, nie autonome.
+
 **Verifizierungs-Stufen (Trust-Level):**
 
 1. **E-Mail bestätigt** — Grundeintritt
@@ -216,6 +229,9 @@ Wildwuchs.
 
 ## 10. Vom Heute zum Morgen — Roadmap (grob)
 
+*Die Phasen-Reihenfolge ist verbindlich: Phase N+1 beginnt erst, wenn Phase N „fertig"
+ist oder der Maintainer explizit vorzieht. Innerhalb einer Phase priorisiert `TODO.md`.*
+
 **Phase 1 — heute (Wunschgroßeltern-Kern):** ✅ weitgehend umgesetzt
 Rollen Elternteil / Wunschgroßelternteil / Koordinator, Familien-Modell, PLZ-Matching,
 Führungszeugnis-Verifizierung mit Lifecycle, Termine, Nachrichten, Bewertungen,
@@ -226,12 +242,19 @@ Vom starren `parent`/`grandparent` zu einem allgemeinen Modell **Helfende ↔ Su
 Beliebige Freiwillige (Studierende, Nachbarn, Paten). **Skill-/Qualifikations-Tags**
 (Erste Hilfe, pädagogische Ausbildung, Sprachen, Instrument). Angebots-/Gesuchs-Typen.
 *Wunschgroßeltern bleiben eine hervorgehobene, sichtbare Kategorie — kein Bruch.*
+*Fertig heißt:* Bestands-Accounts funktionieren unverändert (Migration additiv, Demo-Regionen
+intakt); eine neue Helfer-Kategorie ist Ende-zu-Ende nutzbar (Registrierung → Verifizierung →
+Matching → Vermittlung); Wunschgroßeltern-Flows sind visuell und funktional unverändert.
 
 **Phase 3 — Events & Kurse als zweite Säule:**
 Die Koordinator-Termine werden zum vollwertigen **Event-System**: Anmeldung pro Kind,
 Kapazität & Warteliste, Helfer-Einteilung mit Betreuungsschlüssel und FZ-Check,
 Teilnehmerlisten & Notfallkontakte, Wiederholungs-Termine für Kurse (Kinderturnen,
 Vorlese-Stunde). Später: bewährte Helfende schlagen Events vor, Koordinierungsstelle gibt frei.
+*Fertig heißt:* Eine Koordinierungsstelle kann ein wiederkehrendes Event mit Kapazität
+anlegen; Familien melden Kinder an (inkl. Warteliste); Helfer werden mit FZ-Check
+eingeteilt; Teilnehmerliste + Notfallkontakte sind für Verantwortliche abrufbar —
+alles auf `coordinator_events` aufgebaut, nicht daneben.
 
 **Phase 4 — Betreuungsformen & Sicherheit vertiefen:**
 Betreuungs-Arten als Matching-Dimension, **Notfall-Pool**, Verfügbarkeits-Matching,

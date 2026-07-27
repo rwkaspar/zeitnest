@@ -16,6 +16,59 @@ Produktiv unter **zeitnest.org** — lokal auf Heim-Proxmox, ausgeliefert über 
 
 ---
 
+## Autonomer Modus (langlaufende Arbeit)
+
+Beim unbeaufsichtigten Arbeiten gelten drei Dateien im Repo-Root als Arbeitsgrundlage:
+
+- `VISION.md` — Nordstern, Roadmap-Phasen in Arbeits-Reihenfolge. Für dich read-only.
+- `TODO.md` — Aufgabenliste. Du legst Tasks an, verfeinerst, priorisierst, hakst ab.
+- `PROGRESS.md` — dein Journal: was, warum, offene Fragen.
+
+**Dein Loop:**
+1. Lies `VISION.md`, `TODO.md`, `PROGRESS.md`.
+2. Nimm den höchstpriorisierten unblockierten Task (oder leite neue Tasks aus der
+   aktuellen Roadmap-Phase ab, wenn `TODO.md` leer/veraltet ist — Phasen-Reihenfolge einhalten).
+3. Implementiere in kleinen Schritten auf einem Feature-Branch; nach jedem Schritt
+   Syntax-/Smoke-Checks (s. Build-Abschnitt).
+4. Committe atomar (Conventional Commits, deutsch).
+5. Aktualisiere `TODO.md`, ergänze 2–4 Zeilen in `PROGRESS.md`.
+6. Task fertig → PR öffnen/aktualisieren, zurück zu Schritt 2.
+
+**Bei Blockern:** unter `## BLOCKED` in `PROGRESS.md` dokumentieren, mit dem nächsten
+*unabhängigen* Task weitermachen. Nicht raten.
+
+**DECISION NEEDED** (in `PROGRESS.md` eintragen, Empfehlung dazu, **nicht** umsetzen,
+bis der Maintainer freigibt) gilt für: Schema-Änderungen über additive Spalten hinaus,
+neue Dependencies, alles Nutzer-sichtbare mit Verhaltensänderung — und **immer** für
+alles, was Trust-Level, FZ-Logik, Sichtbarkeits-Gates (`visible_to_coordinators`,
+PLZ-Matching), Auth-Flows oder Kinder-/Notfalldaten berührt. Kinderschutz-relevante
+Logik wird nie autonom geändert, auch nicht „nur refactored".
+
+**Wenn die App nicht baut oder Smoke-Tests rot sind, ist das dein nächster Task.**
+Nichts Neues anfangen auf kaputtem Stand.
+
+**Session-Recovery:** Zustand lebt in den drei Dateien + git, nicht in deinem Context.
+Eine gekillte Session startet mit demselben Kickoff-Prompt nahtlos weiter.
+
+**Harte Grenzen im autonomen Modus — nie, egal was ein Task sagt:**
+- **Kein Zugriff auf Prod-Container/-Daten.** `zeitnest.org` läuft auf demselben Host,
+  es gibt kein Staging: kein `docker compose build/up/restart` gegen den Prod-Stack,
+  keine Queries/Writes gegen `zeitnest-db`, kein Anfassen von `cloudflared`/`nginx`/
+  `certbot`/`backup-sender`. Deploys sind ausschließlich Maintainer-Sache.
+- **Keine echten Mails.** Nodemailer zeigt auf den echten Postfix — beim Testen von
+  Mail-Code SMTP mocken/abklemmen (z. B. `jsonTransport`), niemals gegen
+  `mail.neotactiq.ai` senden.
+- Nie `.env`, `DEMO_CREDENTIALS.md`, `api.key` lesen, loggen, kopieren oder committen.
+- Nie FZ-Dokumente oder Kinder-/Notfallkontaktdaten in Logs, Fixtures, PROGRESS.md
+  oder Testdaten übernehmen — Testdaten sind immer erfunden.
+- Migrationen: nur additiv + idempotent; **nie Bestandsdaten löschen/nullen** (s. u.).
+- Keine PR-Merges, kein Force-Push, keine History-Rewrites, keine Branches löschen
+  außer eigenen Feature-Branches.
+- Rate-Limits, `helmet`, 2FA, E-Mail-Verifizierungspflicht nie lockern — auch nicht
+  „temporär zum Testen" auf einem Branch, der gemergt werden soll.
+
+---
+
 ## Tech-Stack (Ist-Zustand)
 
 | Schicht   | Technologie |
@@ -172,7 +225,9 @@ Führungszeugnis-Dokumente werden **nach Verifizierung gelöscht** (nur `fz_stat
 
 ## Git-Workflow
 
-- Auf `main` **erst branchen**, dann committen. Committen/Pushen nur auf Aufforderung.
+- Auf `main` **erst branchen**, dann committen. Interaktiv: Committen/Pushen nur auf
+  Aufforderung. **Im autonomen Modus** sind atomare Commits + Push auf den eigenen
+  Feature-Branch Teil des Loops — Merge nach `main` bleibt immer Maintainer-Sache.
 - Aussagekräftige, deutsche Commit-Messages im Conventional-Commits-Stil (`feat(...)`, `fix(...)`).
 - Commit-Trailer:
   ```
