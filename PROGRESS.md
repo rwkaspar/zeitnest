@@ -1,5 +1,13 @@
 # PROGRESS — Journal (autonomer Modus)
 
+## Standup
+
+- **Phase 2 (Rollen öffnen): Daten-/API-Fundament komplett** — Konstanten (6 Kategorien / 12 Skills), additive Migration, validierende APIs, rückwärtskompatible Such-Filter, 7 Unit-Tests + Frontend-Build grün (alles im Wegwerf-Container, Prod unberührt).
+- Branch `feature/phase2-rollen-oeffnen` gepusht (7 Commits); PR öffnen: https://github.com/rwkaspar/zeitnest/compare/main...feature/phase2-rollen-oeffnen
+- **5 Maintainer-Entscheidungen offen** (Registrierungs-Auswahl, EditProfile-UI, Such-UI, Label-Wording, FZ-Pflicht neue Kategorien) — Details + Empfehlungen unter DECISION NEEDED.
+- **1 Blocker:** `gh` CLI fehlt auf dem Host → PR konnte nicht automatisch erstellt werden.
+- Nächster sinnvoller Schritt nach Freigabe: UI-Tasks (Entscheidungen 1–3) in TODO.md aufnehmen und umsetzen.
+
 ## DECISION NEEDED
 
 *(Empfehlungen dokumentiert, nicht umgesetzt — wartet auf Maintainer-Freigabe.)*
@@ -22,7 +30,10 @@
 
 ## BLOCKED
 
-*(derzeit nichts)*
+- **T7 (PR öffnen):** `gh` CLI ist auf dem Host nicht installiert (`gh: command not found`).
+  Branch ist gepusht; PR manuell öffnen unter
+  https://github.com/rwkaspar/zeitnest/compare/main...feature/phase2-rollen-oeffnen
+  — oder `gh` installieren (`sudo apt install gh`) und die Session neu starten.
 
 ## Journal
 
