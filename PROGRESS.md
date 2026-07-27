@@ -38,6 +38,15 @@ installiert + authentifiziert, PR #1 ist offen)*
 
 *(neueste Einträge oben — Format: Datum — was, warum, offene Fragen)*
 
+### 2026-07-27 — Merge + Deploy (Maintainer-Auftrag), Asset-Optimierung
+- Vorab Bilder optimiert: 18 Landing-Illustrationen → WebP 768px/q82 (3,5 MB → 912 KB),
+  Logo 456K → 16K. Referenzen in LandingPage.jsx umgestellt.
+- PR #1 (Phase 2) + `feature/zeitnest-no-support-row` (FZ-Lifecycle) nach `main`
+  gemergt; Konflikte in database.js/coordinator.js additiv aufgelöst (beides behalten).
+- Deploy: Migration lief (4 neue Spalten, Bestand intakt: 5× grandparent, Demo-PLZ ok),
+  Smoke 200, WebP wird ausgeliefert, FZ-Job lief ohne fällige Reminder (0 Mails).
+- PR #1 von GitHub als merged erkannt. Phase 2 ist damit live. Nächste Phase: 3 (Events).
+
 ### 2026-07-27 — T8–T12: UI nach Freigabe „1–5 wie empfohlen"
 - Registrierung: Backend nimmt `helper_category` validiert an (Default
   'grandparent', Auth-Flow byte-gleich); Frontend zeigt „Ich helfe als …"-Select
