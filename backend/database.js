@@ -368,6 +368,12 @@ async function initDatabase() {
     await client.query(`ALTER TABLE grandparent_profiles ADD COLUMN IF NOT EXISTS fz_admin_note TEXT`);
     await client.query(`ALTER TABLE grandparent_profiles ADD COLUMN IF NOT EXISTS fz_filename TEXT`);
     await client.query(`CREATE INDEX IF NOT EXISTS idx_gp_fz_status ON grandparent_profiles(fz_status)`);
+
+    // Phase 2 (Rollen öffnen), rein additiv: Bestands-Helfer sind per Default
+    // 'grandparent'; Werte werden in der App gegen HELPER_CATEGORIES/SKILLS validiert.
+    await client.query(`ALTER TABLE grandparent_profiles ADD COLUMN IF NOT EXISTS helper_category TEXT NOT NULL DEFAULT 'grandparent'`);
+    await client.query(`ALTER TABLE grandparent_profiles ADD COLUMN IF NOT EXISTS skills TEXT[]`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_gp_helper_category ON grandparent_profiles(helper_category)`);
     // Mark existing/demo users as verified
     await client.query(`UPDATE users SET email_verified = TRUE WHERE email_verified IS NULL OR email LIKE '%@example.de'`);
 
