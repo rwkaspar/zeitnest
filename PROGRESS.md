@@ -10,9 +10,10 @@
 
 ## DECISION NEEDED
 
-*(Empfehlungen dokumentiert, nicht umgesetzt — wartet auf Maintainer-Freigabe.)*
+*(derzeit nichts offen — Punkte 1–5 am 2026-07-27 vom Maintainer freigegeben:
+„1–5 wie empfohlen". Umsetzung als T8–T12 in TODO.md. Historie:)*
 
-1. **Registrierungs-Flow: Helfer-Kategorie wählbar machen** (Auth-nah + Nutzer-sichtbar).
+1. **Registrierungs-Flow: Helfer-Kategorie wählbar machen** (Auth-nah + Nutzer-sichtbar). ✅ freigegeben
    *Empfehlung:* Rolle bleibt technisch `grandparent`; das Formular bekommt eine
    „Ich helfe als …"-Auswahl, die nur `helper_category` setzt. Verifizierungs-Flow
    (E-Mail-Pflicht, kein Auto-Login) bleibt byte-identisch.

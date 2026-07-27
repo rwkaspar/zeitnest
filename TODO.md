@@ -49,6 +49,27 @@ also planmäßig mit offenen Maintainer-Entscheidungen.
       DECISION-NEEDED-Punkte. *Fertig, wenn:* PR-URL in PROGRESS.md steht.
       → https://github.com/rwkaspar/zeitnest/pull/1
 
+*Nach Maintainer-Freigabe „1–5 wie empfohlen" (2026-07-27):*
+
+- [ ] **T8 — Registrierung: Kategorie-Auswahl (Backend):** `POST /auth/register`
+      akzeptiert optional `helper_category` (validiert, Default 'grandparent') und
+      schreibt sie beim Anlegen des Helfer-Profils. Rolle/Token-Flow unverändert.
+      *Fertig, wenn:* Syntax-Check grün; ohne Param identisches Verhalten.
+- [ ] **T9 — Registrierung: „Ich helfe als …"-Auswahl (Frontend):** Bei Rolle
+      Helfer erscheint die Kategorie-Auswahl (Default Wunschgroßeltern).
+      *Fertig, wenn:* Build grün; Eltern-Flow unverändert. *(abhängig von T8)*
+- [ ] **T10 — EditProfile: Kategorie + Skills:** RadioGroup (Kategorie, ohne
+      „Keine Angabe") + ChipGroup (Skills) im Helfer-Abschnitt.
+      *Fertig, wenn:* Build grün; Speichern nutzt bestehendes PUT /profiles/me.
+- [ ] **T11 — Such-UI: Filter Kategorie + Skills:** Dropdown „Alle Kategorien"
+      + Skill-Chips, nur bei Suche nach Helfenden; Ergebnis-Karten zeigen
+      Kategorie-Badge (außer Wunschgroßeltern = Default).
+      *Fertig, wenn:* Build grün; ohne Filter heutiges Verhalten.
+- [ ] **T12 — FZ-Pflicht alle Kategorien verifizieren:** Prüfen + dokumentieren,
+      dass FZ-Upload/-Lifecycle für alle Kategorien greift (alle leben in
+      `grandparent_profiles`, Rolle bleibt `grandparent`).
+      *Fertig, wenn:* Ergebnis im Journal; ggf. nur Wording-Anpassung.
+
 ## Später (erkannt, aber bewusst zurückgestellt)
 
 - **Registrierungs-Flow mit Kategorie-Auswahl** — Auth-nah + Nutzer-sichtbar → DECISION NEEDED (in PROGRESS.md mit Empfehlung).
