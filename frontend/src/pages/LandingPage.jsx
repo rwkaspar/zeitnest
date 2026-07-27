@@ -25,7 +25,7 @@ function LandingPage() {
             </div>
           </div>
           <div className="hero-illustration">
-            <img src="/illustrations/feature-kennenlernen.png" alt="" />
+            <img src="/illustrations/feature-kennenlernen.webp" alt="" />
           </div>
         </div>
       </section>
@@ -35,17 +35,17 @@ function LandingPage() {
           <h2>Warum Zeitnest?</h2>
           <div className="features-grid">
             <div className="card feature-card">
-              <div className="icon"><img src="/illustrations/feature-eltern-entlastung.png" alt="" /></div>
+              <div className="icon"><img src="/illustrations/feature-eltern-entlastung.webp" alt="" /></div>
               <h3>Entlastung f&uuml;r Eltern</h3>
               <p>Finden Sie verl&auml;ssliche und liebevolle Betreuung f&uuml;r Ihre Kinder &ndash; flexibel und in Ihrer N&auml;he.</p>
             </div>
             <div className="card feature-card">
-              <div className="icon"><img src="/illustrations/feature-senioren-sinn.png" alt="" /></div>
+              <div className="icon"><img src="/illustrations/feature-senioren-sinn.webp" alt="" /></div>
               <h3>Sinn &amp; Freude f&uuml;r Senioren</h3>
               <p>Verbringen Sie wertvolle Zeit mit Kindern und bleiben Sie aktiv &ndash; als Leih-Oma oder Leih-Opa.</p>
             </div>
             <div className="card feature-card">
-              <div className="icon"><img src="/illustrations/feature-kennenlernen.png" alt="" /></div>
+              <div className="icon"><img src="/illustrations/feature-kennenlernen.webp" alt="" /></div>
               <h3>Sicheres Kennenlernen</h3>
               <p>Unser Kennenlern-Leitfaden begleitet Sie Schritt f&uuml;r Schritt zu einem vertrauensvollen Miteinander.</p>
             </div>
@@ -56,13 +56,13 @@ function LandingPage() {
       <section className="audience-section audience-children">
         <div className="container">
           <div className="audience-header">
-            <div className="audience-icon"><img src="/illustrations/header-kinder.png" alt="" /></div>
+            <div className="audience-icon"><img src="/illustrations/header-kinder.webp" alt="" /></div>
             <h2>F&uuml;r Kinder</h2>
             <p className="audience-subtitle">Neue Welten entdecken, Wurzeln sp&uuml;ren</p>
           </div>
           <div className="audience-grid">
             <div className="audience-card">
-              <div className="audience-card-icon"><img src="/illustrations/kinder-bezugspersonen.png" alt="" /></div>
+              <div className="audience-card-icon"><img src="/illustrations/kinder-bezugspersonen.webp" alt="" /></div>
               <h3>Neue Bezugspersonen</h3>
               <p>
                 Kinder profitieren enorm von stabilen Beziehungen au&szlig;erhalb der Kernfamilie.
@@ -71,7 +71,7 @@ function LandingPage() {
               </p>
             </div>
             <div className="audience-card">
-              <div className="audience-card-icon"><img src="/illustrations/kinder-geschichten.png" alt="" /></div>
+              <div className="audience-card-icon"><img src="/illustrations/kinder-geschichten.webp" alt="" /></div>
               <h3>Lebenserfahrung &amp; Geschichten</h3>
               <p>
                 &Auml;ltere Menschen bringen einen Schatz an Erfahrungen, Geschichten und Wissen mit,
@@ -80,7 +80,7 @@ function LandingPage() {
               </p>
             </div>
             <div className="audience-card">
-              <div className="audience-card-icon"><img src="/illustrations/kinder-soziale-kompetenz.png" alt="" /></div>
+              <div className="audience-card-icon"><img src="/illustrations/kinder-soziale-kompetenz.webp" alt="" /></div>
               <h3>Soziale Kompetenz</h3>
               <p>
                 Der Umgang mit verschiedenen Altersgruppen st&auml;rkt Empathie, Geduld und
@@ -89,7 +89,7 @@ function LandingPage() {
               </p>
             </div>
             <div className="audience-card">
-              <div className="audience-card-icon"><img src="/illustrations/kinder-impulse-hobbys.png" alt="" /></div>
+              <div className="audience-card-icon"><img src="/illustrations/kinder-impulse-hobbys.webp" alt="" /></div>
               <h3>Neue Impulse &amp; Hobbys</h3>
               <p>
                 Ob gemeinsam G&auml;rtnern, Backen, Basteln oder Geschichten vorlesen &ndash;
@@ -104,13 +104,13 @@ function LandingPage() {
       <section className="audience-section audience-seniors">
         <div className="container">
           <div className="audience-header">
-            <div className="audience-icon"><img src="/illustrations/header-senioren.png" alt="" /></div>
+            <div className="audience-icon"><img src="/illustrations/header-senioren.webp" alt="" /></div>
             <h2>F&uuml;r Senioren</h2>
             <p className="audience-subtitle">Gebraucht werden, weitergeben, lebendig bleiben</p>
           </div>
           <div className="audience-grid">
             <div className="audience-card">
-              <div className="audience-card-icon"><img src="/illustrations/senioren-erfuellung.png" alt="" /></div>
+              <div className="audience-card-icon"><img src="/illustrations/senioren-erfuellung.webp" alt="" /></div>
               <h3>Sinn &amp; Erf&uuml;llung</h3>
               <p>
                 Im Ruhestand fehlt vielen das Gef&uuml;hl, gebraucht zu werden.
@@ -119,7 +119,7 @@ function LandingPage() {
               </p>
             </div>
             <div className="audience-card">
-              <div className="audience-card-icon"><img src="/illustrations/senioren-ohne-enkel.png" alt="" /></div>
+              <div className="audience-card-icon"><img src="/illustrations/senioren-ohne-enkel.webp" alt="" /></div>
               <h3>Auch ohne eigene Enkel</h3>
               <p>
                 Nicht jeder hat Enkel &ndash; und nicht alle Gro&szlig;eltern leben in der N&auml;he.
@@ -128,7 +128,7 @@ function LandingPage() {
               </p>
             </div>
             <div className="audience-card">
-              <div className="audience-card-icon"><img src="/illustrations/senioren-aktiv.png" alt="" /></div>
+              <div className="audience-card-icon"><img src="/illustrations/senioren-aktiv.webp" alt="" /></div>
               <h3>Aktiv &amp; verbunden bleiben</h3>
               <p>
                 Kinderlachen ist die beste Medizin. Der regelm&auml;&szlig;ige Kontakt mit jungen
@@ -137,7 +137,7 @@ function LandingPage() {
               </p>
             </div>
             <div className="audience-card">
-              <div className="audience-card-icon"><img src="/illustrations/senioren-wissen.png" alt="" /></div>
+              <div className="audience-card-icon"><img src="/illustrations/senioren-wissen.webp" alt="" /></div>
               <h3>Wissen &amp; Werte weitergeben</h3>
               <p>
                 Ihre Lebenserfahrung ist wertvoll. Ob Kochen, Handwerken, Musik oder einfach
@@ -152,13 +152,13 @@ function LandingPage() {
       <section className="audience-section audience-parents">
         <div className="container">
           <div className="audience-header">
-            <div className="audience-icon"><img src="/illustrations/header-eltern.png" alt="" /></div>
+            <div className="audience-icon"><img src="/illustrations/header-eltern.webp" alt="" /></div>
             <h2>F&uuml;r Eltern</h2>
             <p className="audience-subtitle">Es braucht ein Dorf, um ein Kind gro&szlig;zuziehen</p>
           </div>
           <div className="audience-grid">
             <div className="audience-card">
-              <div className="audience-card-icon"><img src="/illustrations/eltern-dorf.png" alt="" /></div>
+              <div className="audience-card-icon"><img src="/illustrations/eltern-dorf.webp" alt="" /></div>
               <h3>Zur&uuml;ck zum Dorf-Prinzip</h3>
               <p>
                 Fr&uuml;her k&uuml;mmerte sich der ganze Stamm um die Kinder &ndash; Gro&szlig;eltern,
@@ -168,7 +168,7 @@ function LandingPage() {
               </p>
             </div>
             <div className="audience-card">
-              <div className="audience-card-icon"><img src="/illustrations/eltern-paarzeit.png" alt="" /></div>
+              <div className="audience-card-icon"><img src="/illustrations/eltern-paarzeit.webp" alt="" /></div>
               <h3>Paarzeit sch&uuml;tzen</h3>
               <p>
                 Was n&uuml;tzt es, wenn Eltern jede Minute dem Kind widmen, aber die Beziehung
@@ -178,7 +178,7 @@ function LandingPage() {
               </p>
             </div>
             <div className="audience-card">
-              <div className="audience-card-icon"><img src="/illustrations/eltern-metime.png" alt="" /></div>
+              <div className="audience-card-icon"><img src="/illustrations/eltern-metime.webp" alt="" /></div>
               <h3>Me-Time ohne schlechtes Gewissen</h3>
               <p>
                 Ausgebrannte Eltern k&ouml;nnen nicht die besten Eltern sein.
@@ -188,7 +188,7 @@ function LandingPage() {
               </p>
             </div>
             <div className="audience-card">
-              <div className="audience-card-icon"><img src="/illustrations/eltern-vertrauen.png" alt="" /></div>
+              <div className="audience-card-icon"><img src="/illustrations/eltern-vertrauen.webp" alt="" /></div>
               <h3>Vertrauen statt Fremde</h3>
               <p>
                 Anders als bei klassischer Kinderbetreuung entsteht hier eine echte,
