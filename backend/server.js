@@ -96,6 +96,9 @@ initDatabase().then(() => {
     });
   }
 
+  // Wartungs-Jobs (FZ-Ablauf + Erinnerungs-Mails)
+  require('./maintenance/fzLifecycle').startFzLifecycleScheduler();
+
   app.listen(PORT, () => {
     console.log(`Zeitnest-Server laeuft auf Port ${PORT}`);
   });

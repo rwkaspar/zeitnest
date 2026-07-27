@@ -99,16 +99,19 @@ router.patch('/fz/:userId', async (req, res) => {
   if (!row) return res.status(404).json({ error: 'User nicht gefunden.' });
 
   if (action === 'approve') {
-    // 3 Jahre Gültigkeit, Datei nach Verifizierung löschen
+    // 3 Jahre Gültigkeit, Datei nach Verifizierung löschen, Reminder-Flags zurücksetzen
+    const validityYears = parseInt(process.env.FZ_VALIDITY_YEARS) || 3;
     await runSql(
       `UPDATE grandparent_profiles
        SET fz_status = 'verified',
            fz_verified_at = NOW(),
-           fz_expires_at = NOW() + INTERVAL '3 years',
+           fz_expires_at = NOW() + ($1 || ' years')::INTERVAL,
            fz_admin_note = NULL,
-           fz_filename = NULL
-       WHERE user_id = $1`,
-      [req.params.userId]
+           fz_filename = NULL,
+           fz_reminder_60d_sent_at = NULL,
+           fz_reminder_7d_sent_at = NULL
+       WHERE user_id = $2`,
+      [validityYears, req.params.userId]
     );
     if (row.fz_filename) {
       fs.unlink(path.join(FZ_UPLOAD_DIR, row.fz_filename), () => {});

@@ -187,6 +187,81 @@ async function sendNewMessageEmail(email, firstName, fromName, matchId) {
   );
 }
 
+async function sendFzExpiryReminder(email, firstName, daysRemaining, expiresAt) {
+  const isUrgent = daysRemaining <= 14;
+  const subject = isUrgent
+    ? `Zeitnest – Ihr Führungszeugnis läuft in ${daysRemaining} Tagen ab`
+    : 'Zeitnest – Ihr Führungszeugnis läuft demnächst ab';
+  const expiresFormatted = new Date(expiresAt).toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' });
+
+  const text = `Hallo ${firstName},
+
+Ihr bei Zeitnest hinterlegtes erweitertes Führungszeugnis nach §30a BZRG läuft am ${expiresFormatted} ab (in ${daysRemaining} Tagen).
+
+So verlängern Sie Ihren Status:
+
+1. Beantragen Sie online ein neues erweitertes Führungszeugnis:
+   https://www.fuehrungszeugnis.bund.de/
+
+   Für ehrenamtliche Tätigkeiten ist der Antrag in der Regel gebührenfrei.
+   Bitten Sie das Bürgeramt um eine entsprechende Befreiung.
+
+2. Sobald das Zeugnis bei Ihnen ist, laden Sie es bei Zeitnest hoch:
+   ${BASE_URL}/konto
+
+3. Wir prüfen das Dokument und löschen es nach Verifizierung wieder aus
+   unserem Speicher. Ihr „Geprüft"-Badge bleibt bestehen.
+
+Solange Ihr aktuelles Zeugnis noch gültig ist, sind Sie weiterhin als
+geprüft sichtbar. Nach Ablauf entfällt das Badge.
+
+Viele Grüße
+Ihr Zeitnest-Team`;
+
+  const body = `
+<tr><td>
+<h1 style="color:#e8725a;font-size:22px;margin:0 0 16px;">Ihr Führungszeugnis läuft am ${expiresFormatted} ab</h1>
+<p style="font-size:16px;line-height:1.5;margin:0 0 16px;">Hallo ${firstName},</p>
+<p style="font-size:16px;line-height:1.5;margin:0 0 16px;">
+  Ihr bei Zeitnest hinterlegtes erweitertes Führungszeugnis nach §30a BZRG
+  läuft in <strong>${daysRemaining} Tagen</strong> (am ${expiresFormatted}) ab.
+</p>
+
+<h3 style="margin:24px 0 8px;font-size:16px;">So verlängern Sie Ihren Status</h3>
+<ol style="font-size:15px;line-height:1.6;padding-left:18px;margin:0 0 16px;">
+  <li style="margin-bottom:8px;">
+    <a href="https://www.fuehrungszeugnis.bund.de/" style="color:#e8725a;">Neues erweitertes Führungszeugnis beantragen</a>.
+    Für ehrenamtliche Tätigkeiten meist gebührenfrei.
+  </li>
+  <li style="margin-bottom:8px;">
+    Zeugnis bei Zeitnest hochladen
+    (Konto → „Erweitertes Führungszeugnis").
+  </li>
+  <li style="margin-bottom:8px;">
+    Wir prüfen, das Dokument wird nach Verifizierung gelöscht,
+    Ihr „Geprüft"-Badge bleibt bestehen.
+  </li>
+</ol>
+
+<p style="margin:24px 0;text-align:center;">
+  <a href="${BASE_URL}/konto" style="background-color:#e8725a;color:#ffffff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block;">Zum Konto wechseln</a>
+</p>
+
+<p style="font-size:14px;line-height:1.5;margin:0;color:#5a6878;">
+  Solange Ihr aktuelles Zeugnis noch gültig ist, sind Sie weiterhin als
+  geprüft sichtbar. Nach Ablauf entfällt das Badge automatisch.
+</p>
+</td></tr>`;
+
+  await transporter.sendMail({
+    from: FROM,
+    to: email,
+    subject,
+    text,
+    html: htmlTemplate(subject, body),
+  });
+}
+
 module.exports = {
   sendVerificationEmail,
   sendPasswordResetEmail,
@@ -194,4 +269,5 @@ module.exports = {
   sendBookingCreatedEmail,
   sendBookingCancelledEmail,
   sendNewMessageEmail,
+  sendFzExpiryReminder,
 };
