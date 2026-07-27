@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { HELPER_CATEGORIES } from '../constants/profileOptions';
 
 function RegisterPage() {
   const inviteToken = typeof window !== 'undefined' ? sessionStorage.getItem('pendingFamilyInviteToken') : null;
@@ -8,6 +9,7 @@ function RegisterPage() {
     email: '', password: '',
     // Bei einer wartenden Family-Einladung ist die Rolle festgelegt: Elternteil.
     role: inviteToken ? 'parent' : '',
+    helper_category: 'grandparent',
     first_name: '', last_name: '', city: '', postal_code: ''
   });
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
@@ -100,8 +102,19 @@ function RegisterPage() {
               </div>
               <div className={`role-option ${formData.role === 'grandparent' ? 'active' : ''}`} onClick={() => setFormData(p => ({ ...p, role: 'grandparent' }))}>
                 <span className="role-icon">&#x1F9D3;</span>
-                <span className="role-label">Leih-Gro&szlig;elternteil</span>
+                <span className="role-label">Ich schenke Zeit</span>
               </div>
+            </div>
+          )}
+
+          {formData.role === 'grandparent' && (
+            <div className="form-group">
+              <label>Ich helfe als &hellip;</label>
+              <select name="helper_category" value={formData.helper_category} onChange={handleChange}>
+                {HELPER_CATEGORIES.map((c) => (
+                  <option key={c.key} value={c.key}>{c.label}</option>
+                ))}
+              </select>
             </div>
           )}
 

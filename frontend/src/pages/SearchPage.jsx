@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../utils/api';
+import { HELPER_CATEGORIES, SKILLS, labelOf } from '../constants/profileOptions';
 
 function SearchPage() {
   const { user } = useAuth();
@@ -10,8 +11,11 @@ function SearchPage() {
   const [city, setCity] = useState('');
   const [postalCode, setPostalCode] = useState('');
   const [radiusKm, setRadiusKm] = useState(50);
+  const [helperCategory, setHelperCategory] = useState('');
+  const [skillFilter, setSkillFilter] = useState([]);
 
-  const searchLabel = user?.role === 'parent' ? 'Leih-Gro\u00dfeltern' : 'Familien';
+  const searchesHelpers = user?.role === 'parent';
+  const searchLabel = searchesHelpers ? 'Helfende' : 'Familien';
 
   const doSearch = useCallback(async () => {
     setLoading(true);
@@ -22,6 +26,8 @@ function SearchPage() {
         params.near_postal_code = postalCode;
         params.radius_km = radiusKm;
       }
+      if (searchesHelpers && helperCategory) params.helper_category = helperCategory;
+      if (searchesHelpers && skillFilter.length) params.skills = skillFilter.join(',');
       const data = await api.search(params);
       setResults(data.results || []);
     } catch (err) {
@@ -29,7 +35,11 @@ function SearchPage() {
     } finally {
       setLoading(false);
     }
-  }, [city, postalCode, radiusKm]);
+  }, [city, postalCode, radiusKm, helperCategory, skillFilter, searchesHelpers]);
+
+  function toggleSkill(key) {
+    setSkillFilter((prev) => prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]);
+  }
 
   useEffect(() => {
     doSearch();
@@ -59,8 +69,34 @@ function SearchPage() {
               Meine PLZ
             </button>
           )}
+          {searchesHelpers && (
+            <select value={helperCategory} onChange={(e) => setHelperCategory(e.target.value)} title="Helfer-Kategorie">
+              <option value="">Alle Kategorien</option>
+              {HELPER_CATEGORIES.map((c) => (
+                <option key={c.key} value={c.key}>{c.label}</option>
+              ))}
+            </select>
+          )}
           <button type="submit" className="btn btn-primary">Suchen</button>
         </form>
+
+        {searchesHelpers && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', margin: '0 0 20px' }}>
+            {SKILLS.map((s) => (
+              <button key={s.key} type="button" onClick={() => toggleSkill(s.key)}
+                style={{
+                  padding: '4px 12px', borderRadius: '14px', border: '1px solid',
+                  borderColor: skillFilter.includes(s.key) ? 'var(--primary)' : 'var(--border)',
+                  background: skillFilter.includes(s.key) ? 'var(--primary-light)' : 'var(--bg-white)',
+                  color: skillFilter.includes(s.key) ? 'var(--primary)' : 'var(--text)',
+                  cursor: 'pointer', fontSize: '0.82rem',
+                  fontWeight: skillFilter.includes(s.key) ? 600 : 400,
+                }}>
+                {s.label}
+              </button>
+            ))}
+          </div>
+        )}
 
         {loading ? (
           <div className="loading-screen"><div className="spinner" /></div>
@@ -82,6 +118,14 @@ function SearchPage() {
                   <p className="location">&#x1F4CD; {person.city || 'Keine Angabe'} {person.postal_code && `(${person.postal_code})`}</p>
                   {person.bio && <p className="bio">{person.bio}</p>}
                   <div className="tags">
+                    {person.helper_category && person.helper_category !== 'grandparent' && (
+                      <span className="tag" style={{ background: 'var(--primary-light)', color: 'var(--primary)', fontWeight: 600 }}>
+                        {labelOf(HELPER_CATEGORIES, person.helper_category)}
+                      </span>
+                    )}
+                    {Array.isArray(person.skills) && person.skills.slice(0, 3).map((sk) => (
+                      <span key={sk} className="tag blue">{labelOf(SKILLS, sk)}</span>
+                    ))}
                     {person.offered_activities && person.offered_activities.split(',').slice(0, 3).map((act, i) => (
                       <span key={i} className="tag">{act.trim()}</span>
                     ))}

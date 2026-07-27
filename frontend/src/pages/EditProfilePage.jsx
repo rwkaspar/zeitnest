@@ -4,7 +4,7 @@ import { api } from '../utils/api';
 import AvatarCropModal from '../components/AvatarCropModal';
 import {
   ACTIVITIES, MOBILITY, DESIRED_GRANDPARENT, CONTACT_MODE, CONTACT_LOCATION,
-  SUPPORT_OFFERED, MARITAL_STATUS,
+  SUPPORT_OFFERED, MARITAL_STATUS, HELPER_CATEGORIES, SKILLS,
 } from '../constants/profileOptions';
 
 // "Wir wünschen uns"-Auswahl mit Sonderlogik:
@@ -497,6 +497,17 @@ function EditProfilePage() {
             ) : (
               <>
                 <h3 style={section}>Erfahrung &amp; Angebot</h3>
+
+                <div className="form-group">
+                  <label>Ich helfe als &hellip;</label>
+                  <RadioGroup name="helper_category" options={HELPER_CATEGORIES}
+                    value={formData.helper_category || 'grandparent'} onChange={setField} allowNull={false} />
+                </div>
+
+                <div className="form-group">
+                  <label>Meine F&auml;higkeiten &amp; Qualifikationen</label>
+                  <ChipGroup name="skills" options={SKILLS} selected={formData.skills} onChange={setField} />
+                </div>
 
                 <div className="form-group">
                   <label>Erfahrung mit Kindern</label>
