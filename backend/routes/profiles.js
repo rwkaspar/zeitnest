@@ -7,7 +7,8 @@ const { queryOne, queryAll, runSql } = require('../database');
 const { authenticateToken } = require('../middleware/auth');
 const {
   ACTIVITIES, MOBILITY, DESIRED_GRANDPARENT, CONTACT_MODE, CONTACT_LOCATION,
-  SUPPORT_OFFERED, MARITAL_STATUS, validateSubset, validateOne,
+  SUPPORT_OFFERED, MARITAL_STATUS, HELPER_CATEGORIES, SKILLS,
+  validateSubset, validateOne,
 } = require('../constants/profileOptions');
 
 const router = express.Router();
@@ -208,21 +209,28 @@ router.put('/me', authenticateToken, async (req, res) => {
       const {
         experience, availability, preferred_age_range, offered_activities, has_fuehrungszeugnis,
         activities, has_liability_insurance, visible_to_coordinators,
+        helper_category, skills,
       } = req.body;
 
+      // helper_category/skills: nicht mitgeschickt bzw. ungültig → COALESCE behält
+      // den Bestandswert (helper_category ist NOT NULL). skills = [] löscht bewusst.
       await runSql(
         `UPDATE grandparent_profiles SET
            experience = $1, availability = $2, preferred_age_range = $3,
            offered_activities = $4, has_fuehrungszeugnis = $5,
            activities = $6, has_liability_insurance = $7,
-           visible_to_coordinators = COALESCE($8, visible_to_coordinators)
-         WHERE user_id = $9`,
+           visible_to_coordinators = COALESCE($8, visible_to_coordinators),
+           helper_category = COALESCE($9, helper_category),
+           skills = COALESCE($10, skills)
+         WHERE user_id = $11`,
         [
           experience, availability, preferred_age_range, offered_activities,
           has_fuehrungszeugnis ? true : false,
           validateSubset(activities, ACTIVITIES) || null,
           has_liability_insurance == null ? null : !!has_liability_insurance,
           visible_to_coordinators == null ? null : !!visible_to_coordinators,
+          validateOne(helper_category, HELPER_CATEGORIES),
+          validateSubset(skills, SKILLS),
           req.user.id,
         ]
       );
