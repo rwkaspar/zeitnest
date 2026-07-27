@@ -56,6 +56,30 @@ export const MARITAL_STATUS = [
   { key: 'widowed', label: 'Verwitwet' },
 ];
 
+export const HELPER_CATEGORIES = [
+  { key: 'grandparent', label: 'Wunschgroßeltern' },
+  { key: 'student', label: 'Studierende & junge Erwachsene' },
+  { key: 'neighbor', label: 'Nachbarschaftshilfe' },
+  { key: 'family_mentor', label: 'Patenfamilie' },
+  { key: 'parent_tandem', label: 'Eltern-Tandem' },
+  { key: 'skilled_volunteer', label: 'Ehrenamtliche mit Fachkompetenz' },
+];
+
+export const SKILLS = [
+  { key: 'first_aid', label: 'Erste Hilfe (am Kind)' },
+  { key: 'pedagogy', label: 'Pädagogische Ausbildung' },
+  { key: 'childcare_experience', label: 'Betreuungserfahrung' },
+  { key: 'languages', label: 'Fremdsprachen' },
+  { key: 'music', label: 'Musik & Instrument' },
+  { key: 'sports', label: 'Sport & Bewegung' },
+  { key: 'crafts', label: 'Handwerk & Basteln' },
+  { key: 'tutoring', label: 'Nachhilfe & Lernbegleitung' },
+  { key: 'reading', label: 'Vorlesen & Leseförderung' },
+  { key: 'cooking_baking', label: 'Kochen & Backen' },
+  { key: 'nature_gardening', label: 'Natur & Garten' },
+  { key: 'special_needs', label: 'Erfahrung mit Förderbedarf' },
+];
+
 export function labelOf(list, key) {
   const item = list.find((x) => x.key === key);
   return item ? item.label : key;
