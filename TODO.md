@@ -21,28 +21,28 @@ also planmäßig mit offenen Maintainer-Entscheidungen.
 
 - [x] **T0 — Setup:** TODO.md + PROGRESS.md anlegen, Phase zerlegen.
       *Fertig, wenn:* beide Dateien committed auf Feature-Branch.
-- [ ] **T1 — Konstanten Helfer-Kategorien & Skills:** `HELPER_CATEGORIES` und `SKILLS`
+- [x] **T1 — Konstanten Helfer-Kategorien & Skills:** `HELPER_CATEGORIES` und `SKILLS`
       in `backend/constants/profileOptions.js` (Quelle der Wahrheit) + Spiegel mit
       deutschen Labels in `frontend/src/constants/profileOptions.js`.
       *Fertig, wenn:* beide Dateien konsistent (gleiche Values), Syntax-Check grün.
-- [ ] **T2 — Additive Migration:** `grandparent_profiles.helper_category TEXT DEFAULT
+- [x] **T2 — Additive Migration:** `grandparent_profiles.helper_category TEXT DEFAULT
       'grandparent'` + `skills TEXT[]` — nur `ADD COLUMN IF NOT EXISTS`, idempotent,
       keine Bestandsdaten angefasst. *(abhängig von T1 für Naming)*
       *Fertig, wenn:* `database.js` Syntax-Check grün; Migration rein additiv.
-- [ ] **T3 — API liest/schreibt neue Felder:** `PUT /profiles/me` validiert
+- [x] **T3 — API liest/schreibt neue Felder:** `PUT /profiles/me` validiert
       `helper_category`/`skills` gegen Konstanten (COALESCE-Muster beachten);
       `GET /auth/me`, `GET /profiles/:id` und Coordinator-Grandparents-Liste liefern
       sie additiv mit. *(abhängig von T2)*
       *Fertig, wenn:* Syntax-Check grün; bestehende Response-Felder unverändert.
-- [ ] **T4 — Such-Backend rückwärtskompatibel erweitern:** `GET /search` akzeptiert
+- [x] **T4 — Such-Backend rückwärtskompatibel erweitern:** `GET /search` akzeptiert
       optionale Filter `helper_category`/`skills`; ohne Parameter exakt heutiges
       Verhalten. Sichtbarkeits-Gates und PLZ-Logik unangetastet. *(abhängig von T3)*
       *Fertig, wenn:* Diff zeigt: nur additive WHERE-Bedingungen hinter Param-Guards.
-- [ ] **T5 — Unit-Tests Konstanten-Validierung:** Tests für `validateSubset`/
+- [x] **T5 — Unit-Tests Konstanten-Validierung:** Tests für `validateSubset`/
       `validateOne` + neue Konstanten mit Node-Builtin `node --test` (keine neue
       Dependency), lauffähig via `docker run node:20-alpine`. *(abhängig von T1)*
       *Fertig, wenn:* Testlauf im Container grün.
-- [ ] **T6 — Frontend-Build-Smoke:** `vite build` im Wegwerf-Container (nicht Prod-
+- [x] **T6 — Frontend-Build-Smoke:** `vite build` im Wegwerf-Container (nicht Prod-
       Stack) beweist, dass der Konstanten-Spiegel das Bundle nicht bricht.
       *Fertig, wenn:* Build exit 0. *(abhängig von T1)*
 - [ ] **T7 — PR öffnen:** Branch pushen, PR mit Zusammenfassung + Liste der
