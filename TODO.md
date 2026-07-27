@@ -45,8 +45,9 @@ also planmäßig mit offenen Maintainer-Entscheidungen.
 - [x] **T6 — Frontend-Build-Smoke:** `vite build` im Wegwerf-Container (nicht Prod-
       Stack) beweist, dass der Konstanten-Spiegel das Bundle nicht bricht.
       *Fertig, wenn:* Build exit 0. *(abhängig von T1)*
-- [ ] **T7 — PR öffnen:** Branch pushen, PR mit Zusammenfassung + Liste der
+- [x] **T7 — PR öffnen:** Branch pushen, PR mit Zusammenfassung + Liste der
       DECISION-NEEDED-Punkte. *Fertig, wenn:* PR-URL in PROGRESS.md steht.
+      → https://github.com/rwkaspar/zeitnest/pull/1
 
 ## Später (erkannt, aber bewusst zurückgestellt)
 
