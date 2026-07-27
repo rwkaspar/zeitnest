@@ -51,31 +51,29 @@ also planmäßig mit offenen Maintainer-Entscheidungen.
 
 *Nach Maintainer-Freigabe „1–5 wie empfohlen" (2026-07-27):*
 
-- [ ] **T8 — Registrierung: Kategorie-Auswahl (Backend):** `POST /auth/register`
+- [x] **T8 — Registrierung: Kategorie-Auswahl (Backend):** `POST /auth/register`
       akzeptiert optional `helper_category` (validiert, Default 'grandparent') und
       schreibt sie beim Anlegen des Helfer-Profils. Rolle/Token-Flow unverändert.
       *Fertig, wenn:* Syntax-Check grün; ohne Param identisches Verhalten.
-- [ ] **T9 — Registrierung: „Ich helfe als …"-Auswahl (Frontend):** Bei Rolle
+- [x] **T9 — Registrierung: „Ich helfe als …"-Auswahl (Frontend):** Bei Rolle
       Helfer erscheint die Kategorie-Auswahl (Default Wunschgroßeltern).
       *Fertig, wenn:* Build grün; Eltern-Flow unverändert. *(abhängig von T8)*
-- [ ] **T10 — EditProfile: Kategorie + Skills:** RadioGroup (Kategorie, ohne
+- [x] **T10 — EditProfile: Kategorie + Skills:** RadioGroup (Kategorie, ohne
       „Keine Angabe") + ChipGroup (Skills) im Helfer-Abschnitt.
       *Fertig, wenn:* Build grün; Speichern nutzt bestehendes PUT /profiles/me.
-- [ ] **T11 — Such-UI: Filter Kategorie + Skills:** Dropdown „Alle Kategorien"
+- [x] **T11 — Such-UI: Filter Kategorie + Skills:** Dropdown „Alle Kategorien"
       + Skill-Chips, nur bei Suche nach Helfenden; Ergebnis-Karten zeigen
       Kategorie-Badge (außer Wunschgroßeltern = Default).
       *Fertig, wenn:* Build grün; ohne Filter heutiges Verhalten.
-- [ ] **T12 — FZ-Pflicht alle Kategorien verifizieren:** Prüfen + dokumentieren,
+- [x] **T12 — FZ-Pflicht alle Kategorien verifizieren:** Prüfen + dokumentieren,
       dass FZ-Upload/-Lifecycle für alle Kategorien greift (alle leben in
       `grandparent_profiles`, Rolle bleibt `grandparent`).
       *Fertig, wenn:* Ergebnis im Journal; ggf. nur Wording-Anpassung.
 
 ## Später (erkannt, aber bewusst zurückgestellt)
 
-- **Registrierungs-Flow mit Kategorie-Auswahl** — Auth-nah + Nutzer-sichtbar → DECISION NEEDED (in PROGRESS.md mit Empfehlung).
-- **Profil-/EditProfile-UI für Kategorie & Skills** — Nutzer-sichtbar → DECISION NEEDED.
-- **Such-UI-Filter (Frontend)** — Nutzer-sichtbar → DECISION NEEDED.
-- **Rollen-Begriff im UI verallgemeinern** („Wunschgroßeltern finden" → „Helfende finden") — Wording ist Maintainer-Sache.
+- **Rollen-Begriff an weiteren UI-Stellen** (Landing, Navbar, GuidePage sagen noch
+  „Wunschgroßeltern"/„Leih-Großeltern") — bewusst gelassen: Wunschgroßeltern bleiben
+  laut VISION die hervorgehobene Kategorie; weitere Umbenennungen sind Maintainer-Wording.
 - **`users.role`-Generalisierung über Kategorie-Spalte hinaus** (z. B. `helper` als Rolle) — Schema-Änderung über additiv hinaus → DECISION NEEDED.
-- **Trust-Level-Generalisierung, FZ für Nicht-Großeltern-Kategorien** — Kinderschutz-relevant, nie autonom.
 - Alles aus **Phase 3+** (Event-System, Notfall-Pool, Zeitbank, Föderation) — nicht vorziehen.

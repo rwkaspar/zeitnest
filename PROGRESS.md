@@ -2,11 +2,11 @@
 
 ## Standup
 
-- **Phase 2 (Rollen öffnen): Daten-/API-Fundament komplett** — Konstanten (6 Kategorien / 12 Skills), additive Migration, validierende APIs, rückwärtskompatible Such-Filter, 7 Unit-Tests + Frontend-Build grün (alles im Wegwerf-Container, Prod unberührt).
-- Branch `feature/phase2-rollen-oeffnen` gepusht; **PR #1 offen:** https://github.com/rwkaspar/zeitnest/pull/1
-- **5 Maintainer-Entscheidungen offen** (Registrierungs-Auswahl, EditProfile-UI, Such-UI, Label-Wording, FZ-Pflicht neue Kategorien) — Details + Empfehlungen unter DECISION NEEDED.
-- Kein Blocker mehr — `gh` ist installiert und verbunden.
-- Nächster sinnvoller Schritt nach Freigabe: UI-Tasks (Entscheidungen 1–3) in TODO.md aufnehmen und umsetzen.
+- **Phase 2 (Rollen öffnen) ist code-komplett** — nach Maintainer-Freigabe „1–5 wie empfohlen" sind jetzt auch Registrierung („Ich helfe als …"), EditProfile (Kategorie + Skills), Such-UI (Filter + Badges) umgesetzt; FZ-Pflicht gilt verifiziert für alle 6 Kategorien (T12, kein Code nötig).
+- Fundament aus der ersten Session: Konstanten, additive Migration, validierende APIs, rückwärtskompatible Such-Filter, 7 Unit-Tests grün, `vite build` grün — alles im Wegwerf-Container, Prod unberührt.
+- **PR #1 aktualisiert:** https://github.com/rwkaspar/zeitnest/pull/1 — bereit zum Review/Merge (Maintainer-Sache), Migration läuft beim nächsten Deploy automatisch.
+- Keine Blocker, keine offenen Entscheidungen.
+- Danach: Phase 3 (Events & Kurse) — neue Zerlegung in TODO.md bei Session-Start.
 
 ## DECISION NEEDED
 
@@ -37,6 +37,17 @@ installiert + authentifiziert, PR #1 ist offen)*
 ## Journal
 
 *(neueste Einträge oben — Format: Datum — was, warum, offene Fragen)*
+
+### 2026-07-27 — T8–T12: UI nach Freigabe „1–5 wie empfohlen"
+- Registrierung: Backend nimmt `helper_category` validiert an (Default
+  'grandparent', Auth-Flow byte-gleich); Frontend zeigt „Ich helfe als …"-Select
+  nur bei Helfer-Rolle; Rollen-Karte heißt jetzt „Ich schenke Zeit".
+- EditProfile: Kategorie-RadioGroup + Skills-ChipGroup im Helfer-Abschnitt;
+  Such-UI: Kategorie-Dropdown („Alle Kategorien" = Default), Skill-Chips,
+  Kategorie-Badge + Skill-Tags auf Ergebnis-Karten, Überschrift „Helfende finden".
+- T12 verifiziert: alle FZ-Gates prüfen `role === 'grandparent'` — Rolle ist für
+  alle Kategorien identisch, FZ-Upload/-Prüfung/-Lifecycle greifen also überall.
+- `vite build` + Syntax-Checks grün (Wegwerf-Container). Offene Fragen: keine.
 
 ### 2026-07-27 — T1–T6 umgesetzt: Daten-/API-Fundament für offene Rollen
 - Konstanten `HELPER_CATEGORIES` (6) + `SKILLS` (12) beidseitig, Konsistenz per
