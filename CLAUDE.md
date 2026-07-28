@@ -6,7 +6,9 @@
 ## Was ist Zeitnest
 
 Kostenlose, gemeinwohlorientierte Plattform für **freiwillige, verlässliche Kinderbetreuung**.
-Heutiger Kern: **Wunschgroßeltern** — vermittelt über lokale **Koordinierungsstellen**.
+Heutiger Kern: **Wunschgroßeltern** — selbstorganisierte Vermittlung mit Verifizierung
+(Führungszeugnis für alle Helfer-Kategorien); **Koordinierungsstellen** sind optionales
+Add-on (Opt-in-Features), kein Kern-Flow hängt von ihnen ab.
 Strategische Richtung (siehe `VISION.md`): zwei Säulen —
 **1:1-Vermittlung** (jede Form freiwilliger Betreuung) und **Events & Kurse** (Gruppenangebote
 wie Müllsammeln im Park, Kinderturnen: viele Helfende betreuen viele Kinder, Zeitnest ist das

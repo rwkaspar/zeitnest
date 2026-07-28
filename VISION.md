@@ -2,7 +2,7 @@
 
 > **Zeit schenken. Zeit gewinnen.**
 > Eine kostenlose, gemeinwohlorientierte Plattform für **freiwillige, verlässliche Kinderbetreuung** —
-> getragen von Vertrauen, lokaler Koordination und dem Miteinander der Generationen.
+> getragen von Vertrauen, geprüfter Sicherheit und dem Miteinander der Generationen.
 
 > **Wie dieses Dokument genutzt wird:** Das ist der Nordstern — er ändert sich selten,
 > und nur der Maintainer editiert ihn. Agenten leiten ihre Arbeit aus der **Roadmap
@@ -24,8 +24,10 @@ Kinderbetreuung helfen.
 Der eigentliche Kern ist nicht „Großeltern". Der Kern ist:
 
 > **Menschen mit Zeit und Herz** verlässlich und sicher mit **Familien, die Entlastung brauchen**,
-> zusammenzubringen — als **1:1-Beziehung** oder als **gemeinsames Erlebnis in der Gruppe** —
-> vermittelt und organisiert durch **lokale Koordinierungsstellen**, die für Vertrauen sorgen.
+> zusammenzubringen — als **1:1-Beziehung** oder als **gemeinsames Erlebnis in der Gruppe**.
+> Die Sicherheit trägt die Plattform selbst: Verifizierung, Führungszeugnis-Prüfung,
+> begleitetes Kennenlernen. **Lokale Koordinierungsstellen** können das ergänzen,
+> wo es sie gibt — vorausgesetzt wird ihre Existenz nirgends.
 
 Das umfasst zwei gleichberechtigte Säulen:
 
@@ -37,7 +39,7 @@ Das umfasst zwei gleichberechtigte Säulen:
    dafür — Ausschreibung, Anmeldung, Teilnehmerlisten, Helfer-Einteilung.
 
 Wunschgroßeltern sind die erste und emotional stärkste Ausprägung davon. Aber die gleiche
-Infrastruktur — Profile, Verifizierung (Führungszeugnis), PLZ-Matching, Koordinierung,
+Infrastruktur — Profile, Verifizierung (Führungszeugnis), PLZ-Matching,
 Termine, Nachrichten — trägt **jede Form freiwilliger Betreuung**. Wir öffnen das Modell,
 ohne das Bewährte aufzugeben.
 
@@ -127,9 +129,10 @@ ein viel niedrigschwelligerer Einstieg ins Engagement als eine feste 1:1-Patensc
 - Erinnerungen & Absage-Kommunikation
 - Wiederholungs-Termine für Kurse (jeden Mittwoch, 15 Uhr)
 
-Die heutigen **Koordinator-Termine** sind der Keim dafür — sie werden zum vollwertigen
-Event-System ausgebaut, das perspektivisch auch bewährte Helfende (nicht nur
-Koordinierungsstellen) Events vorschlagen lässt — mit Freigabe durch die Stelle.
+Die heutigen **Koordinator-Termine** sind der technische Keim dafür — sie werden zum
+vollwertigen Event-System ausgebaut. Events legen **geprüfte, bewährte Helfende** selbst
+an oder — wo es sie gibt — Koordinierungsstellen; ein Freigabe-Mechanismus mit FZ-Check
+(Plattform-Admin oder Stelle) bleibt in jedem Fall Pflicht.
 
 Jede Betreuung und jedes Event wird über **Betreuungs-Arten** (Tags) beschrieben —
 Familien suchen gezielt, Helfer bieten gezielt an, das Matching wird präzise.
@@ -150,9 +153,12 @@ gestufte, nachvollziehbare Sicherheit — kein anonymes Portal, sondern begleite
 
 1. **E-Mail bestätigt** — Grundeintritt
 2. **Identität** — Klarname, vollständiges Profil
-3. **Erweitertes Führungszeugnis (§30a BZRG)** — mit **Ablauf-Lifecycle**: 3 Jahre gültig,
-   automatische Erinnerung (60 / 7 Tage vorher), Auto-Ablauf, Badge verschwindet *(bereits umgesetzt)*
-4. **Persönliches Kennenlernen** durch die lokale Koordinierungsstelle
+3. **Erweitertes Führungszeugnis (§30a BZRG)** — **für alle, die Zeit schenken**, egal
+   welche Helfer-Kategorie. Mit **Ablauf-Lifecycle**: 3 Jahre gültig, automatische
+   Erinnerung (60 / 7 Tage vorher), Auto-Ablauf, Badge verschwindet *(bereits umgesetzt;
+   gilt technisch bereits für alle Kategorien)*
+4. **Persönliches Kennenlernen** — begleitet durch den Kennenlern-Leitfaden;
+   wo vorhanden, zusätzlich durch eine lokale Koordinierungsstelle
 5. **Referenzen / erste Bewertungen** aus erfolgten Betreuungen
 
 **Weitere Schutz-Bausteine (Roadmap):**
@@ -165,15 +171,24 @@ gestufte, nachvollziehbare Sicherheit — kein anonymes Portal, sondern begleite
 - **Versicherungsklärung** — Haftpflicht/Unfall über die tragenden Organisationen
 - **Datenschutz by Default** — DSGVO, Datensparsamkeit, Open Source als Vertrauensbeweis
 
-Die **Koordinierungsstelle bleibt der menschliche Anker**: Sie kennt ihre Leute, führt
-zusammen, ist im Konfliktfall ansprechbar. Software ersetzt das nicht — sie **entlastet** es.
+Die Sicherheits-Basis liefert die **Plattform selbst** — Verifizierung, FZ-Lifecycle,
+Kennenlern-Leitfaden, Melde-Funktion. Wo es eine lokale Koordinierungsstelle gibt, kommt
+ein menschlicher Anker hinzu: jemand, der seine Leute kennt, zusammenführt und im
+Konfliktfall ansprechbar ist. Das ist wertvoll — aber **optional, kein Gatekeeper**.
 
 ---
 
-## 6. Die Koordinierungsstelle — warum kooperativ, nicht konkurrierend
+## 6. Koordinierungsstellen — optionales Add-on, kooperatives Angebot
 
-Zeitnest tritt **nicht gegen** bestehende Wunschgroßeltern- und Familienprojekte an, sondern
-gibt ihnen ein Werkzeug. Vorteile für Träger, Kommunen, Mehrgenerationenhäuser:
+**Zeitnest funktioniert ohne Koordinierungsstellen.** Registrierung, Verifizierung,
+Matching, Vermittlung und (künftig) Events sind selbstorganisierte Plattform-Flows —
+kein Kern-Flow setzt eine Stelle voraus. Das Feedback bestehender Träger war bisher
+verhalten; die Plattform darf davon nicht abhängen.
+
+Wo ein Träger, eine Kommune oder ein Mehrgenerationenhaus mitmachen **will**, bekommt
+er ein fertiges Werkzeug (Opt-in-Sichtbarkeit der Profile, Notizen & Status, Termine,
+Statistik). Zeitnest tritt dabei **nicht gegen** bestehende Wunschgroßeltern- und
+Familienprojekte an, sondern gibt ihnen ein Werkzeug. Vorteile für Träger:
 
 - **Koordination auch im Krankheits-/Ausfall-Fall** — das Wissen liegt im System, nicht in einem Kopf
 - **Standortübergreifend nutzbar** — eine Plattform, viele Regionen, gemeinsame Standards
@@ -197,7 +212,8 @@ Kinderschutzbund, SkF/SKM, Freiwilligenagenturen, Quartiersmanagement, Stiftunge
   Zeitnest füllt die *Lücken dazwischen*.
 - **Kein kommerzielles Babysitter-Portal** — kostenlos, nicht-kommerziell, kein Geldfluss zwischen Nutzern.
 - **Keine Arbeitsvermittlung** — es geht um Ehrenamt und Nachbarschaft, nicht um Erwerbsarbeit.
-- **Kein anonymer Marktplatz** — Vertrauen entsteht durch Verifizierung und lokale Begleitung.
+- **Kein anonymer Marktplatz** — Vertrauen entsteht durch Verifizierung (Führungszeugnis
+  für alle Helfenden) und begleitetes Kennenlernen.
 - **Kein Datensammler** — wir erheben nur, was die Vermittlung braucht.
 
 Diese Abgrenzung nimmt Trägern die Konkurrenzangst und schützt das Kindeswohl vor
@@ -209,7 +225,8 @@ Wildwuchs.
 
 1. **Kindeswohl zuerst** — jede Entscheidung wird daran gemessen.
 2. **Kostenlos & gemeinwohlorientiert** — kein Profit auf dem Rücken von Familien.
-3. **Vertrauen durch Verifizierung & Menschen** — Technik unterstützt, Koordinierungsstellen bürgen.
+3. **Vertrauen durch Verifizierung** — Führungszeugnis-Pflicht für alle Helfenden,
+   geprüfte Profile; lokale Partner ergänzen das, wo es sie gibt.
 4. **Generationenübergreifend & inklusiv** — offen für Alter, Herkunft, Lebenslage.
 5. **Gegenseitigkeit** — Betreuen tut auch dem Betreuenden gut.
 6. **Datensparsam & offen** — DSGVO by Default, Open Source als Vertrauensbeweis.
@@ -250,11 +267,12 @@ Matching → Vermittlung); Wunschgroßeltern-Flows sind visuell und funktional u
 Die Koordinator-Termine werden zum vollwertigen **Event-System**: Anmeldung pro Kind,
 Kapazität & Warteliste, Helfer-Einteilung mit Betreuungsschlüssel und FZ-Check,
 Teilnehmerlisten & Notfallkontakte, Wiederholungs-Termine für Kurse (Kinderturnen,
-Vorlese-Stunde). Später: bewährte Helfende schlagen Events vor, Koordinierungsstelle gibt frei.
-*Fertig heißt:* Eine Koordinierungsstelle kann ein wiederkehrendes Event mit Kapazität
-anlegen; Familien melden Kinder an (inkl. Warteliste); Helfer werden mit FZ-Check
-eingeteilt; Teilnehmerliste + Notfallkontakte sind für Verantwortliche abrufbar —
-alles auf `coordinator_events` aufgebaut, nicht daneben.
+Vorlese-Stunde). Veranstalten können **geprüfte, bewährte Helfende** — und, wo vorhanden,
+Koordinierungsstellen; Freigabe mit FZ-Check (Plattform-Admin oder Stelle) ist Pflicht.
+*Fertig heißt:* Ein geprüfter Veranstalter (Helfer oder Stelle) kann ein wiederkehrendes
+Event mit Kapazität anlegen; Familien melden Kinder an (inkl. Warteliste); Helfer werden
+mit FZ-Check eingeteilt; Teilnehmerliste + Notfallkontakte sind für Verantwortliche
+abrufbar — alles auf `coordinator_events` aufgebaut, nicht daneben.
 
 **Phase 4 — Betreuungsformen & Sicherheit vertiefen:**
 Betreuungs-Arten als Matching-Dimension, **Notfall-Pool**, Verfügbarkeits-Matching,
@@ -282,10 +300,14 @@ Damit die Verbreiterung sauber gelingt (Details siehe `CLAUDE.md`):
   Kind-bezogene Anmeldungen, Warteliste, Helfer-Zuordnung (mit FZ-Check), Wiederholungsregeln.
 - **Betreuungs-Arten & Skills als Tag-Listen** (`TEXT[]`), analog zu den heutigen `activities`/
   `mobility`-Feldern — Backend-Konstanten sind die Quelle der Wahrheit, Frontend spiegelt sie.
-- **Trust-Level generisch** über alle Helfer-Kategorien — das Führungszeugnis-Lifecycle-Fundament
-  steht bereits und ist wiederverwendbar.
-- **Koordinierungsstellen & PLZ-Matching** bleiben tragende Säule — Reichweite skaliert über
-  PLZ-Präfixe, nicht über harte Regionsgrenzen.
+- **Trust-Level generisch:** Das Führungszeugnis (inkl. Lifecycle) gilt **für alle
+  Helfer-Kategorien identisch** — keine Kategorie bekommt eine Abkürzung.
+- **PLZ-Matching** bleibt tragende Säule — Reichweite skaliert über PLZ-Präfixe,
+  nicht über harte Regionsgrenzen.
+- **Koordinierungsstellen sind optionales Add-on:** Kein Kern-Flow (Registrierung,
+  Verifizierung, Matching, Vermittlung, Events) darf von der Existenz einer Stelle
+  abhängen. Coordinator-Features bleiben Opt-in und funktionsfähig, werden aber
+  nicht vorausgesetzt und nicht prominent beworben.
 - **Kostenlos & non-profit** ist Architektur-Prinzip: keine Zahlungsflüsse zwischen Nutzern.
 
 ---
