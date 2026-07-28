@@ -48,7 +48,7 @@ function LandingPage() {
             <div className="card feature-card">
               <div className="icon"><img src="/illustrations/feature-kennenlernen.webp" alt="" /></div>
               <h3>Vertrauen &amp; Sicherheit</h3>
-              <p>Verifizierte Profile, gepr&uuml;ftes erweitertes F&uuml;hrungszeugnis mit &bdquo;Gepr&uuml;ft&ldquo;-Abzeichen und ein Kennenlern-Leitfaden &ndash; begleitet von lokalen Koordinierungsstellen.</p>
+              <p>Verifizierte Profile, gepr&uuml;ftes erweitertes F&uuml;hrungszeugnis mit &bdquo;Gepr&uuml;ft&ldquo;-Abzeichen und ein Kennenlern-Leitfaden, der Schritt f&uuml;r Schritt zu einem vertrauensvollen Miteinander f&uuml;hrt.</p>
             </div>
           </div>
         </div>
@@ -247,12 +247,12 @@ function LandingPage() {
           </div>
           <div className="audience-grid">
             <div className="audience-card">
-              <h3>Ehrenamt mit R&uuml;ckhalt</h3>
+              <h3>Unkompliziert starten</h3>
               <p>
-                Sie sind nicht allein: Ihre lokale Koordinierungsstelle begleitet Sie,
-                schl&auml;gt passende Familien vor und ist bei Fragen jederzeit
-                ansprechbar. Verifizierte Profile und der Kennenlern-Leitfaden geben
-                Sicherheit &ndash; auf beiden Seiten.
+                Kostenlos und ohne Vereinsb&uuml;rokratie: Profil anlegen, Familien in
+                Ihrer N&auml;he finden, in Ihrem Tempo kennenlernen. Sie entscheiden
+                selbst, wem Sie Ihre Zeit schenken &ndash; der Kennenlern-Leitfaden
+                und verifizierte Profile geben dabei Sicherheit.
               </p>
             </div>
             <div className="audience-card">
