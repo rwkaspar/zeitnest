@@ -38,6 +38,18 @@ installiert + authentifiziert, PR #1 ist offen)*
 
 *(neueste Einträge oben — Format: Datum — was, warum, offene Fragen)*
 
+### 2026-07-28 — Reichweiten-Paket Altmühlfranken (Maintainer-Auftrag 1–4)
+- SEO live: Meta/OG/Twitter-Tags, og-image.png (1200×630), robots.txt, sitemap.xml,
+  JSON-LD. Links teilen sich jetzt mit Vorschaubild in WhatsApp/Facebook/nebenan.
+- marketing/: Flyer A5 + Plakat A4 als Druck-PDF (QR auf zeitnest.org, Landing-Design,
+  „Jetzt in Altmühlfranken"), HTML-Quellen für spätere Anpassungen dabei.
+- marketing/posttexte-altmuehlfranken.md: nebenan.de, Facebook (Eltern + Senioren),
+  Gemeindeblatt/Pfarrbrief, WhatsApp-Kurzfassung — inkl. Hinweis, KoKi-Antwort
+  (~2 Wochen) abzuwarten, bevor breit im Landkreis gepostet wird.
+- Presse: 3 Gmail-ENTWÜRFE an Weißenburger Tagblatt (deckt Treuchtlinger Kurier mit ab,
+  gleiche Redaktion), Altmühl-Bote, Wochenanzeiger — Adressen verifiziert, Versand
+  bleibt Maintainer-Sache.
+
 ### 2026-07-28 — Outreach: 5 Gmail-Entwürfe an Wunschgroßeltern-Projekte
 - Recherchiert + Adressen von den Projektseiten verifiziert: Kinderschutzbund Mainz,
   Großelterndienst Berlin, Caritas Rhein-Lahn, Caritas Wesermarsch (Leihoma/Leihopa),
