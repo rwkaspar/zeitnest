@@ -38,6 +38,14 @@ installiert + authentifiziert, PR #1 ist offen)*
 
 *(neueste Einträge oben — Format: Datum — was, warum, offene Fragen)*
 
+### 2026-07-28 — FZ-Karenzzeit live (Maintainer-Freigabe), VISION-Schwenk
+- VISION/CLAUDE: Koordinierungsstellen → optionales Add-on (Träger-Feedback verhalten);
+  FZ-Grundsatz „für alle Helfenden" verankert; Landing entsprechend entschärft.
+- FZ-Karenz gebaut + deployt: sofort sichtbar, Reminder 2w/4w, Auto-Pause nach
+  FZ_GRACE_WEEKS=8 ohne Upload (Suche filtert, Matches bleiben), Upload reaktiviert.
+  Demo-Accounts exkludiert. Live getestet (0 Fehlpausen, Ausblendung verifiziert).
+- Registrierungs-Stand abgefragt: 2 echte Accounts (beide Familie Kaspar), Rest Demos.
+
 ### 2026-07-27 — Merge + Deploy (Maintainer-Auftrag), Asset-Optimierung
 - Vorab Bilder optimiert: 18 Landing-Illustrationen → WebP 768px/q82 (3,5 MB → 912 KB),
   Logo 456K → 16K. Referenzen in LandingPage.jsx umgestellt.
