@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /konto
+Disallow: /koordination
+Disallow: /admin
+Disallow: /nachrichten
+Disallow: /anfragen
+Disallow: /kalender
+Disallow: /profil
+
+Sitemap: https://zeitnest.org/sitemap.xml

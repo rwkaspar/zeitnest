@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4 portrait; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body { width: 210mm; height: 297mm; }
+  body { font-family: 'Inter', sans-serif; color: #2c3e50; background: #fffaf6; display: flex; flex-direction: column; text-align: center; }
+  .top { padding: 9mm 16mm 0; }
+  .top img.logo { height: 22mm; }
+  h1 { font-family: 'Playfair Display', serif; font-size: 30pt; margin-top: 4mm; line-height: 1.12; }
+  h1 .hl { color: #e8725a; }
+  .sub { font-size: 12pt; color: #5a6878; margin-top: 3mm; line-height: 1.5; padding: 0 12mm; }
+  .illu { margin-top: 5mm; }
+  .illu img { height: 52mm; background: #ffffff; border: 0.4mm solid #f0dcd2; border-radius: 4mm; padding: 3mm; }
+  .ask { font-family: 'Playfair Display', serif; font-size: 16pt; color: #2c3e50; margin-top: 5mm; padding: 0 14mm; line-height: 1.35; }
+  .ask .hl { color: #e8725a; }
+  .points { display: flex; justify-content: center; gap: 5mm; margin: 5mm 14mm 0; }
+  .pt { background: #ffffff; border: 0.4mm solid #f0dcd2; border-radius: 3.5mm; padding: 4.5mm 5mm; font-size: 10.5pt; line-height: 1.45; color: #3d4d5c; flex: 1; }
+  .pt b { color: #e8725a; display: block; margin-bottom: 1mm; font-size: 11pt; }
+  .trust { margin: 5mm 14mm 0; font-size: 10pt; color: #8a4436; background: #fdeee9; border-radius: 3.5mm; padding: 3.5mm 6mm; line-height: 1.5; }
+  .bottom { margin-top: auto; display: flex; align-items: center; justify-content: center; gap: 10mm; padding: 5mm 16mm 9mm; }
+  .qr { width: 38mm; height: 38mm; background: #fff; border: 0.4mm solid #f0dcd2; border-radius: 3mm; padding: 2mm; }
+  .qr img { width: 100%; height: 100%; }
+  .cta { text-align: left; }
+  .cta .url { font-family: 'Playfair Display', serif; font-size: 24pt; font-weight: 700; color: #e8725a; }
+  .cta .line { font-size: 11.5pt; color: #5a6878; margin-top: 2mm; line-height: 1.45; }
+  .region { display: inline-block; margin-top: 3mm; background: #e8725a; color: #fff; font-size: 11pt; font-weight: 600; padding: 2mm 5mm; border-radius: 6mm; }
+</style>
+</head>
+<body>
+  <div class="top">
+    <img class="logo" src="logo-orig.png" alt="Zeitnest">
+    <h1>Zeit schenken. <span class="hl">Zeit gewinnen.</span></h1>
+    <p class="sub">Die kostenlose Plattform, die Familien mit Menschen zusammenbringt,
+    die freiwillig Zeit schenken — Wunschgroßeltern, Studierende, Nachbarschaftshilfe.</p>
+  </div>
+  <div class="illu"><img src="illu-kennenlernen.png" alt=""></div>
+  <div class="ask">Oma- und Opa-Herz zu verschenken? <span class="hl">Oder eines gesucht?</span></div>
+  <div class="points">
+    <div class="pt"><b>Familien</b> finden verlässliche, liebevolle Unterstützung im Alltag — vom festen Nachmittag bis zum Vorlesen.</div>
+    <div class="pt"><b>Menschen mit Zeit</b> finden Sinn, Anschluss und Kinderlachen — so viel Engagement, wie sie geben möchten.</div>
+    <div class="pt"><b>Sicher &amp; geprüft</b> — erweitertes Führungszeugnis für alle Helfenden, verifizierte Profile, Kennenlern-Leitfaden.</div>
+  </div>
+  <div class="trust">Kostenlos · werbefrei · gemeinnützig · Daten bleiben in Deutschland</div>
+  <div class="bottom">
+    <div class="qr"><img src="qr-zeitnest.png" alt="QR-Code zeitnest.org"></div>
+    <div class="cta">
+      <div class="url">zeitnest.org</div>
+      <div class="line">Einfach QR-Code scannen und<br>kostenlos registrieren.</div>
+      <div class="region">Jetzt in Altmühlfranken</div>
+    </div>
+  </div>
+</body>
+</html>
