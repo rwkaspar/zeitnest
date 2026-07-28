@@ -23,7 +23,8 @@ router.get('/', authenticateToken, async (req, res) => {
     let paramIdx = 1;
 
     if (searchRole === 'grandparent') {
-      query = `SELECT u.id, u.first_name, u.last_name, u.city, u.postal_code, u.bio, u.avatar_url, u.is_demo, u.created_at, gp.experience, gp.availability, gp.preferred_age_range, gp.offered_activities, gp.has_fuehrungszeugnis, gp.mobility, gp.helper_category, gp.skills, (gp.fz_status = 'verified' AND (gp.fz_expires_at IS NULL OR gp.fz_expires_at > NOW())) AS fz_verified FROM users u LEFT JOIN grandparent_profiles gp ON u.id = gp.user_id WHERE u.role = $1 AND u.id != $2`;
+      // fz_grace_paused_at: Karenz abgelaufen ohne FZ-Upload → aus der Suche pausiert
+      query = `SELECT u.id, u.first_name, u.last_name, u.city, u.postal_code, u.bio, u.avatar_url, u.is_demo, u.created_at, gp.experience, gp.availability, gp.preferred_age_range, gp.offered_activities, gp.has_fuehrungszeugnis, gp.mobility, gp.helper_category, gp.skills, (gp.fz_status = 'verified' AND (gp.fz_expires_at IS NULL OR gp.fz_expires_at > NOW())) AS fz_verified FROM users u LEFT JOIN grandparent_profiles gp ON u.id = gp.user_id WHERE u.role = $1 AND u.id != $2 AND gp.fz_grace_paused_at IS NULL`;
     } else {
       query = `SELECT u.id, u.first_name, u.last_name, u.city, u.postal_code, u.bio, u.avatar_url, u.is_demo, u.created_at, f.number_of_children, f.children_ages, f.needs_description, f.availability, f.preferred_activities FROM users u LEFT JOIN families f ON u.family_id = f.id WHERE u.role = $1 AND u.id != $2`;
     }
@@ -77,8 +78,8 @@ router.get('/', authenticateToken, async (req, res) => {
 
     // Count total
     let countParams = [searchRole, req.user.id];
-    const needsGpJoin = helperCategory || (helperSkills && helperSkills.length);
-    let countQuery = `SELECT COUNT(*) as total FROM users u${needsGpJoin ? ' LEFT JOIN grandparent_profiles gp ON u.id = gp.user_id' : ''} WHERE u.role = $1 AND u.id != $2`;
+    const needsGpJoin = searchRole === 'grandparent';
+    let countQuery = `SELECT COUNT(*) as total FROM users u${needsGpJoin ? ' LEFT JOIN grandparent_profiles gp ON u.id = gp.user_id' : ''} WHERE u.role = $1 AND u.id != $2${needsGpJoin ? ' AND gp.fz_grace_paused_at IS NULL' : ''}`;
     let cIdx = 3;
     if (city) { countQuery += ` AND LOWER(u.city) LIKE LOWER($${cIdx})`; countParams.push(`%${city}%`); cIdx++; }
     if (postal_code) { countQuery += ` AND u.postal_code LIKE $${cIdx}`; countParams.push(`${postal_code}%`); cIdx++; }

@@ -262,6 +262,70 @@ Ihr Zeitnest-Team`;
   });
 }
 
+async function sendFzUploadReminder(email, firstName, graceWeeks, paused) {
+  const subject = paused
+    ? 'Zeitnest – Ihr Profil ist pausiert, bis Ihr Führungszeugnis vorliegt'
+    : 'Zeitnest – Bitte laden Sie Ihr Führungszeugnis hoch';
+
+  const statusText = paused
+    ? `Da nach ${graceWeeks} Wochen noch kein Führungszeugnis vorliegt, ist Ihr Profil
+vorübergehend aus der Suche genommen. Sobald Sie Ihr Zeugnis hochladen, ist es
+sofort wieder sichtbar.`
+    : `Damit Familien Ihnen vertrauen können, benötigt jede und jeder Helfende bei
+Zeitnest ein erweitertes Führungszeugnis (§30a BZRG). Ohne Upload wird Ihr Profil
+nach ${graceWeeks} Wochen vorübergehend aus der Suche genommen.`;
+
+  const text = `Hallo ${firstName},
+
+${statusText}
+
+So geht's:
+
+1. Erweitertes Führungszeugnis online beantragen (für Ehrenamt in der Regel gebührenfrei):
+   https://www.fuehrungszeugnis.bund.de/
+
+2. Zeugnis bei Zeitnest hochladen: ${BASE_URL}/konto
+
+3. Wir prüfen es und löschen das Dokument danach wieder aus unserem Speicher.
+   Sie erhalten das „Geprüft"-Abzeichen.
+
+Übrigens: Kennenlernen dürfen Sie Familien jederzeit — für die Betreuung ohne
+Eltern gilt: erst mit geprüftem Führungszeugnis.
+
+Viele Grüße
+Ihr Zeitnest-Team`;
+
+  const body = `
+<tr><td>
+<h1 style="color:#e8725a;font-size:22px;margin:0 0 16px;">${paused ? 'Ihr Profil ist pausiert' : 'Ihr Führungszeugnis fehlt noch'}</h1>
+<p style="font-size:16px;line-height:1.5;margin:0 0 16px;">Hallo ${firstName},</p>
+<p style="font-size:16px;line-height:1.5;margin:0 0 16px;">${statusText.replace(/\n/g, ' ')}</p>
+<ol style="font-size:15px;line-height:1.6;padding-left:18px;margin:0 0 16px;">
+  <li style="margin-bottom:8px;">
+    <a href="https://www.fuehrungszeugnis.bund.de/" style="color:#e8725a;">Erweitertes Führungszeugnis beantragen</a>
+    &ndash; für Ehrenamt in der Regel gebührenfrei.
+  </li>
+  <li style="margin-bottom:8px;">Zeugnis bei Zeitnest hochladen (Konto &rarr; &bdquo;Erweitertes Führungszeugnis&ldquo;).</li>
+  <li style="margin-bottom:8px;">Wir prüfen, löschen das Dokument danach und Sie erhalten das &bdquo;Geprüft&ldquo;-Abzeichen.</li>
+</ol>
+<p style="margin:24px 0;text-align:center;">
+  <a href="${BASE_URL}/konto" style="background-color:#e8725a;color:#ffffff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block;">Jetzt hochladen</a>
+</p>
+<p style="font-size:14px;line-height:1.5;margin:0;color:#5a6878;">
+  Kennenlernen dürfen Sie Familien jederzeit &ndash; für die Betreuung ohne Eltern gilt:
+  erst mit geprüftem Führungszeugnis.
+</p>
+</td></tr>`;
+
+  await transporter.sendMail({
+    from: FROM,
+    to: email,
+    subject,
+    text,
+    html: htmlTemplate(subject, body),
+  });
+}
+
 module.exports = {
   sendVerificationEmail,
   sendPasswordResetEmail,
@@ -270,4 +334,5 @@ module.exports = {
   sendBookingCancelledEmail,
   sendNewMessageEmail,
   sendFzExpiryReminder,
+  sendFzUploadReminder,
 };

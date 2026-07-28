@@ -82,7 +82,7 @@ router.get('/me/fz', authenticateToken, async (req, res) => {
     return res.status(403).json({ error: 'Nur für Leih-Großeltern.' });
   }
   const row = await queryOne(
-    'SELECT fz_status, fz_submitted_at, fz_verified_at, fz_expires_at, fz_admin_note FROM grandparent_profiles WHERE user_id = $1',
+    'SELECT fz_status, fz_submitted_at, fz_verified_at, fz_expires_at, fz_admin_note, fz_grace_paused_at FROM grandparent_profiles WHERE user_id = $1',
     [req.user.id]
   );
   res.json(row || { fz_status: 'not_submitted' });
@@ -104,9 +104,12 @@ router.post('/me/fz', authenticateToken, (req, res) => {
         fs.unlink(path.join(FZ_UPLOAD_DIR, existing.fz_filename), () => {});
       }
 
+      // Upload beendet eine Karenz-Pause sofort — Profil ist wieder sichtbar,
+      // die Grace-Reminder-Flags werden für einen etwaigen neuen Zyklus geleert.
       await runSql(
         `UPDATE grandparent_profiles
-         SET fz_status = 'pending', fz_submitted_at = NOW(), fz_filename = $1, fz_admin_note = NULL
+         SET fz_status = 'pending', fz_submitted_at = NOW(), fz_filename = $1, fz_admin_note = NULL,
+             fz_grace_paused_at = NULL, fz_grace_reminder_2w_sent_at = NULL, fz_grace_reminder_4w_sent_at = NULL
          WHERE user_id = $2`,
         [req.file.filename, req.user.id]
       );

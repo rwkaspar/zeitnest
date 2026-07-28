@@ -304,6 +304,30 @@ function FuehrungszeugnisSection() {
         )}
       </div>
 
+      {info?.fz_grace_paused_at ? (
+        <div className="card" style={{ marginBottom: '12px', borderLeft: '4px solid #c0392b', background: '#fdecea', padding: '12px 16px' }}>
+          <strong style={{ color: '#c0392b' }}>
+            Ihr Profil ist derzeit aus der Suche genommen.
+          </strong>
+          <p style={{ fontSize: '0.9rem', color: '#5a6878', marginTop: '6px' }}>
+            Es liegt noch kein F&uuml;hrungszeugnis vor. Sobald Sie es hochladen,
+            ist Ihr Profil sofort wieder f&uuml;r Familien sichtbar.
+          </p>
+        </div>
+      ) : (status === 'not_submitted' || status === 'rejected') && (
+        <div className="card" style={{ marginBottom: '12px', borderLeft: '4px solid var(--warning)', background: '#fff8db', padding: '12px 16px' }}>
+          <strong style={{ color: '#856404' }}>
+            Bitte laden Sie Ihr F&uuml;hrungszeugnis zeitnah hoch.
+          </strong>
+          <p style={{ fontSize: '0.9rem', color: '#5a6878', marginTop: '6px' }}>
+            Jede und jeder Helfende bei Zeitnest braucht ein gepr&uuml;ftes erweitertes
+            F&uuml;hrungszeugnis. Ohne Upload wird Ihr Profil nach einigen Wochen
+            vor&uuml;bergehend aus der Suche genommen. Kennenlernen ist jederzeit
+            m&ouml;glich &ndash; Betreuung ohne Eltern erst mit gepr&uuml;ftem Zeugnis.
+          </p>
+        </div>
+      )}
+
       {showRenewalBanner && (
         <div className="card" style={{ marginBottom: '12px', borderLeft: '4px solid var(--warning)', background: '#fff8db', padding: '12px 16px' }}>
           <strong style={{ color: '#856404' }}>

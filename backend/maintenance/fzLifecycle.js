@@ -11,9 +11,10 @@
  */
 
 const { pool } = require('../database');
-const { sendFzExpiryReminder } = require('../utils/mail');
+const { sendFzExpiryReminder, sendFzUploadReminder } = require('../utils/mail');
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+const GRACE_WEEKS = parseInt(process.env.FZ_GRACE_WEEKS) || 8;
 
 async function runFzLifecycle() {
   const startedAt = new Date();
@@ -38,7 +39,61 @@ async function runFzLifecycle() {
   // 2b) 7-Tage-Reminder: alle, deren Ablauf in 0..7 Tagen liegt UND noch keinen 7d-Reminder hatten
   await dispatchReminders(7, 0, 'fz_reminder_7d_sent_at');
 
+  // 3) Karenzzeit für fehlendes FZ: Upload-Erinnerungen nach 2 und 4 Wochen,
+  //    Auto-Pause (aus Suche/Matching) nach GRACE_WEEKS. Demo-Accounts sind
+  //    ausgenommen (bleiben sichtbar, bekommen keine Mails an @zeitnest.local).
+  await dispatchGraceReminders(14, 'fz_grace_reminder_2w_sent_at', false);
+  await dispatchGraceReminders(28, 'fz_grace_reminder_4w_sent_at', false);
+  await pauseOverdueProfiles();
+
   console.log(`[fz-lifecycle] fertig in ${Date.now() - startedAt.getTime()} ms`);
+}
+
+// Basis der Karenz: Registrierung; nach abgelehntem Upload zählt der Upload-Zeitpunkt,
+// nach Ablauf eines FZ dessen Ablaufdatum.
+const GRACE_BASE_SQL = `GREATEST(u.created_at, COALESCE(gp.fz_submitted_at, u.created_at), COALESCE(gp.fz_expires_at, u.created_at))`;
+const GRACE_CANDIDATE_SQL = `
+  FROM grandparent_profiles gp
+  JOIN users u ON u.id = gp.user_id
+  WHERE gp.fz_status IN ('not_submitted', 'rejected', 'expired')
+    AND u.is_demo = FALSE
+    AND u.email_verified = TRUE`;
+
+async function dispatchGraceReminders(minDays, flagColumn, paused) {
+  const candidates = await pool.query(
+    `SELECT u.id, u.email, u.first_name ${GRACE_CANDIDATE_SQL}
+       AND gp.fz_grace_paused_at IS NULL
+       AND ${GRACE_BASE_SQL} < NOW() - ($1 || ' days')::INTERVAL
+       AND gp.${flagColumn} IS NULL`,
+    [minDays]
+  );
+  for (const row of candidates.rows) {
+    try {
+      await sendFzUploadReminder(row.email, row.first_name, GRACE_WEEKS, paused);
+      await pool.query(`UPDATE grandparent_profiles SET ${flagColumn} = NOW() WHERE user_id = $1`, [row.id]);
+      console.log(`[fz-lifecycle] ${flagColumn} an ${row.email} verschickt`);
+    } catch (err) {
+      console.error(`[fz-lifecycle] Grace-Mail-Fehler an ${row.email}:`, err.message);
+    }
+  }
+}
+
+async function pauseOverdueProfiles() {
+  const overdue = await pool.query(
+    `SELECT u.id, u.email, u.first_name ${GRACE_CANDIDATE_SQL}
+       AND gp.fz_grace_paused_at IS NULL
+       AND ${GRACE_BASE_SQL} < NOW() - ($1 || ' weeks')::INTERVAL`,
+    [GRACE_WEEKS]
+  );
+  for (const row of overdue.rows) {
+    await pool.query(`UPDATE grandparent_profiles SET fz_grace_paused_at = NOW() WHERE user_id = $1`, [row.id]);
+    console.log(`[fz-lifecycle] Profil pausiert (FZ fehlt > ${GRACE_WEEKS} Wochen): ${row.email}`);
+    try {
+      await sendFzUploadReminder(row.email, row.first_name, GRACE_WEEKS, true);
+    } catch (err) {
+      console.error(`[fz-lifecycle] Pause-Mail-Fehler an ${row.email}:`, err.message);
+    }
+  }
 }
 
 async function dispatchReminders(maxDays, minDays, flagColumn) {

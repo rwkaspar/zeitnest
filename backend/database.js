@@ -377,6 +377,12 @@ async function initDatabase() {
     await client.query(`ALTER TABLE grandparent_profiles ADD COLUMN IF NOT EXISTS helper_category TEXT NOT NULL DEFAULT 'grandparent'`);
     await client.query(`ALTER TABLE grandparent_profiles ADD COLUMN IF NOT EXISTS skills TEXT[]`);
     await client.query(`CREATE INDEX IF NOT EXISTS idx_gp_helper_category ON grandparent_profiles(helper_category)`);
+
+    // FZ-Karenzzeit: Upload-Erinnerungen (2/4 Wochen) + Auto-Pause aus der Suche
+    // nach Ablauf der Karenz (FZ_GRACE_WEEKS, Default 8). Rein additiv.
+    await client.query(`ALTER TABLE grandparent_profiles ADD COLUMN IF NOT EXISTS fz_grace_reminder_2w_sent_at TIMESTAMPTZ`);
+    await client.query(`ALTER TABLE grandparent_profiles ADD COLUMN IF NOT EXISTS fz_grace_reminder_4w_sent_at TIMESTAMPTZ`);
+    await client.query(`ALTER TABLE grandparent_profiles ADD COLUMN IF NOT EXISTS fz_grace_paused_at TIMESTAMPTZ`);
     // Mark existing/demo users as verified
     await client.query(`UPDATE users SET email_verified = TRUE WHERE email_verified IS NULL OR email LIKE '%@example.de'`);
 
