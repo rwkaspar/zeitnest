@@ -613,6 +613,7 @@ img[src*="senioren-wissen"] {
 .audience-children .audience-header h2 { color: var(--accent); }
 .audience-seniors .audience-header h2 { color: var(--primary); }
 .audience-parents .audience-header h2 { color: var(--secondary); }
+.audience-helpers .audience-header h2 { color: var(--primary); }
 
 @media (max-width: 768px) {
   .audience-grid {

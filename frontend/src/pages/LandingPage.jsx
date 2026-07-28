@@ -238,6 +238,54 @@ function LandingPage() {
         </div>
       </section>
 
+      <section className="audience-section audience-helpers">
+        <div className="container">
+          <div className="audience-header">
+            <div className="audience-icon"><img src="/illustrations/feature-senioren-sinn.webp" alt="" /></div>
+            <h2>F&uuml;r alle, die Zeit schenken</h2>
+            <p className="audience-subtitle">Engagement, das verbindet &ndash; und sich lohnt</p>
+          </div>
+          <div className="audience-grid">
+            <div className="audience-card">
+              <h3>Engagement, das z&auml;hlt</h3>
+              <p>
+                Ehrenamt &ouml;ffnet T&uuml;ren: in Bewerbungen und im Lebenslauf, bei
+                Stipendien &ndash; und in vielen Gemeinden ganz konkret, etwa wenn bei der
+                Grundst&uuml;cksvergabe soziales Engagement vor Ort honoriert wird.
+                Ihre Eins&auml;tze sind bei Zeitnest dokumentiert, und Ihre
+                Koordinierungsstelle kann Ihr Engagement best&auml;tigen.
+              </p>
+            </div>
+            <div className="audience-card">
+              <h3>Anschluss &amp; Gemeinschaft</h3>
+              <p>
+                Neu in der Stadt, im Studium oder einfach auf der Suche nach echtem
+                Kontakt? &Uuml;ber Zeitnest finden Sie Familienanschluss und ein
+                Netzwerk im Quartier &ndash; Beziehungen, die weit &uuml;ber die
+                Betreuung hinaus tragen.
+              </p>
+            </div>
+            <div className="audience-card">
+              <h3>Erfahrung f&uuml;rs Leben</h3>
+              <p>
+                Gerade f&uuml;r junge Helfende ist die Zeit mit Kindern wertvolle
+                Praxis &ndash; ob f&uuml;r P&auml;dagogik, Soziale Arbeit oder Medizin.
+                Bewertungen zufriedener Familien werden zu Referenzen, die man
+                vorzeigen kann.
+              </p>
+            </div>
+            <div className="audience-card">
+              <h3>Flexibel nach Ihrer Zeit</h3>
+              <p>
+                Sie bestimmen, wie viel Sie geben: der feste Nachmittag pro Woche,
+                gelegentliches Einspringen oder Hilfe in den Ferien. Ihr Profil
+                zeigt, was Sie anbieten &ndash; Familien richten sich danach.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="how-it-works">
         <div className="container">
           <h2>So funktioniert&apos;s</h2>

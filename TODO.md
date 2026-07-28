@@ -77,3 +77,13 @@ also planmäßig mit offenen Maintainer-Entscheidungen.
   laut VISION die hervorgehobene Kategorie; weitere Umbenennungen sind Maintainer-Wording.
 - **`users.role`-Generalisierung über Kategorie-Spalte hinaus** (z. B. `helper` als Rolle) — Schema-Änderung über additiv hinaus → DECISION NEEDED.
 - Alles aus **Phase 3+** (Event-System, Notfall-Pool, Zeitbank, Föderation) — nicht vorziehen.
+
+## Ideen-Backlog (Maintainer 2026-07-27)
+
+- **Engagement-Nachweis (PDF):** Helfer können eine Bestätigung ihres Engagements
+  generieren (Zeitraum, Einsätze/Stunden aus Bookings, Kategorie), gegengezeichnet/
+  freigegeben durch die Koordinierungsstelle. Nutzen: Bewerbungen, Stipendien,
+  Ehrenamtskarte, Einheimischenmodelle bei Grundstücksvergabe. Empfehlung: als
+  Task in Phase 4 (Sicherheit & Betreuungsformen) einplanen — braucht Bookings-
+  Aggregation + Freigabe-Flow der Stelle; Landing wirbt bereits ehrlich damit
+  („dokumentiert + Stelle kann bestätigen").
