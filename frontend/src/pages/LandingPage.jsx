@@ -12,8 +12,9 @@ function LandingPage() {
               Zeit schenken. <span className="highlight">Zeit gewinnen.</span>
             </h1>
             <p>
-              Zeitnest bringt Familien und erfahrene Senioren zusammen.
-              Senioren schenken Zeit, Kinder erleben Abenteuer, Eltern gewinnen Freiraum.
+              Zeitnest bringt Familien mit Menschen zusammen, die Zeit schenken m&ouml;chten &ndash;
+              Wunschgro&szlig;eltern, Studierende, Nachbarn, Patenfamilien.
+              Kinder erleben Abenteuer, Eltern gewinnen Freiraum, Helfende finden Sinn und Anschluss.
             </p>
             <div className="hero-buttons">
               <Link to="/register" className="btn btn-primary btn-lg">
@@ -41,13 +42,50 @@ function LandingPage() {
             </div>
             <div className="card feature-card">
               <div className="icon"><img src="/illustrations/feature-senioren-sinn.webp" alt="" /></div>
-              <h3>Sinn &amp; Freude f&uuml;r Senioren</h3>
-              <p>Verbringen Sie wertvolle Zeit mit Kindern und bleiben Sie aktiv &ndash; als Leih-Oma oder Leih-Opa.</p>
+              <h3>Sinn &amp; Freude f&uuml;r Helfende</h3>
+              <p>Verbringen Sie wertvolle Zeit mit Kindern &ndash; als Wunschoma oder Wunschopa, Studierende:r, Nachbar:in oder Patenfamilie.</p>
             </div>
             <div className="card feature-card">
               <div className="icon"><img src="/illustrations/feature-kennenlernen.webp" alt="" /></div>
-              <h3>Sicheres Kennenlernen</h3>
-              <p>Unser Kennenlern-Leitfaden begleitet Sie Schritt f&uuml;r Schritt zu einem vertrauensvollen Miteinander.</p>
+              <h3>Vertrauen &amp; Sicherheit</h3>
+              <p>Verifizierte Profile, gepr&uuml;ftes erweitertes F&uuml;hrungszeugnis mit &bdquo;Gepr&uuml;ft&ldquo;-Abzeichen und ein Kennenlern-Leitfaden &ndash; begleitet von lokalen Koordinierungsstellen.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="features" style={{ paddingTop: 0 }}>
+        <div className="container">
+          <h2>Wer bei Zeitnest Zeit schenkt</h2>
+          <p style={{ textAlign: 'center', color: '#5a6878', maxWidth: '640px', margin: '0 auto 32px' }}>
+            Freiwillige Kinderbetreuung hat viele Gesichter. W&auml;hlen Sie bei der Registrierung,
+            als was Sie helfen m&ouml;chten &ndash; und Familien finden Sie gezielt nach Kategorie
+            und F&auml;higkeiten wie Erste Hilfe, Vorlesen, Musik oder Nachhilfe.
+          </p>
+          <div className="features-grid">
+            <div className="card feature-card">
+              <h3>Wunschgro&szlig;eltern</h3>
+              <p>Das Herz von Zeitnest: Seniorinnen und Senioren, die Enkel-Zeit verschenken &ndash; regelm&auml;&szlig;ig und verl&auml;sslich.</p>
+            </div>
+            <div className="card feature-card">
+              <h3>Studierende &amp; junge Erwachsene</h3>
+              <p>Babysitting, Nachhilfe und Randzeiten &ndash; junge Menschen mit Energie und flexiblen Zeiten.</p>
+            </div>
+            <div className="card feature-card">
+              <h3>Nachbarschaftshilfe</h3>
+              <p>Menschen aus dem Quartier, die verl&auml;sslich einspringen &ndash; kurze Wege, schnelle Hilfe.</p>
+            </div>
+            <div className="card feature-card">
+              <h3>Patenfamilien</h3>
+              <p>Familien helfen Familien: eine gefestigte Familie begleitet eine, die gerade Unterst&uuml;tzung braucht.</p>
+            </div>
+            <div className="card feature-card">
+              <h3>Eltern-Tandem</h3>
+              <p>Alleinerziehende und Eltern, die sich gegenseitig entlasten &ndash; gemeinsam ist der Alltag leichter.</p>
+            </div>
+            <div className="card feature-card">
+              <h3>Ehrenamtliche mit Fachkompetenz</h3>
+              <p>Vorlese-, Lern- und Musikpaten, Sport und Handwerk &ndash; Menschen, die ihr K&ouml;nnen weitergeben.</p>
             </div>
           </div>
         </div>
@@ -207,12 +245,12 @@ function LandingPage() {
             <div className="step">
               <div className="step-number">1</div>
               <h3>Profil erstellen</h3>
-              <p>Registrieren Sie sich als Elternteil oder als Leih-Gro&szlig;elternteil und f&uuml;llen Sie Ihr Profil aus.</p>
+              <p>Registrieren Sie sich als Elternteil &ndash; oder schenken Sie Zeit und w&auml;hlen Sie, als was Sie helfen m&ouml;chten.</p>
             </div>
             <div className="step">
               <div className="step-number">2</div>
               <h3>Passende Person finden</h3>
-              <p>Durchsuchen Sie Profile in Ihrer N&auml;he und finden Sie die perfekte Erg&auml;nzung f&uuml;r Ihre Familie.</p>
+              <p>Filtern Sie nach N&auml;he, Helfer-Kategorie und F&auml;higkeiten &ndash; und finden Sie die perfekte Erg&auml;nzung f&uuml;r Ihre Familie.</p>
             </div>
             <div className="step">
               <div className="step-number">3</div>
