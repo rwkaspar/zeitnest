@@ -38,6 +38,14 @@ installiert + authentifiziert, PR #1 ist offen)*
 
 *(neueste Einträge oben — Format: Datum — was, warum, offene Fragen)*
 
+### 2026-07-28 — Outreach: 5 Gmail-Entwürfe an Wunschgroßeltern-Projekte
+- Recherchiert + Adressen von den Projektseiten verifiziert: Kinderschutzbund Mainz,
+  Großelterndienst Berlin, Caritas Rhein-Lahn, Caritas Wesermarsch (Leihoma/Leihopa),
+  KoKi Altmühlfranken. (BGL: Mail hinter Spamschutz; ASB Falkensee: 404; Nürnberg: nur Formular.)
+- Kernaufhänger laut Maintainer: Verweis-Option für Familien/Engagierte, denen die
+  Stelle gerade nicht helfen kann (Warteliste, kein Match, außerhalb Einzugsgebiet).
+- Als ENTWÜRFE angelegt (kein Versand durch Agent) — Maintainer prüft + sendet.
+
 ### 2026-07-28 — FZ-Karenzzeit live (Maintainer-Freigabe), VISION-Schwenk
 - VISION/CLAUDE: Koordinierungsstellen → optionales Add-on (Träger-Feedback verhalten);
   FZ-Grundsatz „für alle Helfenden" verankert; Landing entsprechend entschärft.
