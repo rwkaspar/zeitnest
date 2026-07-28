@@ -243,17 +243,16 @@ function LandingPage() {
           <div className="audience-header">
             <div className="audience-icon"><img src="/illustrations/feature-senioren-sinn.webp" alt="" /></div>
             <h2>F&uuml;r alle, die Zeit schenken</h2>
-            <p className="audience-subtitle">Engagement, das verbindet &ndash; und sich lohnt</p>
+            <p className="audience-subtitle">Ehrenamt, das verbindet</p>
           </div>
           <div className="audience-grid">
             <div className="audience-card">
-              <h3>Engagement, das z&auml;hlt</h3>
+              <h3>Ehrenamt mit R&uuml;ckhalt</h3>
               <p>
-                Ehrenamt &ouml;ffnet T&uuml;ren: in Bewerbungen und im Lebenslauf, bei
-                Stipendien &ndash; und in vielen Gemeinden ganz konkret, etwa wenn bei der
-                Grundst&uuml;cksvergabe soziales Engagement vor Ort honoriert wird.
-                Ihre Eins&auml;tze sind bei Zeitnest dokumentiert, und Ihre
-                Koordinierungsstelle kann Ihr Engagement best&auml;tigen.
+                Sie sind nicht allein: Ihre lokale Koordinierungsstelle begleitet Sie,
+                schl&auml;gt passende Familien vor und ist bei Fragen jederzeit
+                ansprechbar. Verifizierte Profile und der Kennenlern-Leitfaden geben
+                Sicherheit &ndash; auf beiden Seiten.
               </p>
             </div>
             <div className="audience-card">
