@@ -22,7 +22,7 @@ function GuidePage() {
             className={`guide-toggle-btn ${view === 'grandparent' ? 'active' : ''}`}
             onClick={() => setView('grandparent')}
           >
-            &#x1F9D3; F&uuml;r Leih-Gro&szlig;eltern
+            &#x1F9D3; F&uuml;r Zeitschenker:innen
           </button>
         </div>
 
@@ -48,7 +48,7 @@ function ParentGuide() {
     <>
       <div className="card guide-step">
         <h2>&#x1F4DD; Schritt 1: Profil sorgf&auml;ltig ausf&uuml;llen</h2>
-        <p>Ein ehrliches, vollst&auml;ndiges Profil hilft Leih-Gro&szlig;eltern, sich ein Bild von Ihrer Familie zu machen &ndash; und schafft von Anfang an Vertrauen.</p>
+        <p>Ein ehrliches, vollst&auml;ndiges Profil hilft Zeitschenker:innen, sich ein Bild von Ihrer Familie zu machen &ndash; und schafft von Anfang an Vertrauen.</p>
         <ul>
           <li>Laden Sie ein freundliches Familienfoto hoch</li>
           <li>Beschreiben Sie Ihre Kinder (Alter, Interessen, Besonderheiten)</li>
@@ -115,7 +115,7 @@ function ParentGuide() {
 
       <div className="card guide-step">
         <h2>&#x1F91D; Schritt 7: Regelm&auml;&szlig;ige Betreuung starten</h2>
-        <p>Wenn alle sich wohl f&uuml;hlen &ndash; Ihr Kind, Sie und die Leih-Gro&szlig;eltern &ndash; kann es richtig losgehen.</p>
+        <p>Wenn alle sich wohl f&uuml;hlen &ndash; Ihr Kind, Sie und Ihre Zeitschenker:innen &ndash; kann es richtig losgehen.</p>
         <ul>
           <li>Legen Sie feste Tage und Zeiten fest</li>
           <li>F&uuml;hren Sie ein kurzes Betreuungstagebuch (was wurde gemacht, wie ging&apos;s)</li>

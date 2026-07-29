@@ -18,6 +18,9 @@ async function askOllamaJson(systemPrompt, userPrompt) {
         model: OLLAMA_MODEL,
         stream: false,
         format: 'json',
+        // Thinking-Modelle (z.B. qwen3.5) würden sonst minutenlang auf CPU
+        // "denken", bevor die Antwort kommt — Nicht-Thinking-Modelle ignorieren das.
+        think: false,
         keep_alive: '1h',
         options: { temperature: 0 },
         messages: [
