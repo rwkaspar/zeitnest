@@ -43,7 +43,7 @@ services:
       - GITHUB_TOKEN=${GITHUB_TOKEN:-}
       - GITHUB_REPO=${GITHUB_REPO:-rwkaspar/zeitnest}
       - OLLAMA_URL=${OLLAMA_URL:-http://ollama-mini:11434}
-      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3.2:3b}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen3.5:2b}
     extra_hosts:
       # Tailscale-MagicDNS ist im Compose-Netz nicht auflösbar — IP pinnen.
       - "ollama-mini:100.107.76.31"

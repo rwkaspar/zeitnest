@@ -15,7 +15,7 @@ function SearchPage() {
   const [skillFilter, setSkillFilter] = useState([]);
 
   const searchesHelpers = user?.role === 'parent';
-  const searchLabel = searchesHelpers ? 'Helfende' : 'Familien';
+  const searchLabel = searchesHelpers ? 'Zeitschenker:innen' : 'Familien';
 
   const doSearch = useCallback(async () => {
     setLoading(true);

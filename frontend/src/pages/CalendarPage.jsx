@@ -189,7 +189,7 @@ function CalendarPage() {
                 <h3>Keine anstehenden Termine</h3>
                 <p>
                   {user?.role === 'parent'
-                    ? 'Besuchen Sie das Profil eines Leih-Großelternteils, um Zeitfenster zu buchen.'
+                    ? 'Besuchen Sie das Profil einer Zeitschenkerin oder eines Zeitschenkers, um Zeitfenster zu buchen.'
                     : 'Legen Sie oben Verfügbarkeiten an, damit Eltern Sie buchen können.'}
                 </p>
               </div>

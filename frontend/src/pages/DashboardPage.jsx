@@ -47,8 +47,8 @@ function DashboardPage() {
   const pendingCount = matches.filter(m => m.status === 'pending').length;
   const acceptedCount = matches.filter(m => m.status === 'accepted').length;
 
-  const roleLabel = user?.role === 'parent' ? 'Elternteil' : 'Leih-Großelternteil';
-  const searchLabel = user?.role === 'parent' ? 'Leih-Großeltern' : 'Familien';
+  const roleLabel = user?.role === 'parent' ? 'Elternteil' : 'Zeitschenker:in';
+  const searchLabel = user?.role === 'parent' ? 'Zeitschenker:innen' : 'Familien';
 
   // === Onboarding-Checkliste ableiten ===
   const isVerified = me?.email_verified ?? user?.email_verified ?? false;

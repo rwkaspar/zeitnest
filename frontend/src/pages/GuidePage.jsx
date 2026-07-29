@@ -52,7 +52,7 @@ function ParentGuide() {
         <ul>
           <li>Laden Sie ein freundliches Familienfoto hoch</li>
           <li>Beschreiben Sie Ihre Kinder (Alter, Interessen, Besonderheiten)</li>
-          <li>Erz&auml;hlen Sie, was Sie sich von einer Leih-Oma/einem Leih-Opa erhoffen</li>
+          <li>Erz&auml;hlen Sie, was Sie sich von der Unterst&uuml;tzung erhoffen</li>
           <li>Geben Sie Ihre zeitliche Vorstellung an (z.B. einmal pro Woche, nachmittags)</li>
         </ul>
       </div>

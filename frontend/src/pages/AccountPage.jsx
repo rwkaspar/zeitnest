@@ -66,7 +66,7 @@ function AccountPage() {
             </div>
             <div className="profile-detail">
               <span className="label">Rolle</span>
-              <span>{user?.role === 'parent' ? 'Elternteil' : 'Leih-Gro\u00dfelternteil'}</span>
+              <span>{user?.role === 'parent' ? 'Elternteil' : 'Zeitschenker:in'}</span>
             </div>
           </div>
 

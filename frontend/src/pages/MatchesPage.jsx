@@ -72,7 +72,7 @@ function MatchesPage() {
           <div className="empty-state">
             <div className="icon">&#x1F4EC;</div>
             <h3>Noch keine Anfragen</h3>
-            <p>Suchen Sie nach passenden {user?.role === 'parent' ? 'Leih-Gro\u00dfeltern' : 'Familien'} und senden Sie eine Anfrage.</p>
+            <p>Suchen Sie nach passenden {user?.role === 'parent' ? 'Zeitschenker:innen' : 'Familien'} und senden Sie eine Anfrage.</p>
             <Link to="/suche" className="btn btn-primary">Jetzt suchen</Link>
           </div>
         ) : (

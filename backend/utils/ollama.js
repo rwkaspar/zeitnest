@@ -3,7 +3,7 @@
 // umgehen (Feedback wird dann ohne KI-Check weiterverarbeitet).
 
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://ollama-mini:11434';
-const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'llama3.2:3b';
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'qwen3.5:2b';
 const TIMEOUT_MS = 90 * 1000;
 
 async function askOllamaJson(systemPrompt, userPrompt) {

@@ -24,14 +24,14 @@ function AgbPage() {
         <h2>&sect; 2 Leistungsbeschreibung</h2>
         <p>
           Zeitnest ist eine Vermittlungsplattform, die Familien (im Folgenden &bdquo;Eltern&ldquo;)
-          und an Kinderbetreuung interessierte Senioren (im Folgenden &bdquo;Leih-Gro&szlig;eltern&ldquo;)
+          und Menschen, die freiwillig Kinderbetreuung anbieten m&ouml;chten (im Folgenden &bdquo;Zeitschenker:innen&ldquo;)
           zusammenbringt. Zeitnest stellt ausschlie&szlig;lich die technische Infrastruktur
           zur Kontaktaufnahme bereit. Es kommt <strong>kein Vertragsverh&auml;ltnis zwischen Zeitnest
           und den Nutzern hinsichtlich der Betreuung selbst</strong> zustande.
         </p>
         <p>
           <strong>Zeitnest wird als Non-Profit-Initiative betrieben.</strong> Die Plattform erhebt keine
-          Geb&uuml;hren von Eltern oder Leih-Gro&szlig;eltern; eine etwaige Aufwandsentsch&auml;digung
+          Geb&uuml;hren von Eltern oder Zeitschenker:innen; eine etwaige Aufwandsentsch&auml;digung
           wird direkt zwischen den Parteien geregelt. Eine Vereinsgr&uuml;ndung ist in Vorbereitung.
         </p>
 

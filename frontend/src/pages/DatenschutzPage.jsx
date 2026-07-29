@@ -23,7 +23,7 @@ function DatenschutzPage() {
           <li>Vorname und Nachname</li>
           <li>E-Mail-Adresse</li>
           <li>Passwort (wird verschl&uuml;sselt gespeichert)</li>
-          <li>Rolle (Elternteil oder Leih-Gro&szlig;elternteil)</li>
+          <li>Rolle (Elternteil oder Zeitschenker:in)</li>
         </ul>
         <h3>2.2 Freiwillige Profilangaben</h3>
         <ul>
@@ -49,9 +49,9 @@ function DatenschutzPage() {
           <li><strong>Terminverwaltung:</strong> Buchung und Verwaltung von Betreuungszeiten (Art. 6 Abs. 1 lit. b DSGVO)</li>
         </ul>
 
-        <h2>4. Erweitertes F&uuml;hrungszeugnis (Leih-Gro&szlig;eltern)</h2>
+        <h2>4. Erweitertes F&uuml;hrungszeugnis (Zeitschenker:innen)</h2>
         <p>
-          Leih-Gro&szlig;eltern k&ouml;nnen freiwillig ein erweitertes F&uuml;hrungszeugnis nach
+          Zeitschenker:innen k&ouml;nnen ein erweitertes F&uuml;hrungszeugnis nach
           &sect;30a BZRG hochladen, um Eltern ein zus&auml;tzliches Vertrauenssignal zu geben.
           F&uuml;r diese besonders sensible Datenkategorie gelten folgende Schutzma&szlig;nahmen:
         </p>

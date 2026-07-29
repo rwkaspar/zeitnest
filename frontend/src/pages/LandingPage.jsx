@@ -104,7 +104,7 @@ function LandingPage() {
               <h3>Neue Bezugspersonen</h3>
               <p>
                 Kinder profitieren enorm von stabilen Beziehungen au&szlig;erhalb der Kernfamilie.
-                Eine Leih-Oma oder ein Leih-Opa wird zu einer verl&auml;sslichen Vertrauensperson &ndash;
+                Eine Wunschoma oder ein Wunschopa wird zu einer verl&auml;sslichen Vertrauensperson &ndash;
                 jemand, der zuh&ouml;rt, tr&ouml;stet und bedingungslos Zeit schenkt.
               </p>
             </div>
@@ -131,7 +131,7 @@ function LandingPage() {
               <h3>Neue Impulse &amp; Hobbys</h3>
               <p>
                 Ob gemeinsam G&auml;rtnern, Backen, Basteln oder Geschichten vorlesen &ndash;
-                Leih-Gro&szlig;eltern bringen andere Interessen und Aktivit&auml;ten mit als die Eltern
+                Wunschgro&szlig;eltern bringen andere Interessen und Aktivit&auml;ten mit als die Eltern
                 und er&ouml;ffnen Kindern neue Horizonte.
               </p>
             </div>
@@ -152,7 +152,7 @@ function LandingPage() {
               <h3>Sinn &amp; Erf&uuml;llung</h3>
               <p>
                 Im Ruhestand fehlt vielen das Gef&uuml;hl, gebraucht zu werden.
-                Als Leih-Gro&szlig;eltern &uuml;bernehmen Sie eine bedeutungsvolle Rolle &ndash;
+                Als Wunschoma oder Wunschopa &uuml;bernehmen Sie eine bedeutungsvolle Rolle &ndash;
                 Sie machen einen echten Unterschied im Leben einer Familie.
               </p>
             </div>
@@ -230,7 +230,7 @@ function LandingPage() {
               <h3>Vertrauen statt Fremde</h3>
               <p>
                 Anders als bei klassischer Kinderbetreuung entsteht hier eine echte,
-                langfristige Beziehung. Die Leih-Gro&szlig;eltern werden Teil des erweiterten
+                langfristige Beziehung. Die Zeitschenker:innen werden Teil des erweiterten
                 Familienkreises &ndash; mit einem Kennenlernen in Ihrem Tempo und nach Ihren Regeln.
               </p>
             </div>

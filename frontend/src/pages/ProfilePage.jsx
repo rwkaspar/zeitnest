@@ -65,7 +65,7 @@ function ProfilePage() {
   if (!profile) return null;
 
   const isOwn = user?.id === profile.id;
-  const roleLabel = profile.role === 'parent' ? 'Elternteil' : 'Leih-Gro\u00dfelternteil';
+  const roleLabel = profile.role === 'parent' ? 'Elternteil' : 'Zeitschenker:in';
 
   return (
     <div className="profile-page">
