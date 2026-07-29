@@ -38,6 +38,19 @@ installiert + authentifiziert, PR #1 ist offen)*
 
 *(neueste Einträge oben — Format: Datum — was, warum, offene Fragen)*
 
+### 2026-07-29 — Feedback-Widget mit KI-Triage live (Maintainer-Auftrag)
+- Widget auf allen Seiten (Bug/Idee, anonym erlaubt, 5/h/IP); async Pipeline:
+  ollama-mini (llama3.2:3b) generiert Titel + prüft Duplikate per binärem
+  Paarvergleich (Titel+Body je offenes Issue gleichen Typs) → neu = GitHub-Issue
+  (user-feedback + bug/enhancement), Duplikat = nur DB-Vermerk.
+- Erkenntnisse: qwen3.5:2b hängt auf ollama-mini (Requests stauen) → llama3.2:3b;
+  Kandidaten-Vorauswahl durch 3B-Modell unzuverlässig → Vergleich gegen alle;
+  Tailscale-MagicDNS im Compose-Netz nicht auflösbar → extra_hosts-IP-Pin.
+- Nebenbei gefixt: trust proxy (vorher teilten sich alle Nutzer eine
+  Rate-Limit-IP hinter Tunnel+nginx — betraf auch den Login-Limiter).
+- GITHUB_TOKEN (gh-CLI-OAuth) in .env ergänzt — Empfehlung: durch Fine-grained
+  PAT (nur Issues:write auf zeitnest) ersetzen.
+
 ### 2026-07-28 — Reichweiten-Paket Altmühlfranken (Maintainer-Auftrag 1–4)
 - SEO live: Meta/OG/Twitter-Tags, og-image.png (1200×630), robots.txt, sitemap.xml,
   JSON-LD. Links teilen sich jetzt mit Vorschaubild in WhatsApp/Facebook/nebenan.
