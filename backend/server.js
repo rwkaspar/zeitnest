@@ -8,6 +8,11 @@ const { initDatabase } = require('./database');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// App läuft hinter Cloudflare Tunnel + nginx: ohne trust proxy sähen alle
+// Nutzer wie eine IP aus und teilten sich JEDES Rate-Limit-Budget (inkl. Login).
+// Der Port ist nicht öffentlich exponiert (nur Tunnel), daher ist das sicher.
+app.set('trust proxy', true);
+
 // Security headers
 app.use(helmet({
   contentSecurityPolicy: false, // handled by nginx/frontend SPA
@@ -57,6 +62,17 @@ initDatabase().then(() => {
   app.use('/api/auth/register', authLimiter);
   app.use('/api/auth/forgot-password', authLimiter);
   app.use('/api/auth/reset-password', authLimiter);
+  // Feedback-Widget: strenges Limit — öffentlicher Endpoint mit externen
+  // Seiteneffekten (KI-Aufruf + GitHub-Issue).
+  const feedbackLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 5,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Zu viele Meldungen. Bitte versuchen Sie es später erneut.' },
+  });
+  app.use('/api/feedback', feedbackLimiter, require('./routes/feedback'));
+
   app.use('/api/auth', require('./routes/auth'));
   app.use('/api/profiles', require('./routes/profiles'));
   app.use('/api/families', require('./routes/families'));

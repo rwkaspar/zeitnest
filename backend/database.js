@@ -297,6 +297,24 @@ async function initDatabase() {
     await client.query(`CREATE INDEX IF NOT EXISTS idx_family_invites_token ON family_invites(token)`);
     await client.query(`CREATE INDEX IF NOT EXISTS idx_family_invites_family ON family_invites(family_id)`);
 
+    // Feedback-Widget: Bug-/Feature-Meldungen. KI-Duplikat-Check (Ollama) +
+    // automatisches GitHub-Issue laufen asynchron; status dokumentiert das Ergebnis.
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS feedback_reports (
+        id TEXT PRIMARY KEY,
+        user_id TEXT REFERENCES users(id) ON DELETE SET NULL,
+        type TEXT NOT NULL CHECK (type IN ('bug', 'feature')),
+        description TEXT NOT NULL,
+        page_path TEXT,
+        status TEXT NOT NULL DEFAULT 'received',
+        ai_verdict TEXT,
+        duplicate_of INTEGER,
+        github_issue_url TEXT,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      )
+    `);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_feedback_status ON feedback_reports(status)`);
+
     // Daten-Migration: für jede bestehende parent_profiles-Zeile eine Family anlegen
     // und alle Family-Felder aus parent_profiles + users (für PLZ/Stadt) in die Family übernehmen.
     // Idempotent: nur User ohne family_id und Rolle 'parent'.

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import FeedbackWidget from './components/FeedbackWidget';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -77,6 +78,7 @@ function App() {
             <AppRoutes />
           </main>
           <Footer />
+          <FeedbackWidget />
         </div>
       </Router>
     </AuthProvider>
